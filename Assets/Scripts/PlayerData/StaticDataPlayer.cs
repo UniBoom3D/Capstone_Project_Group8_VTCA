@@ -6,6 +6,6 @@ public class StaticDataPlayer
     private string PlayerName { get; set; }
     private string CharacterClass { get; set; }
     private int PlayerLevel { get; set; }
-    private float ExperiencePoints { get; set; }
+    private int ExperiencePoints { get; set; }
 
 }

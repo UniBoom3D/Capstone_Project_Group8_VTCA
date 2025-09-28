@@ -13,4 +13,8 @@ public class StaticDataCharacter
 
     public float Stamina { get; set; }
 
+    public int ExperienceToLevelUp { get; set; }
+
+    public int Level { get; set; } = 1;
+
 }
