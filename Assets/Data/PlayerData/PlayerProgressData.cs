@@ -20,4 +20,5 @@ public class PlayerProgressData : StaticPlayerData
         _characterID = characterId;
         this.characterName = characterName;
     }
+
 }
