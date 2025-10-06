@@ -8,10 +8,11 @@ public class StaticArcherCharacter : StaticDataCharacter
         characterName = "Archer";
 
         _baseHealth = 80;
+        _baseStamina = 100;
         _baseAttack = 15;
         _baseMagic = 5;
         _baseArmor = 8;
         _baseMagicResist = 6;
-        _baseStamina = 120;
+        
     }
 }
