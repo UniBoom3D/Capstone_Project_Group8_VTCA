@@ -1,49 +1,47 @@
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections.Generic;
 
-public class LevelController
+public static class LevelController
 {
-    private PlayerProgressData _playerData;
-    private System.Random _random;
-
-    public LevelController(PlayerProgressData playerData)
+    // Định nghĩa max exp cho từng level
+    private static Dictionary<int, int> levelExpTable = new Dictionary<int, int>()
     {
-        _playerData = playerData;
-        _random = new System.Random();
-    }
+        { 1, 100 },
+        { 2, 150 },
+        { 3, 200 },
+        { 4, 250 },
+        { 5, 300 },
+        // ... bạn có thể thêm tiếp nếu cần
+    };
 
-    // Add EXP
-    public void AddExp(int amount)
+    // Hàm thêm exp cho player
+    public static void AddExp(PlayerProgressData playerData, int amount)
     {
-        _playerData._currentExp += amount;
+        playerData._currentExp += amount;
 
-        while (_playerData._currentExp >= _playerData._maxExp)
+        int maxExp = GetMaxExpForLevel(playerData._currentLevel);
+
+        if (playerData._currentExp >= maxExp)
         {
-            _playerData._currentExp -= _playerData._maxExp;
-            LevelUp();
+            LevelUp(playerData);
         }
     }
 
-    // Handle level up
-    private void LevelUp()
+    // Lấy max exp cho level hiện tại
+    private static int GetMaxExpForLevel(int level)
     {
-        _playerData._currentLevel++;
+        if (levelExpTable.ContainsKey(level))
+            return levelExpTable[level];
 
-        // Increase each stat randomly from 1-3
-        int healthIncrease = _random.Next(1, 4);      // 1-3
-        int staminaIncrease = _random.Next(1, 4);
-        int attackIncrease = _random.Next(1, 4);
-        int magicIncrease = _random.Next(1, 4);
-        int armorIncrease = _random.Next(1, 4);
-        int magicResistIncrease = _random.Next(1, 4);
+        // Nếu level vượt bảng định nghĩa, mặc định tăng 50 mỗi cấp
+        return 100 + (level - 1) * 50;
+    }
 
-        _playerData._health += healthIncrease;
-        _playerData._stamina += staminaIncrease;
-        _playerData._attack += attackIncrease;
-        _playerData._magic += magicIncrease;
-        _playerData._armor += armorIncrease;
-        _playerData._magicResist += magicResistIncrease;
-
-        Debug.Log($"LEVEL UP! New Level: {_playerData._currentLevel}");
-        Debug.Log($"Stats Increased: Health+{healthIncrease}, Stamina+{staminaIncrease}, Attack+{attackIncrease}, Magic+{magicIncrease}, Armor+{armorIncrease}, MagicResist+{magicResistIncrease}");
+    // Xử lý khi lên cấp
+    private static void LevelUp(PlayerProgressData playerData)
+    {
+        playerData._currentLevel++;
+        playerData._currentExp = 0; // reset exp sau khi lên cấp
+        Debug.Log($"LEVEL UP! New Level: {playerData._currentLevel}");
     }
 }
