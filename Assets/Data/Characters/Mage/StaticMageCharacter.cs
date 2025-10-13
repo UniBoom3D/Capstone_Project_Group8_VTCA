@@ -8,10 +8,11 @@ public class StaticMageCharacter : StaticDataCharacter
         characterName = "Mage";
 
         _baseHealth = 70;
+        _baseStamina = 100;
         _baseAttack = 5;
         _baseMagic = 20;
         _baseArmor = 5;
         _baseMagicResist = 12;
-        _baseStamina = 100;
+        
     }
 }
