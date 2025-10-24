@@ -1,40 +1,53 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 using PlayFab;
 using PlayFab.ClientModels;
+using System.Collections;
 
 public class PlayFabRegisterManager : MonoBehaviour
 {
     [Header("UI Components")]
-    public TMP_InputField usernameInput; 
+    public TMP_InputField usernameInput;
     public TMP_InputField passwordInput;
-    public TMP_InputField confirmPasswordInput; 
-    public TMP_Text messageText; 
+    public TMP_InputField confirmPasswordInput;
+    public TMP_Text messageText;
+    public TMP_Text checkUsernameText; // Text to show username availability
 
-    // Lưu thông tin người chơi tĩnh (sau khi đăng ký)
+    // Static player data after successful registration
     public static StaticPlayerData playerData = new StaticPlayerData();
 
-    // Hàm gọi khi nhấn nút "Đăng ký"
+    private string username;
+    private string password;
+    private string confirmPassword;
+
+    private Coroutine checkUsernameCoroutine;
+
+    // Handle Register Button click
     public void RegisterPlayer()
     {
-        string username = usernameInput.text;
-        string password = passwordInput.text;
-        string confirm = confirmPasswordInput.text;
+        username = usernameInput.text;
+        password = passwordInput.text;
+        confirmPassword = confirmPasswordInput.text;
 
-        // Kiểm tra hợp lệ
+        // Validate the inputs
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
         {
-            messageText.text = "⚠️ Vui lòng nhập đầy đủ thông tin.";
+            messageText.text = "⚠️ Please enter all the information.";
             return;
         }
-        if (password != confirm)
+        if (password != confirmPassword)
         {
-            messageText.text = "⚠️ Mật khẩu xác nhận không trùng khớp.";
+            messageText.text = "⚠️ Passwords do not match.";
             return;
         }
 
-        // Gửi yêu cầu đăng ký đến PlayFab
+        // Check if the username is available by attempting to register
+        CheckUsernameAvailability(username);
+    }
+
+    // Attempt to register a player and check if the username is valid
+    private void CheckUsernameAvailability(string username)
+    {
         var request = new RegisterPlayFabUserRequest
         {
             Username = username,
@@ -42,30 +55,63 @@ public class PlayFabRegisterManager : MonoBehaviour
             RequireBothUsernameAndEmail = false
         };
 
+        // Try to register the user. If username exists, it will trigger OnRegisterFailure
         PlayFabClientAPI.RegisterPlayFabUser(request, OnRegisterSuccess, OnRegisterFailure);
     }
 
-    // Thành công
+    // Success handler for RegisterPlayFabUser
     private void OnRegisterSuccess(RegisterPlayFabUserResult result)
     {
         messageText.text = "🎉 Đăng ký thành công!";
         Debug.Log($"✅ Title Player ID: {result.PlayFabId}");
 
-        // Lưu dữ liệu vào class StaticPlayerData
-        playerData._playerID = result.PlayFabId;  // ID do PlayFab tạo tự động
-        playerData._username = usernameInput.text;
-        playerData._password = passwordInput.text;
-        playerData._level = 1; // Khởi tạo mặc định
+        // Save player data
+        playerData._playerID = result.PlayFabId; // Generated ID
+        playerData._username = username;
+        playerData._password = password;
+        playerData._level = 1; // Default level
         playerData._characterName = "New Player";
-        playerData._characterID = System.Guid.NewGuid().ToString(); // tự tạo ID nhân vật
+        playerData._characterID = System.Guid.NewGuid().ToString(); // Generate character ID
 
         Debug.Log($"🧩 Player Created: {playerData._username} | CharID: {playerData._characterID}");
     }
 
-    // Thất bại
+    // Failure handler for RegisterPlayFabUser
     private void OnRegisterFailure(PlayFabError error)
     {
-        messageText.text = "❌ Lỗi đăng ký: " + error.ErrorMessage;
+        if (error.ErrorMessage.Contains("Username already exists"))
+        {
+            checkUsernameText.text = "❌ Người dùng đã tồn tại!";
+        }
+        else
+        {
+            checkUsernameText.text = "❌ Lỗi đăng ký: " + error.ErrorMessage;
+        }
+
+        messageText.text = "❌ Đăng ký thất bại: " + error.ErrorMessage;
         Debug.LogError(error.GenerateErrorReport());
+    }
+
+    // Start checking username availability with delay after user stops typing for 3 seconds
+    public void OnUsernameChanged()
+    {
+        // Stop any previous ongoing checks
+        if (checkUsernameCoroutine != null)
+        {
+            StopCoroutine(checkUsernameCoroutine);
+        }
+
+        // Start a new coroutine to check availability after 3 seconds
+        checkUsernameCoroutine = StartCoroutine(CheckUsernameWithDelay());
+    }
+
+    // Coroutine to wait for 3 seconds before checking username
+    private IEnumerator CheckUsernameWithDelay()
+    {
+        checkUsernameText.text = ""; // Clear previous text
+        yield return new WaitForSeconds(3); // Wait for 3 seconds
+
+        // After waiting, check the username availability
+        CheckUsernameAvailability(usernameInput.text);
     }
 }
