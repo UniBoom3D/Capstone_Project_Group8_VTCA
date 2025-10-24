@@ -88,7 +88,7 @@ public class BattleHandler_TurnBaseCore : MonoBehaviour
 
         BlueTeam.AddMember(new PlayerInBattle(new PlayerProgressData()
         {
-            characterName = "BlueHero",
+            _characterName = "BlueHero",
             _health = 120,
             _attack = 25,
             _armor = 5
@@ -96,7 +96,7 @@ public class BattleHandler_TurnBaseCore : MonoBehaviour
 
         RedTeam.AddMember(new PlayerInBattle(new PlayerProgressData()
         {
-            characterName = "RedHero",
+            _characterName = "RedHero",
             _health = 100,
             _attack = 20,
             _armor = 4

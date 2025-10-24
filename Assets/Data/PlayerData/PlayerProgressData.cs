@@ -19,7 +19,7 @@ public class PlayerProgressData : StaticPlayerData
     public void SetCharacterSelection(string characterId, string characterName)
     {
         _characterID = characterId;
-        this.characterName = characterName;
+        this._characterName = characterName;
     }
 
     /// <summary>
