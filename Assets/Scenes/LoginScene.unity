@@ -201,7 +201,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 24847689}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 235576569}
+        m_TargetAssemblyTypeName: PlayFabRegisterManager, Assembly-CSharp
+        m_MethodName: OnConfirmButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &24847689
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -898,6 +910,7 @@ MonoBehaviour:
   confirmPasswordInput: {fileID: 28472374}
   messageText: {fileID: 1805192473}
   checkUsernameText: {fileID: 1259112577}
+  confirmButton: {fileID: 24847686}
 --- !u!1 &243997520
 GameObject:
   m_ObjectHideFlags: 0
