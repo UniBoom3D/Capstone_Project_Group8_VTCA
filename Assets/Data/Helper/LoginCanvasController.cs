@@ -1,55 +1,61 @@
 ﻿using UnityEngine;
 using TMPro;
+using UnityEngine.EventSystems;
+using System.Collections;
 
 public class LoginCanvasController : MonoBehaviour
 {
     [Header("UI Panels")]
-    public GameObject loginPanel; // Panel đăng nhập
-    public GameObject registerPanel; // Panel đăng ký
+    public GameObject loginPanel;
+    public GameObject registerPanel;
 
-    [Header("UI Buttons")]
+    [Header("Setup Button Login Panel UI Buttons")]
+    public GameObject login_Button;
+    public GameObject logout_Button;
+    public GameObject ExitGameButton;
+
+    [Header("Setup Button Register Panel UI Buttons")]
     public GameObject registerButton;
-    public GameObject cancelButton; 
+    public GameObject cancelButton;
 
-    [Header("UI InputFields")]
-    public TMP_InputField usernameInput;  
-    public TMP_InputField passwordInput;  
-    public TMP_InputField confirmPasswordInput; 
+    [Header("Register UI InputFields")]
+    public TMP_InputField registerUsernameInput;
+    public TMP_InputField registerPasswordInput;
+    public TMP_InputField confirmRegisterPasswordInput;
+
+    [Header("Login UI InputFields")]
+    public TMP_InputField loginUsernameInput;
+    public TMP_InputField loginPasswordInput;
 
     void Start()
     {
-        // Mặc định, chỉ hiển thị LoginPanel
         ShowLoginPanel();
     }
 
-    // chuyển sang Register Panel khi người chơi nhấn nút đăng ký
     public void ShowRegisterPanel()
     {
-        loginPanel.SetActive(false); 
+        loginPanel.SetActive(false);
         registerPanel.SetActive(true);
-
-        
-        usernameInput.Select();  // Focus vào InputField username
-        usernameInput.ActivateInputField();
-
+        StartCoroutine(FocusNextFrame(registerUsernameInput));
     }
 
-    // Hàm chuyển sang Login Panel khi người chơi nhấn nút hủy tại RegisterPanel
     public void ShowLoginPanel()
     {
-        registerPanel.SetActive(false); 
-        loginPanel.SetActive(true); 
+        registerPanel.SetActive(false);
+        loginPanel.SetActive(true);
+        StartCoroutine(FocusNextFrame(loginUsernameInput));
     }
 
-    // Hàm đăng ký (nút đăng ký)
-    public void OnRegisterButtonClicked()
+    IEnumerator FocusNextFrame(TMP_InputField field)
     {
-        ShowRegisterPanel();
+        EventSystem.current.SetSelectedGameObject(null);
+        yield return null; // đợi 1 frame
+
+        EventSystem.current.SetSelectedGameObject(field.gameObject);
+        field.Select();
+        field.ActivateInputField();
     }
 
-    // Hàm hủy (nút hủy tại RegisterPanel)
-    public void OnCancelButtonClicked()
-    {
-        ShowLoginPanel();
-    }
+    public void OnRegisterButtonClicked() => ShowRegisterPanel();
+    public void OnCancelButtonClicked() => ShowLoginPanel();
 }

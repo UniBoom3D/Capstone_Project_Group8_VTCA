@@ -24,9 +24,9 @@ public class PlayFabRegisterManager : MonoBehaviour
 
     void Start()
     {
-        // Khi bắt đầu, ẩn nút xác nhận và xóa text kiểm tra
+       
         checkUsernameText.text = "";
- 
+
     }
 
     // ✅ Gọi khi người dùng thay đổi username input
