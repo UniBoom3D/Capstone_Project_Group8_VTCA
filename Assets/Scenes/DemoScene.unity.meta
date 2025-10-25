@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 2cc2a53c78ac45a1a15a077e18e3edb9
+guid: 70a3fcc2040e31d45a10dc34602810ec
 DefaultImporter:
   externalObjects: {}
   userData: 
@@ -7,8 +7,8 @@ DefaultImporter:
   assetBundleVariant: 
 AssetOrigin:
   serializedVersion: 1
-  productId: 315271
-  packageName: 'Bullet FX Pack: Trail, Fire & Energy'
+  productId: 306153
+  packageName: Low Poly Tropical Beach
   packageVersion: 1.0.0
   assetPath: Assets/Scenes/DemoScene.unity
-  uploadId: 753432
+  uploadId: 719796
