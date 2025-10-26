@@ -3,16 +3,17 @@ using TMPro;
 using System;
 using System.Collections;
 
-public class PlayerDataManager : MonoBehaviour
+public class AccountDataManager : MonoBehaviour
 {
-    public static PlayerDataManager Instance { get; private set; }
+    public static AccountDataManager Instance { get; private set; }
 
     [Header("Dữ liệu người chơi hiện tại")]
     public PlayerProgressData playerProgressData = new PlayerProgressData();
 
-    [Header("Asset nhân vật (kéo thả trong Inspector)")]
+    [Header("Asset nhân vật")]
     public StaticDataCharacter StaticArcherCharacter;
     public StaticDataCharacter StaticGunnerCharacter;
+    public StaticDataCharacter StaticMageCharacter; // có thể thêm nữa sau
 
     [Header("Canvas & Panel UI")]
     [Space(5)]
@@ -45,12 +46,11 @@ public class PlayerDataManager : MonoBehaviour
 
     private void Start()
     {
-        // Khi vào LobbyScene -> kiểm tra nhân vật
         InitializeLobbyState();
     }
 
     /// <summary>
-    /// Gọi sau khi đăng nhập thành công
+    /// Gọi sau khi đăng nhập thành công từ PlayFabLoginManager
     /// </summary>
     public void InitializePlayerFromLogin(StaticPlayerData staticData)
     {
@@ -60,10 +60,12 @@ public class PlayerDataManager : MonoBehaviour
         playerProgressData._level = staticData._level;
         playerProgressData._characterID = staticData._characterID;
         playerProgressData._characterName = staticData._characterName;
+
+        //TODO: Sau này lấy thêm thông tin MasterID từ PlayFab Entity API
     }
 
     /// <summary>
-    /// Kiểm tra xem người chơi có nhân vật chưa
+    /// Kiểm tra xem người chơi đã có nhân vật hay chưa và hiển thị giao diện tương ứng
     /// </summary>
     private void InitializeLobbyState()
     {
@@ -71,7 +73,7 @@ public class PlayerDataManager : MonoBehaviour
 
         if (hasCharacter)
         {
-            // Đã có nhân vật -> bật UI chọn nhân vật
+            // Đã có nhân vật -> hiển thị lựa chọn nhân vật
             CreateCharacterCanvas.SetActive(false);
             SelectionCharacterCanvas.SetActive(true);
 
@@ -84,7 +86,7 @@ public class PlayerDataManager : MonoBehaviour
         }
         else
         {
-            // Chưa có nhân vật -> bật UI tạo nhân vật
+            // Chưa có nhân vật -> bật giao diện tạo mới
             CreateCharacterCanvas.SetActive(true);
             SelectionCharacterCanvas.SetActive(false);
 
@@ -99,7 +101,7 @@ public class PlayerDataManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Gọi khi nhấn nút xác nhận tạo nhân vật mới
+    /// Gọi khi nhấn nút xác nhận tạo nhân vật mới (ví dụ: 0 = Archer, 1 = Gunner, 2 = Mage)
     /// </summary>
     public void ConfirmCreateCharacter(int classIndex)
     {
@@ -110,32 +112,44 @@ public class PlayerDataManager : MonoBehaviour
             return;
         }
 
-        StaticDataCharacter chosenClass = null;
-        switch (classIndex)
+        StaticDataCharacter chosenClass = GetClassByIndex(classIndex);
+        if (chosenClass == null)
         {
-            case 0: chosenClass = StaticArcherCharacter; break;
-            case 1: chosenClass = StaticGunnerCharacter; break;
-            default:
-                checkNameNotice.text = "❌ Lớp nhân vật không hợp lệ!";
-                return;
+            checkNameNotice.text = "❌ Lớp nhân vật không hợp lệ!";
+            return;
         }
 
-        // Gọi hàm chọn lớp
+        // Tạo nhân vật
         SelectCharacterAtLobby(chosenClass, name);
 
-        // Sau khi tạo xong, cập nhật UI
+        // Cập nhật UI
         CreateCharacterCanvas.SetActive(false);
         SelectionCharacterCanvas.SetActive(true);
-
         CreateCharacterNamePanel.SetActive(false);
         ShowCharacterNamePanel.SetActive(true);
         showCharacterNameText.text = name;
 
         Debug.Log($"🎉 Tạo nhân vật mới: {name} ({chosenClass.characterName})");
+
+        //TODO: Sau này lưu dữ liệu này vào PlayFab CharacterData
     }
 
     /// <summary>
-    /// Tạo nhân vật & gán vào dữ liệu
+    /// Trả về class nhân vật tương ứng với index
+    /// </summary>
+    private StaticDataCharacter GetClassByIndex(int classIndex)
+    {
+        switch (classIndex)
+        {
+            case 0: return StaticArcherCharacter;
+            case 1: return StaticGunnerCharacter;
+            case 2: return StaticMageCharacter;
+            default: return null;
+        }
+    }
+
+    /// <summary>
+    /// Gán dữ liệu nhân vật được chọn cho người chơi hiện tại
     /// </summary>
     public void SelectCharacterAtLobby(StaticDataCharacter chosenClass, string customName)
     {
@@ -145,12 +159,11 @@ public class PlayerDataManager : MonoBehaviour
             return;
         }
 
+        // Clone scriptable object
         CurrentCharacterDataRuntime = ScriptableObject.Instantiate(chosenClass);
 
-        playerProgressData.SetCharacterSelection(
-            Guid.NewGuid().ToString(),
-            string.IsNullOrWhiteSpace(customName) ? chosenClass.characterName : customName
-        );
+        playerProgressData.SetCharacterSelection(Guid.NewGuid().ToString(),
+            string.IsNullOrWhiteSpace(customName) ? chosenClass.characterName : customName);
 
         var stats = chosenClass.GetStatsAtLevel(playerProgressData._currentLevel);
 
@@ -161,11 +174,11 @@ public class PlayerDataManager : MonoBehaviour
         playerProgressData._armor = stats.armor;
         playerProgressData._magicResist = stats.magicResist;
 
-        Debug.Log($"✅ Chọn lớp {chosenClass.characterName}, Level {playerProgressData._currentLevel} -> HP {stats.health}, ATK {stats.attack}");
+        Debug.Log($"✅ Đã chọn lớp {chosenClass.characterName}, Level {playerProgressData._currentLevel} -> HP {stats.health}, ATK {stats.attack}");
     }
 
     /// <summary>
-    /// Tính lại chỉ số khi lên cấp
+    /// Gọi lại khi lên cấp hoặc reset chỉ số
     /// </summary>
     public void RecalculateStatsByClass()
     {
@@ -182,5 +195,7 @@ public class PlayerDataManager : MonoBehaviour
         playerProgressData._magic = stats.magic;
         playerProgressData._armor = stats.armor;
         playerProgressData._magicResist = stats.magicResist;
+
+        //TODO: Sau này đồng bộ lại vào server hoặc PlayFab Character Data
     }
 }
