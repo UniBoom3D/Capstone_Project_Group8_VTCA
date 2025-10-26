@@ -3,7 +3,7 @@ using PlayFab;
 using PlayFab.ClientModels;
 using System.Collections.Generic;
 
-public class CharacterDataManager : AccountDataManager
+public class CharacterDataManager : MonoBehaviour
 {
     
 }
