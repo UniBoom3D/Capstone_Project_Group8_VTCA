@@ -15,4 +15,3 @@ public class StaticPlayerData
     public int _level = 1;
 }
 
-
