@@ -80,7 +80,7 @@ public class PlayFabLoginManager : MonoBehaviour
     private IEnumerator LoadLobbyAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        SceneManager.LoadScene("LobbyScene");
+        SceneManager.LoadScene("CharacterScene");
     }
 
     public void OnLogoutButtonClicked()
