@@ -1,36 +1,46 @@
 ﻿using UnityEngine;
+using PlayFab;
+using PlayFab.ClientModels;
+using System.Collections.Generic;
 using TMPro;
-using System;
-using System.Collections;
+using System.Linq;
 
 public class AccountDataManager : MonoBehaviour
 {
     public static AccountDataManager Instance { get; private set; }
 
-    [Header("Dữ liệu người chơi hiện tại")]
-    public PlayerProgressData playerProgressData = new PlayerProgressData();
+    [Header("🔑 Player Info")]
+    public string TitlePlayerID;    // ID người chơi trong game (PlayFabId)
+    public string MasterPlayerID;   // (tuỳ chọn)
+    public string TitleID;          // ID game trong PlayFab
 
-    [Header("Asset nhân vật")]
+    [Header("🎮 UI References")]
+    public Canvas PlayerNameCanvas;
+
+    [Header("Create Character UI")]
+    public GameObject CreateCharacterCanvas;
+    public TMP_InputField inputCharacterName;
+    public TMP_Text checkNameNotice;
+    public GameObject CreateCharacterConfirmButton;
+
+    [Header("Select Character UI")]
+    public GameObject SelectionCharacterCanvas;
+    public Transform characterSlotParent;
+    public GameObject characterSlotPrefab;
+    public GameObject CreateNewButton;
+
+    [Header("📜 Static Character Classes")]
     public StaticDataCharacter StaticArcherCharacter;
     public StaticDataCharacter StaticGunnerCharacter;
-    public StaticDataCharacter StaticMageCharacter; // có thể thêm nữa sau
-
-    [Header("Canvas & Panel UI")]
-    [Space(5)]
-    public Canvas PlayerNameCanvas;                   // Canvas overlay (UI)
-    public GameObject CreateCharacterNamePanel;       // Nhập tên khi tạo mới
-    public GameObject ShowCharacterNamePanel;         // Hiển thị tên nhân vật khi có sẵn
-    public GameObject CreateCharacterCanvas;          // Chọn class khi tạo mới (World space)
-    public GameObject SelectionCharacterCanvas;       // Chọn lại nhân vật có sẵn (World space)
-
-    [Header("UI Input & Text")]
-    public TMP_InputField inputCharacterName;         // Ô nhập tên nhân vật
-    public TMP_Text checkNameNotice;                  // Thông báo hợp lệ
-    public TMP_Text showCharacterNameText;            // Hiển thị tên nhân vật đang có
+    public StaticDataCharacter StaticMageCharacter;
 
     [Header("Runtime")]
-    [HideInInspector] public StaticDataCharacter CurrentCharacterDataRuntime;
+    public List<PlayerProgressData> allCharacters = new List<PlayerProgressData>();
+    public PlayerProgressData currentCharacter;
 
+    private const int MaxCharacters = 3;
+
+    // ==========================================================
     private void Awake()
     {
         if (Instance == null)
@@ -46,100 +56,181 @@ public class AccountDataManager : MonoBehaviour
 
     private void Start()
     {
-        InitializeLobbyState();
+        if (string.IsNullOrEmpty(PlayFabSettings.staticSettings.TitleId))
+        {
+            PlayFabSettings.staticSettings.TitleId = "A1B2C"; // 🔧 Thay bằng TitleID của bạn
+        }
+
+        TitleID = PlayFabSettings.staticSettings.TitleId;
+        Debug.Log($"🏷️ Title ID: {TitleID}");
+
+        LoadCharactersFromPlayFab();
     }
 
-    /// <summary>
-    /// Gọi sau khi đăng nhập thành công từ PlayFabLoginManager
-    /// </summary>
-    public void InitializePlayerFromLogin(StaticPlayerData staticData)
+    // ==========================================================
+    // ☁️ TẢI DANH SÁCH NHÂN VẬT
+    // ==========================================================
+    public void LoadCharactersFromPlayFab()
     {
-        playerProgressData._playerID = staticData._playerID;
-        playerProgressData._username = staticData._username;
-        playerProgressData._password = staticData._password;
-        playerProgressData._level = staticData._level;
-        playerProgressData._characterID = staticData._characterID;
-        playerProgressData._characterName = staticData._characterName;
+        PlayFabClientAPI.GetAllUsersCharacters(new ListUsersCharactersRequest(),
+        result =>
+        {
+            allCharacters.Clear();
+            if (result.Characters == null || result.Characters.Count == 0)
+            {
+                Debug.Log("🆕 Không có nhân vật nào. Bắt đầu tạo mới...");
+                ShowCreateCharacterUI();
+            }
+            else
+            {
+                foreach (var c in result.Characters)
+                {
+                    var newData = new PlayerProgressData();
+                    newData._characterID = c.CharacterId;
+                    newData._characterName = c.CharacterName;
+                    newData._playerID = TitlePlayerID;
+                    allCharacters.Add(newData);
+                }
 
-        //TODO: Sau này lấy thêm thông tin MasterID từ PlayFab Entity API
+                Debug.Log($"☁️ Đã tải {allCharacters.Count} nhân vật từ PlayFab.");
+                ShowSelectionUI();
+            }
+        },
+        error =>
+        {
+            Debug.LogError("❌ Lỗi khi tải danh sách nhân vật: " + error.GenerateErrorReport());
+            ShowCreateCharacterUI();
+        });
     }
 
-    /// <summary>
-    /// Kiểm tra xem người chơi đã có nhân vật hay chưa và hiển thị giao diện tương ứng
-    /// </summary>
-    private void InitializeLobbyState()
+    // ==========================================================
+    // 🧱 UI HIỂN THỊ
+    // ==========================================================
+    private void ShowCreateCharacterUI()
     {
-        bool hasCharacter = !string.IsNullOrEmpty(playerProgressData._characterID);
-
-        if (hasCharacter)
-        {
-            // Đã có nhân vật -> hiển thị lựa chọn nhân vật
-            CreateCharacterCanvas.SetActive(false);
-            SelectionCharacterCanvas.SetActive(true);
-
-            PlayerNameCanvas.enabled = true;
-            CreateCharacterNamePanel.SetActive(false);
-            ShowCharacterNamePanel.SetActive(true);
-
-            showCharacterNameText.text = playerProgressData._characterName;
-            Debug.Log($"🧍 Nhân vật hiện tại: {playerProgressData._characterName}");
-        }
-        else
-        {
-            // Chưa có nhân vật -> bật giao diện tạo mới
-            CreateCharacterCanvas.SetActive(true);
-            SelectionCharacterCanvas.SetActive(false);
-
-            PlayerNameCanvas.enabled = true;
-            CreateCharacterNamePanel.SetActive(true);
-            ShowCharacterNamePanel.SetActive(false);
-
-            inputCharacterName.text = "";
-            checkNameNotice.text = "Nhập tên nhân vật mới";
-            Debug.Log("🎨 Bắt đầu tạo nhân vật mới...");
-        }
+        PlayerNameCanvas.enabled = true;
+        CreateCharacterCanvas.SetActive(true);
+        SelectionCharacterCanvas.SetActive(false);
+        inputCharacterName.text = "";
+        checkNameNotice.text = "Nhập tên nhân vật mới...";
     }
 
-    /// <summary>
-    /// Gọi khi nhấn nút xác nhận tạo nhân vật mới (ví dụ: 0 = Archer, 1 = Gunner, 2 = Mage)
-    /// </summary>
-    public void ConfirmCreateCharacter(int classIndex)
+    private void ShowSelectionUI()
     {
-        string name = inputCharacterName.text.Trim();
-        if (string.IsNullOrEmpty(name))
-        {
-            checkNameNotice.text = "⚠️ Tên không được để trống!";
-            return;
-        }
-
-        StaticDataCharacter chosenClass = GetClassByIndex(classIndex);
-        if (chosenClass == null)
-        {
-            checkNameNotice.text = "❌ Lớp nhân vật không hợp lệ!";
-            return;
-        }
-
-        // Tạo nhân vật
-        SelectCharacterAtLobby(chosenClass, name);
-
-        // Cập nhật UI
+        PlayerNameCanvas.enabled = true;
         CreateCharacterCanvas.SetActive(false);
         SelectionCharacterCanvas.SetActive(true);
-        CreateCharacterNamePanel.SetActive(false);
-        ShowCharacterNamePanel.SetActive(true);
-        showCharacterNameText.text = name;
-
-        Debug.Log($"🎉 Tạo nhân vật mới: {name} ({chosenClass.characterName})");
-
-        //TODO: Sau này lưu dữ liệu này vào PlayFab CharacterData
+        RefreshCharacterSlots();
     }
 
-    /// <summary>
-    /// Trả về class nhân vật tương ứng với index
-    /// </summary>
-    private StaticDataCharacter GetClassByIndex(int classIndex)
+    private void RefreshCharacterSlots()
     {
-        switch (classIndex)
+        foreach (Transform child in characterSlotParent)
+            Destroy(child.gameObject);
+
+        foreach (var character in allCharacters)
+        {
+            GameObject slot = Instantiate(characterSlotPrefab, characterSlotParent);
+            var text = slot.GetComponentInChildren<TMP_Text>();
+            text.text = $"{character._characterName}";
+        }
+
+        CreateNewButton.SetActive(allCharacters.Count < MaxCharacters);
+    }
+
+    // ==========================================================
+    // 🧙 TẠO NHÂN VẬT MỚI
+    // ==========================================================
+    public void OnConfirmCreateCharacter(int classIndex)
+    {
+        string name = inputCharacterName.text.Trim();
+
+        if (string.IsNullOrEmpty(name))
+        {
+            checkNameNotice.text = "⚠️ Tên nhân vật không được để trống.";
+            return;
+        }
+
+        if (allCharacters.Any(c => c._characterName.Equals(name, System.StringComparison.OrdinalIgnoreCase)))
+        {
+            checkNameNotice.text = "❌ Tên nhân vật đã tồn tại.";
+            return;
+        }
+
+        if (allCharacters.Count >= MaxCharacters)
+        {
+            checkNameNotice.text = "⚠️ Đã đạt tối đa 3 nhân vật.";
+            return;
+        }
+
+        StaticDataCharacter chosen = GetClassByIndex(classIndex);
+        if (chosen == null)
+        {
+            checkNameNotice.text = "❌ Chưa chọn lớp nhân vật hợp lệ.";
+            return;
+        }
+
+        checkNameNotice.text = "🔄 Đang tạo nhân vật...";
+
+        PlayFabClientAPI.GrantCharacterToUser(new GrantCharacterToUserRequest
+        {
+            CharacterName = name
+        },
+        result =>
+        {
+            Debug.Log($"🎉 Nhân vật mới được tạo: {name} - ID: {result.CharacterId}");
+
+            // Khởi tạo dữ liệu cho nhân vật mới
+            var newChar = new PlayerProgressData();
+            newChar._characterName = name;
+            newChar._characterID = result.CharacterId;
+            newChar._playerID = TitlePlayerID;
+            newChar._level = 1;
+
+            var stats = chosen.GetStatsAtLevel(1);
+            newChar._health = stats.health;
+            newChar._stamina = stats.stamina;
+            newChar._attack = stats.attack;
+            newChar._magic = stats.magic;
+            newChar._armor = stats.armor;
+            newChar._magicResist = stats.magicResist;
+
+            // ✅ Lưu loại class và stats vào CharacterData (PlayFab)
+            var saveRequest = new UpdateCharacterDataRequest
+            {
+                CharacterId = result.CharacterId,
+                Data = new Dictionary<string, string>
+                {
+                    { "ClassType", chosen.characterName },
+                    { "Level", newChar._level.ToString() },
+                    { "Health", newChar._health.ToString() },
+                    { "Attack", newChar._attack.ToString() },
+                    { "Magic", newChar._magic.ToString() },
+                    { "Armor", newChar._armor.ToString() },
+                    { "MagicResist", newChar._magicResist.ToString() }
+                }
+            };
+
+            PlayFabClientAPI.UpdateCharacterData(saveRequest,
+                s => Debug.Log("✅ Dữ liệu nhân vật đã lưu vào PlayFab."),
+                e => Debug.LogError("❌ Lỗi khi lưu CharacterData: " + e.GenerateErrorReport()));
+
+            allCharacters.Add(newChar);
+            newChar.SaveToPlayFab(); // lưu user data (nếu cần)
+            checkNameNotice.text = "✅ Tạo nhân vật thành công!";
+
+            ShowSelectionUI();
+        },
+        error =>
+        {
+            Debug.LogError("❌ Lỗi khi tạo nhân vật: " + error.GenerateErrorReport());
+            checkNameNotice.text = "❌ Tạo nhân vật thất bại.";
+        });
+    }
+
+    private StaticDataCharacter GetClassByIndex(int index)
+    {
+        switch (index)
         {
             case 0: return StaticArcherCharacter;
             case 1: return StaticGunnerCharacter;
@@ -148,54 +239,27 @@ public class AccountDataManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Gán dữ liệu nhân vật được chọn cho người chơi hiện tại
-    /// </summary>
-    public void SelectCharacterAtLobby(StaticDataCharacter chosenClass, string customName)
+    // ==========================================================
+    // 🧍 CHỌN NHÂN VẬT
+    // ==========================================================
+    public void OnSelectCharacter(string characterId)
     {
-        if (chosenClass == null)
+        currentCharacter = allCharacters.FirstOrDefault(c => c._characterID == characterId);
+        if (currentCharacter != null)
         {
-            Debug.LogError("❌ Không có asset nhân vật được chọn!");
-            return;
+            Debug.Log($"🧙 Đã chọn nhân vật: {currentCharacter._characterName}");
+            // TODO: chuyển sang gameplay scene
         }
-
-        // Clone scriptable object
-        CurrentCharacterDataRuntime = ScriptableObject.Instantiate(chosenClass);
-
-        playerProgressData.SetCharacterSelection(Guid.NewGuid().ToString(),
-            string.IsNullOrWhiteSpace(customName) ? chosenClass.characterName : customName);
-
-        var stats = chosenClass.GetStatsAtLevel(playerProgressData._currentLevel);
-
-        playerProgressData._health = stats.health;
-        playerProgressData._stamina = stats.stamina;
-        playerProgressData._attack = stats.attack;
-        playerProgressData._magic = stats.magic;
-        playerProgressData._armor = stats.armor;
-        playerProgressData._magicResist = stats.magicResist;
-
-        Debug.Log($"✅ Đã chọn lớp {chosenClass.characterName}, Level {playerProgressData._currentLevel} -> HP {stats.health}, ATK {stats.attack}");
     }
 
-    /// <summary>
-    /// Gọi lại khi lên cấp hoặc reset chỉ số
-    /// </summary>
-    public void RecalculateStatsByClass()
+    // ==========================================================
+    // ➕ TẠO THÊM NHÂN VẬT TỪ UI SELECTION
+    // ==========================================================
+    public void OnCreateNewFromSelection()
     {
-        if (CurrentCharacterDataRuntime == null)
-        {
-            Debug.LogWarning("⚠️ Chưa chọn lớp để tính lại chỉ số.");
-            return;
-        }
-
-        var stats = CurrentCharacterDataRuntime.GetStatsAtLevel(playerProgressData._currentLevel);
-        playerProgressData._health = stats.health;
-        playerProgressData._stamina = stats.stamina;
-        playerProgressData._attack = stats.attack;
-        playerProgressData._magic = stats.magic;
-        playerProgressData._armor = stats.armor;
-        playerProgressData._magicResist = stats.magicResist;
-
-        //TODO: Sau này đồng bộ lại vào server hoặc PlayFab Character Data
+        if (allCharacters.Count < MaxCharacters)
+            ShowCreateCharacterUI();
+        else
+            checkNameNotice.text = "⚠️ Đã đạt tối đa 3 nhân vật.";
     }
 }
