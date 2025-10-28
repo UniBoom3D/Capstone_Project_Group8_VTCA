@@ -1584,7 +1584,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b31af244fe48fec4ab6f36a966ba21af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerDataManager
-  playerProgressData:
+  TitlePlayerID: 
+  MasterPlayerID: 
+  TitleID: 
+  PlayerNameCanvas: {fileID: 864019227}
+  CreateCharacterCanvas: {fileID: 1709046675}
+  inputCharacterName: {fileID: 1752378277}
+  checkNameNotice: {fileID: 1981490643}
+  CreateCharacterConfirmButton: {fileID: 0}
+  SelectionCharacterCanvas: {fileID: 763483584}
+  characterSlotParent: {fileID: 0}
+  characterSlotPrefab: {fileID: 0}
+  CreateNewButton: {fileID: 331153233}
+  StaticArcherCharacter: {fileID: 0}
+  StaticGunnerCharacter: {fileID: 0}
+  StaticMageCharacter: {fileID: 0}
+  allCharacters: []
+  currentCharacter:
     _playerID: 
     _username: 
     _password: 
@@ -1600,18 +1616,6 @@ MonoBehaviour:
     _magic: 0
     _armor: 0
     _magicResist: 0
-  StaticArcherCharacter: {fileID: 0}
-  StaticGunnerCharacter: {fileID: 0}
-  StaticMageCharacter: {fileID: 0}
-  PlayerNameCanvas: {fileID: 864019227}
-  CreateCharacterNamePanel: {fileID: 2048389073}
-  ShowCharacterNamePanel: {fileID: 838924975}
-  CreateCharacterCanvas: {fileID: 1709046675}
-  SelectionCharacterCanvas: {fileID: 763483584}
-  inputCharacterName: {fileID: 1752378277}
-  checkNameNotice: {fileID: 1981490643}
-  showCharacterNameText: {fileID: 1198163494}
-  CurrentCharacterDataRuntime: {fileID: 0}
 --- !u!4 &791492999
 Transform:
   m_ObjectHideFlags: 0
