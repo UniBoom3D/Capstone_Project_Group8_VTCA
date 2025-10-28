@@ -1591,11 +1591,11 @@ MonoBehaviour:
   CreateCharacterCanvas: {fileID: 1709046675}
   inputCharacterName: {fileID: 1752378277}
   checkNameNotice: {fileID: 1981490643}
-  CreateCharacterConfirmButton: {fileID: 0}
+  CreateCharacterConfirmButton: {fileID: 331153233}
   SelectionCharacterCanvas: {fileID: 763483584}
   characterSlotParent: {fileID: 0}
   characterSlotPrefab: {fileID: 0}
-  CreateNewButton: {fileID: 331153233}
+  CreateNewButton: {fileID: 0}
   StaticArcherCharacter: {fileID: 0}
   StaticGunnerCharacter: {fileID: 0}
   StaticMageCharacter: {fileID: 0}

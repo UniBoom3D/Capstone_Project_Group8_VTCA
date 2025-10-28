@@ -10,9 +10,15 @@ public class AccountDataManager : MonoBehaviour
     public static AccountDataManager Instance { get; private set; }
 
     [Header("🔑 Player Info")]
-    public string TitlePlayerID;    // ID người chơi trong game (PlayFabId)
-    public string MasterPlayerID;   // (tuỳ chọn)
-    public string TitleID;          // ID game trong PlayFab
+    [ReadOnly][SerializeField] private string TitlePlayerID;
+    [ReadOnly][SerializeField] private string MasterPlayerID;
+    [ReadOnly][SerializeField] private string TitleID;
+
+    // Getter công khai nếu cần đọc ở script khác
+    public string GetTitlePlayerID() => TitlePlayerID;
+    public string GetMasterPlayerID() => MasterPlayerID;
+    public string GetTitleID() => TitleID;
+
 
     [Header("🎮 UI References")]
     public Canvas PlayerNameCanvas;
