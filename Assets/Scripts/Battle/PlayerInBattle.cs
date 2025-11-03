@@ -13,7 +13,7 @@ public class PlayerInBattle : ITurnParticipant
 
     public PlayerInBattle(PlayerProgressData data)
     {
-        Name = data.characterName;
+        Name = data._characterName;
         HP = data._health;
         AttackPower = data._attack;
         Magic = data._magic;
