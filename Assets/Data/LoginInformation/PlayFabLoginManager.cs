@@ -73,7 +73,7 @@ public class PlayFabLoginManager : MonoBehaviour
 
     public void OnPlayButtonClicked()
     {
-        messageText.text = "🚀 Đang tải sảnh chờ...";
+        messageText.text = " Đang tải ...";
         StartCoroutine(LoadLobbyAfterDelay(0.8f));
     }
 

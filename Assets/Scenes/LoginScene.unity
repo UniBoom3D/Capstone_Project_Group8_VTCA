@@ -4535,6 +4535,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1785950680}
   - component: {fileID: 1785950681}
+  - component: {fileID: 1785950682}
   m_Layer: 0
   m_Name: PlayFabLoginManager
   m_TagString: Untagged
@@ -4550,12 +4551,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1785950679}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1975213136}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1785950681
 MonoBehaviour:
@@ -4572,6 +4573,18 @@ MonoBehaviour:
   canvasController: {fileID: 729055610}
   messageText: {fileID: 1805192473}
   playButton: {fileID: 1165384869}
+--- !u!114 &1785950682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1785950679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d311edba664ac5043ae0102fa7ce97cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DontDestroyOnLoad
 --- !u!1 &1805192471
 GameObject:
   m_ObjectHideFlags: 0
@@ -4989,7 +5002,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1975213136}
-  - component: {fileID: 1975213137}
   m_Layer: 0
   m_Name: LoginSceneManager
   m_TagString: Untagged
@@ -5011,22 +5023,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 729055609}
-  - {fileID: 1785950680}
   - {fileID: 235576568}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1975213137
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1975213135}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d311edba664ac5043ae0102fa7ce97cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DontDestroyOnLoad
 --- !u!1 &2021023789
 GameObject:
   m_ObjectHideFlags: 0
@@ -5308,3 +5307,4 @@ SceneRoots:
   - {fileID: 838796712}
   - {fileID: 749434362}
   - {fileID: 1975213136}
+  - {fileID: 1785950680}
