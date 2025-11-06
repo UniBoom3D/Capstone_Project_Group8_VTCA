@@ -111,7 +111,7 @@ public class CreateCharacterManager : MonoBehaviour
         confirmButton.interactable = false;
         checkNameNotice.text = "🔄 Đang tạo nhân vật...";
 
-        // 🔹 1) Tạo nhân vật trên PlayFab (không có CharacterType)
+        // 🔹 1) Tạo nhân vật trên PlayFab
         PlayFabClientAPI.GrantCharacterToUser(new GrantCharacterToUserRequest
         {
             CharacterName = charName
@@ -166,6 +166,6 @@ public class CreateCharacterManager : MonoBehaviour
         AccountDataManager.Instance.CreateCharacterCanvas.SetActive(false);
         AccountDataManager.Instance.SelectionCharacterCanvas.SetActive(true);
 
-        Debug.Log("🎮 Đã quay lại SelectionCharacterCanvas.");
+        Debug.Log("Đã quay lại SelectionCharacterCanvas.");
     }
 }
