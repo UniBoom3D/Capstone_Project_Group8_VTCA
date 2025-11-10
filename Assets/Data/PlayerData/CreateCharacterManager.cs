@@ -114,7 +114,8 @@ public class CreateCharacterManager : MonoBehaviour
         // 🔹 1) Tạo nhân vật trên PlayFab
         PlayFabClientAPI.GrantCharacterToUser(new GrantCharacterToUserRequest
         {
-            CharacterName = charName
+            CharacterName = charName,
+            ItemId = classType + "Starter"
         },
         result =>
         {
