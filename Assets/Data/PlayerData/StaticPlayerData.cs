@@ -5,12 +5,13 @@ public class StaticPlayerData
 {
     // Hệ thống tạo tự động khi tạo tài khoản
     public string _playerID;
-    public string username;
-    public string password;
+    public string _username;
+    public string _password;
 
     // Dữ liệu nhân vật
-    public string characterName;  
+    public string _characterName;  
     public string _characterID;   
 
-    public int level = 1;
+    public int _level = 1;
 }
+
