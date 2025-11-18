@@ -63,6 +63,7 @@ public class PlayFabLoginManager : MonoBehaviour
             playButton.SetActive(true);  // ✅ Bật nút Play sau khi đăng nhập thành công
 
         Debug.Log($"🧩 Player logged in: {playerData._username}");
+        
     }
 
     private void OnLoginFailure(PlayFabError error)

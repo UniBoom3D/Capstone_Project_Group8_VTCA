@@ -13,4 +13,4 @@ public class ReadOnlyDrawer : PropertyDrawer
     }
 }
 
-public class ReadOnlyAttribute : PropertyAttribute { }
+

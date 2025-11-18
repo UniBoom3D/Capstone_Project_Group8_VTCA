@@ -9,7 +9,7 @@ public class StaticPlayerData
     public string _password;
 
     // Dữ liệu nhân vật
-    public string _characterName;  
+    public string _characterName;
     public string _characterID;   
 
     public int _level = 1;
