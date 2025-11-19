@@ -5,7 +5,7 @@ public class StaticGunnerCharacter : StaticDataCharacter
 {
     private void OnEnable()
     {
-        characterName = "Gunner";
+        className = "Gunner";
         _baseHealth = 90;
         _baseStamina = 100;
         _baseAttack = 18;
@@ -14,20 +14,19 @@ public class StaticGunnerCharacter : StaticDataCharacter
         _baseMagicResist = 4;
     }
 
-    public override PlayerProgressData.BasicStats GetStatsAtLevel(int level)
+    public override BasicStats GetStatsAtLevel(int level)
     {
         level = Mathf.Max(1, level);
         int lv = level - 1;
 
-        // Gunner: tank hơn, công ổn định, tăng armor mạnh
-        return new PlayerProgressData.BasicStats
+        return new BasicStats
         {
-            health = _baseHealth + 10 * lv,
-            stamina = _baseStamina + 4 * lv,
-            attack = _baseAttack + 3 * lv,
-            magic = _baseMagic,
-            armor = _baseArmor + 3 * lv,
-            magicResist = _baseMagicResist + 1 * lv
+            _health = _baseHealth + 10 * lv,
+            _stamina = _baseStamina + 4 * lv,
+            _attack = _baseAttack + 3 * lv,
+            _magic = _baseMagic,
+            _armor = _baseArmor + 3 * lv,
+            _magicResist = _baseMagicResist + 1 * lv
         };
     }
 }
