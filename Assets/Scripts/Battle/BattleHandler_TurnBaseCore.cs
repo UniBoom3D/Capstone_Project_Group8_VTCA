@@ -86,20 +86,20 @@ public class BattleHandler_TurnBaseCore : MonoBehaviour
         BlueTeam = new BattleTeamData("Blue Team");
         RedTeam = new BattleTeamData("Red Team");
 
-        BlueTeam.AddMember(new PlayerInBattle(new PlayerProgressData()
+        BlueTeam.AddMember(new PlayerInBattle(new CharacterProgressData()
         {
-            _characterName = "BlueHero",
-            _health = 120,
-            _attack = 25,
-            _armor = 5
+            characterName = "BlueHero",
+            health = 120,
+            attack = 25,
+            armor = 5
         }));
 
-        RedTeam.AddMember(new PlayerInBattle(new PlayerProgressData()
+        RedTeam.AddMember(new PlayerInBattle(new CharacterProgressData()
         {
-            _characterName = "RedHero",
-            _health = 100,
-            _attack = 20,
-            _armor = 4
+            characterName = "RedHero",
+            health = 100,
+            attack = 20,
+            armor = 4
         }));
 
         Debug.Log("🧱 Dummy data loaded.");

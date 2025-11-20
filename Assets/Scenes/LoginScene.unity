@@ -1178,8 +1178,6 @@ MonoBehaviour:
   passwordInput: {fileID: 578603095}
   confirmPasswordInput: {fileID: 28472374}
   messageText: {fileID: 1805192473}
-  checkUsernameText: {fileID: 1259112577}
-  confirmButton: {fileID: 24847686}
 --- !u!1 &243997520
 GameObject:
   m_ObjectHideFlags: 0
@@ -1327,7 +1325,7 @@ GameObject:
   - component: {fileID: 415106051}
   - component: {fileID: 415106052}
   m_Layer: 0
-  m_Name: TabNavigation
+  m_Name: TabNavigationLogin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2355,6 +2353,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 415106051}
+  - {fileID: 904176483}
   m_Father: {fileID: 1975213136}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &729055610
@@ -2839,6 +2838,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 884090087}
   m_CullTransparentMesh: 1
+--- !u!1 &904176482
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 904176483}
+  - component: {fileID: 904176484}
+  m_Layer: 0
+  m_Name: TabNavigationRegister
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &904176483
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 904176482}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 729055609}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &904176484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 904176482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5c619c0e4e79164e87364d1f01b2a40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TabNavigation
+  inputs:
+  - {fileID: 921975287}
+  - {fileID: 578603095}
+  - {fileID: 28472374}
 --- !u!1 &921975283
 GameObject:
   m_ObjectHideFlags: 0

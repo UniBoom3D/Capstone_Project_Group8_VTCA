@@ -3,7 +3,7 @@
 public abstract class StaticDataCharacter : ScriptableObject
 {
     [Header("Thông tin cơ bản")]
-    public string characterName;
+    public string className;
     public string description;
     public Sprite icon;
 
@@ -18,5 +18,5 @@ public abstract class StaticDataCharacter : ScriptableObject
     /// <summary>
     /// Mỗi lớp con phải tự định nghĩa công thức tăng chỉ số theo cấp.
     /// </summary>
-    public abstract PlayerProgressData.BasicStats GetStatsAtLevel(int level);
+    public abstract BasicStats GetStatsAtLevel(int level);
 }
