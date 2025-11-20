@@ -5,85 +5,99 @@ using System.Collections.Generic;
 
 public class CharacterListLoader : MonoBehaviour
 {
-    public static CharacterListLoader Instance;
-
     [Header("Runtime List (Loaded From PlayFab)")]
     public List<CharacterProgressData> characters = new List<CharacterProgressData>();
 
-    private void Awake()
-    {
-        Instance = this;
-    }
+    [Header("UI Canvases")]
+    public GameObject createCharacterCanvas;
+    public GameObject createCharacterNameCanvas;
+    public GameObject selectionCharacterCanvas;
 
     private void Start()
     {
         LoadCharacters();
     }
 
-    // ============================================================
-    // 🔵 LOAD CHARACTERS từ PlayFab UserData
-    // ============================================================
+    // =======================================================
+    // 🔄 LOAD CHARACTERS TỪ PLAYFAB
+    // =======================================================
     public void LoadCharacters()
     {
-        Debug.Log("📥 [CharacterListLoader] Loading characters...");
-
-        PlayFabClientAPI.GetUserData(new GetUserDataRequest(),
-            result =>
-            {
-                characters.Clear();
-
-                if (result.Data == null)
-                {
-                    Debug.Log("Không có UserData.");
-                    return;
-                }
-
-                foreach (var entry in result.Data)
-                {
-                    if (!entry.Key.StartsWith("CHAR_"))
-                        continue; // Không phải character → bỏ qua
-
-                    CharacterProgressData data =
-                        JsonUtility.FromJson<CharacterProgressData>(entry.Value.Value);
-
-                    if (data != null)
-                        characters.Add(data);
-                }
-
-                Debug.Log($"✅ Loaded {characters.Count} characters.");
-            },
-            error =>
-            {
-                Debug.LogError("LoadCharacters FAILED: " + error.GenerateErrorReport());
-            });
+        PlayFabClientAPI.GetUserData(new GetUserDataRequest(), OnDataReceived, OnError);
     }
 
-    // ============================================================
-    // 🔄 Reload (sau khi tạo/xóa nhân vật)
-    // ============================================================
-    public void ReloadCharacters()
+    private void OnDataReceived(GetUserDataResult result)
     {
-        LoadCharacters();
+        characters.Clear();
+
+        foreach (var pair in result.Data)
+        {
+            // Chỉ lấy các key có dạng CHAR_xxx
+            if (pair.Key.StartsWith("CHAR_"))
+            {
+                CharacterProgressData data =
+                    JsonUtility.FromJson<CharacterProgressData>(pair.Value.Value);
+
+                characters.Add(data);
+            }
+        }
+
+        UpdateCanvasState();
     }
 
-    // ============================================================
-    // 🔍 Check name trùng trong danh sách hiện có
-    // ============================================================
+    private void OnError(PlayFabError error)
+    {
+        Debug.LogError("❌ LoadCharacters failed: " + error.GenerateErrorReport());
+    }
+
+
+    // =======================================================
+    // 🧭 ĐIỀU HƯỚNG UI CANVAS
+    // =======================================================
+    private void UpdateCanvasState()
+    {
+        if (characters.Count == 0)
+        {
+            // Chưa có nhân vật → hiển thị Create Character
+            createCharacterCanvas.SetActive(true);
+            createCharacterNameCanvas.SetActive(true);
+            selectionCharacterCanvas.SetActive(false);
+        }
+        else
+        {
+            // Có nhân vật → hiển thị Selection Character
+            createCharacterCanvas.SetActive(false);
+            createCharacterNameCanvas.SetActive(false);
+            selectionCharacterCanvas.SetActive(true);
+        }
+    }
+
+
+    // =======================================================
+    // HÀM CHO CreateCharacterManager GỌI SAU KHI TẠO XONG
+    // =======================================================
+    public void ShowSelectionAfterCreate()
+    {    
+        LoadCharacters();
+       
+        createCharacterCanvas.SetActive(false);
+        createCharacterNameCanvas.SetActive(false);
+        selectionCharacterCanvas.SetActive(true);
+
+        Debug.Log("🎯 Switched to Selection Character Canvas.");
+    }
+
+
+    // =======================================================
+    // 🔎 CHECK NAME LOCAL
+    // =======================================================
     public bool HasCharacterName(string name)
     {
         foreach (var c in characters)
         {
-            if (c.characterName.ToLower() == name.ToLower())
+            if (c.characterName.Equals(name, System.StringComparison.OrdinalIgnoreCase))
                 return true;
         }
         return false;
-    }
-
-    // ============================================================
-    // 🔍 Lấy character theo ID (option)
-    // ============================================================
-    public CharacterProgressData GetCharacterByID(string id)
-    {
-        return characters.Find(c => c.characterID == id);
     }
 }

@@ -1629,6 +1629,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterListLoader
   characters: []
+  createCharacterCanvas: {fileID: 1709046675}
+  createCharacterNameCanvas: {fileID: 864019224}
+  selectionCharacterCanvas: {fileID: 763483584}
 --- !u!1 &1221028746
 GameObject:
   m_ObjectHideFlags: 0
@@ -1822,7 +1825,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1384441132
 Transform:
   m_ObjectHideFlags: 0
