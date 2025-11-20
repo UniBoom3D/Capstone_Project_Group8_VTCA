@@ -391,6 +391,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 157925220}
   m_CullTransparentMesh: 1
+--- !u!1 &266849270
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 266849271}
+  - component: {fileID: 266849272}
+  m_Layer: 0
+  m_Name: CreateCharacterManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &266849271
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 266849270}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1857020274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &266849272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 266849270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e91c2b1f95cc6e944b213e39e9b07321, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CreateCharacterManager
+  nameInput: {fileID: 1752378277}
+  warningText: {fileID: 1981490643}
+  confirmButton: {fileID: 331153233}
+  display: {fileID: 1260603975}
+  creator: {fileID: 1018446485}
 --- !u!1 &331153233
 GameObject:
   m_ObjectHideFlags: 0
@@ -474,10 +523,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AccountDataManager, Assembly-CSharp
-        m_MethodName: OnConfirmCreateCharacter
-        m_Mode: 3
+      - m_Target: {fileID: 266849272}
+        m_TargetAssemblyTypeName: CreateCharacterManager, Assembly-CSharp
+        m_MethodName: OnConfirmCreate
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1490,6 +1539,51 @@ Transform:
   - {fileID: 584132711}
   m_Father: {fileID: 1384441132}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1018446483
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1018446484}
+  - component: {fileID: 1018446485}
+  m_Layer: 0
+  m_Name: CharacterCreator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1018446484
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1018446483}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1857020274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1018446485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1018446483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f201f8c9e265cb348aec84c23f031ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterCreator
+  characterListLoader: {fileID: 1108733224}
 --- !u!1 &1108733222
 GameObject:
   m_ObjectHideFlags: 0
@@ -1534,10 +1628,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26ea21007b42b964881781d4217cb5a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterListLoader
-  createCharacterCanvas: {fileID: 1709046675}
-  createCharacterNameCanvas: {fileID: 864019224}
-  selectionCharacterCanvas: {fileID: 763483584}
-  characterList: []
+  characters: []
 --- !u!1 &1221028746
 GameObject:
   m_ObjectHideFlags: 0
@@ -1623,6 +1714,10 @@ MonoBehaviour:
   - {fileID: 1295455510}
   - {fileID: 688112081}
   classNameText: {fileID: 1680076737}
+  classNames:
+  - Archer
+  - Gunner
+  - Mage
 --- !u!1 &1295455510
 GameObject:
   m_ObjectHideFlags: 0
@@ -2070,7 +2165,7 @@ GameObject:
   - component: {fileID: 1625716655}
   - component: {fileID: 1625716654}
   m_Layer: 5
-  m_Name: PreviousButton
+  m_Name: PreviousClassButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2139,9 +2234,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1260603973}
+      - m_Target: {fileID: 1260603975}
         m_TargetAssemblyTypeName: CreateCharacterDisplay, Assembly-CSharp
-        m_MethodName: 
+        m_MethodName: OnPreviousClass
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2759,7 +2854,7 @@ GameObject:
   - component: {fileID: 1752802342}
   - component: {fileID: 1752802341}
   m_Layer: 5
-  m_Name: NextButton
+  m_Name: NextClassButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2828,9 +2923,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1260603975}
         m_TargetAssemblyTypeName: CreateCharacterDisplay, Assembly-CSharp
-        m_MethodName: NextClass
+        m_MethodName: OnNextClass
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3293,6 +3388,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1108733223}
+  - {fileID: 266849271}
+  - {fileID: 1018446484}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1981490641
@@ -3352,7 +3449,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "T\xEAn nh\xE2n v\u1EADt h\u1EE3p l\u1EC7 / \u0111\xE3 t\u1ED3n t\u1EA1i"
+  m_text: "T\xEAn nh\xE2n v\u1EADt h\u1EE3p l\u1EC7 "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3660,7 +3757,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 785700412}
-  - {fileID: 864019228}
   - {fileID: 1709046679}
+  - {fileID: 864019228}
   - {fileID: 763483588}
   - {fileID: 1857020274}

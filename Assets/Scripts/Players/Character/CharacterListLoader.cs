@@ -5,88 +5,85 @@ using System.Collections.Generic;
 
 public class CharacterListLoader : MonoBehaviour
 {
-    public static CharacterListLoader Instance { get; private set; }
+    public static CharacterListLoader Instance;
 
-    [Header("UI References")]
-    public GameObject createCharacterCanvas;      // UI tạo nhân vật
-    public GameObject createCharacterNameCanvas;  // UI nhập tên nhân vật
-    public GameObject selectionCharacterCanvas;   // UI chọn nhân vật
-
-    [Header("Runtime Data")]
-    public List<CharacterProgressData> characterList = new List<CharacterProgressData>();
+    [Header("Runtime List (Loaded From PlayFab)")]
+    public List<CharacterProgressData> characters = new List<CharacterProgressData>();
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        Instance = this;
     }
 
     private void Start()
     {
-        LoadCharacterListFromPlayFab();
+        LoadCharacters();
     }
 
     // ============================================================
-    // ☁️ 1. LOAD CHARACTER LIST FROM PLAYFAB
+    // 🔵 LOAD CHARACTERS từ PlayFab UserData
     // ============================================================
-    public void LoadCharacterListFromPlayFab()
+    public void LoadCharacters()
     {
-        PlayFabClientAPI.GetAllUsersCharacters(
-            new ListUsersCharactersRequest(),
-            OnCharacterListLoaded,
+        Debug.Log("📥 [CharacterListLoader] Loading characters...");
+
+        PlayFabClientAPI.GetUserData(new GetUserDataRequest(),
+            result =>
+            {
+                characters.Clear();
+
+                if (result.Data == null)
+                {
+                    Debug.Log("Không có UserData.");
+                    return;
+                }
+
+                foreach (var entry in result.Data)
+                {
+                    if (!entry.Key.StartsWith("CHAR_"))
+                        continue; // Không phải character → bỏ qua
+
+                    CharacterProgressData data =
+                        JsonUtility.FromJson<CharacterProgressData>(entry.Value.Value);
+
+                    if (data != null)
+                        characters.Add(data);
+                }
+
+                Debug.Log($"✅ Loaded {characters.Count} characters.");
+            },
             error =>
             {
-                Debug.LogError("❌ Lỗi khi tải Character List: " + error.GenerateErrorReport());
-                ShowCreateCharacterUI(); // fallback
+                Debug.LogError("LoadCharacters FAILED: " + error.GenerateErrorReport());
             });
     }
 
-    private void OnCharacterListLoaded(ListUsersCharactersResult result)
+    // ============================================================
+    // 🔄 Reload (sau khi tạo/xóa nhân vật)
+    // ============================================================
+    public void ReloadCharacters()
     {
-        characterList.Clear();
-
-        if (result.Characters == null || result.Characters.Count == 0)
-        {
-            Debug.Log("🆕 Không có nhân vật nào → bật UI tạo nhân vật");
-            ShowCreateCharacterUI();
-            return;
-        }
-
-        // Chuyển đổi PlayFabCharacter → CharacterProgressData
-        foreach (var c in result.Characters)
-        {
-            CharacterProgressData data = new CharacterProgressData
-            {
-                characterID = c.CharacterId,
-                characterName = c.CharacterName,
-                characterClass = c.CharacterType,
-
-                // EXP/Level/Stats sẽ load sau bằng CharacterSaveLoadManager
-                level = 1,
-                exp = 0
-            };
-
-            characterList.Add(data);
-        }
-
-        Debug.Log($"☁️ Đã tải {characterList.Count} nhân vật từ PlayFab.");
-        ShowSelectionCharacterUI();
+        LoadCharacters();
     }
 
     // ============================================================
-    // 🎨 2. UI CONTROL
+    // 🔍 Check name trùng trong danh sách hiện có
     // ============================================================
-    private void ShowCreateCharacterUI()
+    public bool HasCharacterName(string name)
     {
-        createCharacterCanvas.SetActive(true);
-        createCharacterNameCanvas.SetActive(true);
-        selectionCharacterCanvas.SetActive(false);
+        foreach (var c in characters)
+        {
+            if (c.characterName.ToLower() == name.ToLower())
+                return true;
+        }
+        return false;
     }
 
-    private void ShowSelectionCharacterUI()
+    // ============================================================
+    // 🔍 Lấy character theo ID (option)
+    // ============================================================
+    public CharacterProgressData GetCharacterByID(string id)
     {
-        createCharacterCanvas.SetActive(false);
-        createCharacterNameCanvas.SetActive(false);
-        selectionCharacterCanvas.SetActive(true);
+        return characters.Find(c => c.characterID == id);
     }
 }

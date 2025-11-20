@@ -5,14 +5,15 @@ using System.Collections.Generic;
 public class CreateCharacterDisplay : MonoBehaviour
 {
     [Header("Model References")]
-    public List<GameObject> classModels;   // Archer, Gunner, Mage,...
+    public List<GameObject> classModels; 
 
     [Header("UI References")]
     public TMP_Text classNameText;
 
-    private int currentIndex = 0;
+    // Tên class tương ứng với index của model
+    [SerializeField] private string[] classNames = { "Archer", "Gunner", "Mage" };
 
-    private readonly string[] classNames = { "Archer", "Gunner", "Mage" };
+    private int currentIndex = 0;
 
     private void Start()
     {
@@ -22,30 +23,46 @@ public class CreateCharacterDisplay : MonoBehaviour
             return;
         }
 
+        if (classNames.Length != classModels.Count)
+        {
+            Debug.LogWarning("Số classNames không khớp số model, sẽ lấy theo min.");
+        }
+
         UpdateDisplay();
     }
 
     private void Update()
     {
-        // Chỉ quay model khi chưa có Animator
-        var model = classModels[currentIndex];
-        Animator anim = model.GetComponent<Animator>();
+        if (classModels == null || classModels.Count == 0) return;
 
+        var model = classModels[currentIndex];
+        if (model == null) return;
+
+        Animator anim = model.GetComponent<Animator>();
         if (anim == null)
         {
-            // Model placeholder → xoay nhẹ
             model.transform.Rotate(Vector3.up * 20f * Time.deltaTime);
         }
     }
 
-    // ============================
-    // 🔄 Chuyển class khi nhấn nút
-    // ============================
-    public void SetClassIndex(int index)
+    // =========================
+    // 🔄 Điều khiển bằng button
+    // =========================
+    public void OnClickNextClass()
     {
         if (classModels.Count == 0) return;
 
-        currentIndex = Mathf.Clamp(index, 0, classModels.Count - 1);
+        currentIndex = (currentIndex + 1) % classModels.Count;
+        UpdateDisplay();
+    }
+
+    public void OnClickPreviousClass()
+    {
+        if (classModels.Count == 0) return;
+
+        currentIndex--;
+        if (currentIndex < 0) currentIndex = classModels.Count - 1;
+
         UpdateDisplay();
     }
 
@@ -53,18 +70,28 @@ public class CreateCharacterDisplay : MonoBehaviour
     {
         for (int i = 0; i < classModels.Count; i++)
         {
-            classModels[i].SetActive(i == currentIndex);
-
-            // Reset rotation để không bị xoay lệch khi đổi model
-            if (i == currentIndex)
-                classModels[i].transform.rotation = Quaternion.identity;
+            if (classModels[i] != null)
+            {
+                classModels[i].SetActive(i == currentIndex);
+                if (i == currentIndex)
+                    classModels[i].transform.rotation = Quaternion.identity;
+            }
         }
 
-        classNameText.text = classNames[currentIndex];
+
+        if (classNameText != null && classNames.Length > 0)
+        {
+            int safeIndex = Mathf.Clamp(currentIndex, 0, classNames.Length - 1);
+            classNameText.text = classNames[safeIndex];
+        }
     }
 
-    public string GetCurrentClassName()
+    public string GetClassName()
     {
-        return classNames[currentIndex];
+        if (classNames == null || classNames.Length == 0)
+            return "Unknown";
+
+        int safeIndex = Mathf.Clamp(currentIndex, 0, classNames.Length - 1);
+        return classNames[safeIndex];
     }
 }

@@ -76,7 +76,7 @@ public class PlayFabLoginManager : MonoBehaviour
         playerAccount.username = canvasController.loginUsernameInput.text;
         playerAccount.password = canvasController.loginPasswordInput.text;
 
-        // Tạo playerName tự động nếu chưa có
+        // Tạo playerName tự động
         playerAccount.playerName = "Player_" + result.PlayFabId.Substring(result.PlayFabId.Length - 6);
 
         playButton.SetActive(true);
