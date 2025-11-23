@@ -11,7 +11,9 @@ public class CharacterListLoader : MonoBehaviour
     [Header("UI Canvases")]
     public GameObject createCharacterCanvas;
     public GameObject createCharacterNameCanvas;
+
     public GameObject selectionCharacterCanvas;
+    public GameObject selectionCharacterNameCanvas;
 
     private void Start()
     {
@@ -58,32 +60,29 @@ public class CharacterListLoader : MonoBehaviour
     {
         if (characters.Count == 0)
         {
-            // Chưa có nhân vật → hiển thị Create Character
-            createCharacterCanvas.SetActive(true);
-            createCharacterNameCanvas.SetActive(true);
-            selectionCharacterCanvas.SetActive(false);
+            ShowCreateCharacterCanvas();
         }
         else
         {
-            // Có nhân vật → hiển thị Selection Character
-            createCharacterCanvas.SetActive(false);
-            createCharacterNameCanvas.SetActive(false);
-            selectionCharacterCanvas.SetActive(true);
+            ShowSelectionCharacterCanvas();
         }
     }
 
+    public void ShowCreateCharacterCanvas()
+    {
+        createCharacterCanvas.SetActive(true);
+        createCharacterNameCanvas.SetActive(true);
+        selectionCharacterCanvas.SetActive(false);
+        selectionCharacterNameCanvas.SetActive(false);
+        Debug.Log("🎯 Switched to Create Character Canvas.");
+    }
 
-    // =======================================================
-    // HÀM CHO CreateCharacterManager GỌI SAU KHI TẠO XONG
-    // =======================================================
-    public void ShowSelectionAfterCreate()
-    {    
-        LoadCharacters();
-       
+    public void ShowSelectionCharacterCanvas()
+    {
         createCharacterCanvas.SetActive(false);
         createCharacterNameCanvas.SetActive(false);
         selectionCharacterCanvas.SetActive(true);
-
+        selectionCharacterNameCanvas.SetActive(true);
         Debug.Log("🎯 Switched to Selection Character Canvas.");
     }
 

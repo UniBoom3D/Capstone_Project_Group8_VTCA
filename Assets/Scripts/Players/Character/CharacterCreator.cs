@@ -33,9 +33,9 @@ public class CharacterCreator : MonoBehaviour
             },
             result =>
             {
-                Debug.Log("Created new character: " + json);
-                //characterListLoader.ReloadCharacters();
+                Debug.Log("Created new character: " + json);           
                 onSuccess?.Invoke();
+                characterListLoader.ShowSelectionCharacterCanvas();
             },
             error =>
             {

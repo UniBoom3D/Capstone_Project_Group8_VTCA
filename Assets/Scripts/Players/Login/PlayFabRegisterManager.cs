@@ -51,10 +51,11 @@ public class PlayFabRegisterManager : MonoBehaviour
             playerAccount.password = password;
 
             // Auto-generate playerName
-            playerAccount.playerName = "Player_" + result.PlayFabId.Substring(result.PlayFabId.Length - 4);
+            playerAccount.playerName = "Player_" + result.PlayFabId.Substring(result.PlayFabId.Length - 6);
 
             messageText.text = "🎉 Đăng ký thành công!";
             Debug.Log($"Registered: {playerAccount.playerName}");
+
         },
         error =>
         {
