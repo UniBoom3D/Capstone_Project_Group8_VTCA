@@ -11,8 +11,6 @@ public class PlayFabRegisterManager : MonoBehaviour
     public TMP_InputField confirmPasswordInput;
     public TMP_Text messageText;
 
-    public static PlayerAccountData playerAccount = new PlayerAccountData();
-
     public void OnConfirmButtonClicked()
     {
         string username = usernameInput.text;
@@ -21,13 +19,13 @@ public class PlayFabRegisterManager : MonoBehaviour
 
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
         {
-            messageText.text = "⚠️ Vui lòng nhập đầy đủ thông tin.";
+            messageText.text = "Vui lòng nhập đầy đủ thông tin.";
             return;
         }
 
         if (password != confirm)
         {
-            messageText.text = "⚠️ Mật khẩu xác nhận không trùng khớp.";
+            messageText.text = "Mật khẩu xác nhận không trùng khớp.";
             return;
         }
 
@@ -43,23 +41,21 @@ public class PlayFabRegisterManager : MonoBehaviour
             RequireBothUsernameAndEmail = false
         };
 
-        PlayFabClientAPI.RegisterPlayFabUser(request,
-        result =>
-        {
-            playerAccount.playerID = result.PlayFabId;
-            playerAccount.username = username;
-            playerAccount.password = password;
+        PlayFabClientAPI.RegisterPlayFabUser(
+            request,
+            result =>
+            {
+                messageText.text = "Đăng ký thành công!";
 
-            // Auto-generate playerName
-            playerAccount.playerName = "Player_" + result.PlayFabId.Substring(result.PlayFabId.Length - 6);
+                Debug.Log($"Registered PlayFabId: {result.PlayFabId}");
 
-            messageText.text = "🎉 Đăng ký thành công!";
-            Debug.Log($"Registered: {playerAccount.playerName}");
-
-        },
-        error =>
-        {
-            messageText.text = "❌ Đăng ký thất bại: " + error.ErrorMessage;
-        });
+                messageText.text = "Vui Lòng đăng nhập lại";
+            },
+            error =>
+            {
+                messageText.text = "Đăng ký thất bại: " + error.ErrorMessage;
+                Debug.LogError(error.GenerateErrorReport());
+            }
+        );
     }
 }

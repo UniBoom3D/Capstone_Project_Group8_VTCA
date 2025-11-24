@@ -8,6 +8,8 @@ public class CharacterListLoader : MonoBehaviour
     [Header("Runtime List (Loaded From PlayFab)")]
     public List<CharacterProgressData> characters = new List<CharacterProgressData>();
 
+    public SelectionCharacterManager selectionManager;
+
     [Header("UI Canvases")]
     public GameObject createCharacterCanvas;
     public GameObject createCharacterNameCanvas;
@@ -21,7 +23,7 @@ public class CharacterListLoader : MonoBehaviour
     }
 
     // =======================================================
-    // 🔄 LOAD CHARACTERS TỪ PLAYFAB
+    // LOAD CHARACTERS TỪ PLAYFAB
     // =======================================================
     public void LoadCharacters()
     {
@@ -45,6 +47,9 @@ public class CharacterListLoader : MonoBehaviour
         }
 
         UpdateCanvasState();
+        if (selectionManager != null)
+            selectionManager.InitSelection();
+
     }
 
     private void OnError(PlayFabError error)

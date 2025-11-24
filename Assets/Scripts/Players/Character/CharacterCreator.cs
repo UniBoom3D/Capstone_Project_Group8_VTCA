@@ -10,37 +10,57 @@ public class CharacterCreator : MonoBehaviour
 
     public void CreateCharacter(string name, string className, Action onSuccess = null)
     {
-        string id = System.Guid.NewGuid().ToString();
+        // =======================================================
+        // Tạo ID chuẩn
+        // =======================================================
+        string guid = Guid.NewGuid().ToString("N");
+        string characterId = guid;
+        string playFabKey = "CHAR_" + guid;
 
+        // =======================================================
+        //  Tạo dữ liệu nhân vật ban đầu để LƯU LÊN PLAYFAB
+        //    (chỉ level + name + class)
+        // =======================================================
         CharacterProgressData data = new CharacterProgressData
         {
-            characterID = id,
+            characterId = characterId,
             characterName = name,
-            characterClass = className,
-            level = 1,
-            exp = 0
+            characterClass = className, 
+            level = 1,           
         };
 
+        // =======================================================
+        // Serialize JSON (đẩy lên PlayFab)
+        // =======================================================
         string json = JsonUtility.ToJson(data);
 
-        PlayFabClientAPI.UpdateUserData(
-            new UpdateUserDataRequest
+        // =======================================================
+        // Push lên PlayFab
+        // Đồng thời set SelectedCharacter = ID được tạo
+        // =======================================================
+        var request = new UpdateUserDataRequest
+        {
+            Data = new Dictionary<string, string>
             {
-                Data = new Dictionary<string, string>
-                {
-                    { "CHAR_" + id, json }
-                }
-            },
-            result =>
-            {
-                Debug.Log("Created new character: " + json);           
-                onSuccess?.Invoke();
-                characterListLoader.ShowSelectionCharacterCanvas();
-            },
-            error =>
-            {
-                Debug.LogError("CreateCharacter FAILED: " + error.ErrorMessage);
+                { playFabKey, json },
+                { "SelectedCharacter", characterId }
             }
-        );
+        };
+
+        PlayFabClientAPI.UpdateUserData(request,
+        result =>
+        {
+            Debug.Log("✔ Created new character: " + json);
+
+            // 🔄 Callback UI
+            onSuccess?.Invoke();
+
+            // 🔄 Load lại danh sách nhân vật mới
+            characterListLoader.LoadCharacters();
+        },
+        error =>
+        {
+            Debug.LogError("❌ CreateCharacter FAILED: " + error.ErrorMessage);
+        });
     }
 }

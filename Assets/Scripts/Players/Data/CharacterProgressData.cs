@@ -6,7 +6,7 @@ public class CharacterProgressData
     // ===========================
     // 🆔 IDENTIFY CHARACTER
     // ===========================
-    public string characterID;        // GUID duy nhất
+    public string characterId;        // GUID duy nhất
     public string characterName;      // Tên người chơi đặt
     public string characterClass;     // Archer / Mage / Gunner
 

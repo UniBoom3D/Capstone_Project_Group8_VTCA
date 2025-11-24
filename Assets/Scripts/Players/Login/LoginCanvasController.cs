@@ -1,35 +1,32 @@
 ﻿using UnityEngine;
 using TMPro;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using System.Collections;
 
 public class LoginCanvasController : MonoBehaviour
 {
-    [Header("UI Panels")]
+    [Header("Panels")]
     public GameObject loginPanel;
     public GameObject registerPanel;
 
-    [Header("Setup Button Login Panel UI Buttons")]
-    public GameObject login_Button;
-    public GameObject logout_Button;
-    public GameObject ExitGameButton;
-
-    [Header("Setup Button Register Panel UI Buttons")]
+    [Header("Login Fields")]
+    public TMP_InputField loginUsernameInput;
+    public TMP_InputField loginPasswordInput;
+    public TMP_Text loginMessageText;
+    public GameObject loginButton;
+    public GameObject playButton;
     public GameObject registerButton;
-    public GameObject cancelButton;
 
-    [Header("Register UI InputFields")]
+    [Header("Register Fields")]
     public TMP_InputField registerUsernameInput;
     public TMP_InputField registerPasswordInput;
     public TMP_InputField confirmRegisterPasswordInput;
 
-    [Header("Login UI InputFields")]
-    public TMP_InputField loginUsernameInput;
-    public TMP_InputField loginPasswordInput;
-
     void Start()
     {
         ShowLoginPanel();
+        playButton.SetActive(false);
     }
 
     public void ShowRegisterPanel()
@@ -49,11 +46,52 @@ public class LoginCanvasController : MonoBehaviour
     IEnumerator FocusNextFrame(TMP_InputField field)
     {
         EventSystem.current.SetSelectedGameObject(null);
-        yield return null; // đợi 1 frame
-
+        yield return null;
         EventSystem.current.SetSelectedGameObject(field.gameObject);
-        field.Select();
         field.ActivateInputField();
+    }
+
+    // ===========================================
+    // UI gọi Login backend
+    // ===========================================
+    public void OnLoginButtonClicked()
+    {
+        PlayFabLoginManager.Instance.Login(
+            loginUsernameInput.text,
+            loginPasswordInput.text,
+            loginMessageText,
+            onSuccess: () =>
+            {
+                playButton.SetActive(true);
+                loginButton.SetActive(false);
+                registerButton.SetActive(false);
+            }
+        );
+    }
+
+    private void Update()
+    {
+        if (Keyboard.current == null) return;
+
+        if (Keyboard.current.enterKey.wasPressedThisFrame ||
+            Keyboard.current.numpadEnterKey.wasPressedThisFrame)
+        {
+            OnLoginButtonClicked();
+        }
+    }
+
+    public void OnSubmit(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed)
+            OnLoginButtonClicked();
+    }
+
+    // ===========================================
+    // ▶ Load Character Scene
+    // ===========================================
+    public void OnPlayButtonClicked()
+    {
+        PlayFabLoginManager.Instance.LoadCharacterScene();
     }
 
     public void OnRegisterButtonClicked() => ShowRegisterPanel();
