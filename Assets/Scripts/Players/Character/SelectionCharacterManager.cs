@@ -60,6 +60,9 @@ public class SelectionCharacterManager : MonoBehaviour
     public void OnPlay()
     {
         var data = characterListLoader.characters[currentIndex];
-        CharacterSelector.Instance.SelectCharacter(data.characterId);
+
+        // Truyền CharacterProgressData
+        CharacterSelector.Instance.SelectCharacter(data);
     }
+
 }

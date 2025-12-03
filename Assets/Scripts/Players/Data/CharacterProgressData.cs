@@ -53,7 +53,7 @@ public class CharacterProgressData
     // ===========================
     public void AddExp(int amount)
     {
-        if (amount <= 0) return; // tránh exp âm
+        if (amount <= 0) return;
 
         exp += amount;
 
