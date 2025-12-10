@@ -151,12 +151,12 @@ public class BattleHandler_TurnBaseCore : MonoBehaviour
         turnTimer -= Time.deltaTime;
 
         // (Tạm thời) SPACE để giả lập hành động
-        if (Input.GetKeyDown(KeyCode.Space) && !isPlayerActionDone)
-        {
-            Debug.Log($"💥 {team.TeamName} Action simulated!");
-            isPlayerActionDone = true;
-            StartCoroutine(HandleAnimationPhase(nextState));
-        }
+        //if (Input.GetKeyDown(KeyCode.Space) && !isPlayerActionDone)
+        //{
+        //    Debug.Log($"💥 {team.TeamName} Action simulated!");
+        //    isPlayerActionDone = true;
+        //    StartCoroutine(HandleAnimationPhase(nextState));
+        //}
 
         if (turnTimer <= 0 && !isPlayerActionDone)
         {
