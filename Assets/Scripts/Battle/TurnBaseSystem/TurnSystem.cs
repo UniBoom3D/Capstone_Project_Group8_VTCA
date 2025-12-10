@@ -19,7 +19,7 @@ public class TurnSystem
         CurrentParticipant = turnQueue.Dequeue();
         if (!CurrentParticipant.IsAlive)
         {
-            return; // bỏ qua nếu đã chết
+            return; // bỏ qua nếu đã 
         }
 
         Debug.Log($"--- {CurrentParticipant.Name}'s Turn ---");
