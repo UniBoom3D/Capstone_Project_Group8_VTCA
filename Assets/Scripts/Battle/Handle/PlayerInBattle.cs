@@ -11,15 +11,15 @@ public class PlayerInBattle : ITurnParticipant
 
     public bool IsAlive => HP > 0;
 
-    public PlayerInBattle(CharacterProgressData data)
-    {
-        Name = data.characterName;
-        HP = data.health;
-        AttackPower = data.attack;
-        Magic = data.magic;
-        Armor = data.armor;
-        MagicResist = data.magicResist;
-    }
+    //public PlayerInBattle(CharacterProgressData data)
+    //{
+    //    Name = data.characterName;
+    //    HP = data.health;
+    //    AttackPower = data.attack;
+    //    Magic = data.magic;
+    //    Armor = data.armor;
+    //    MagicResist = data.magicResist;
+    //}
 
     public void TakeTurn()
     {
