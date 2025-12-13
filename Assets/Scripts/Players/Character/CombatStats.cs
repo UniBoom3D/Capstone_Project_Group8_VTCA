@@ -11,7 +11,7 @@ public struct CombatStats
     public int armor;
     public int magicResist;
 
-    // Constructor để khởi tạo CombatStats từ BaseStats
+    // Constructor để khởi tạo CombatStats từ CharacterProgressData
     public CombatStats(int health, int stamina, int attack, int magic, int armor, int magicResist)
     {
         this.health = health;

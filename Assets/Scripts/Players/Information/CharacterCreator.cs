@@ -1,12 +1,17 @@
-﻿using UnityEngine;
-using PlayFab;
+﻿using PlayFab;
 using PlayFab.ClientModels;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class CharacterCreator : MonoBehaviour
 {
     public CharacterListLoader characterListLoader;
+
+    // Thêm tham chiếu tới các StaticDataCharacter cho các lớp nhân vật
+    public StaticArcherCharacter staticArcherData;
+    public StaticMageCharacter staticMageData;
+    public StaticGunnerCharacter staticGunnerData;
 
     public void CreateCharacter(string name, string className, Action onSuccess = null)
     {
@@ -18,15 +23,34 @@ public class CharacterCreator : MonoBehaviour
         string playFabKey = "CHAR_" + guid;
 
         // =======================================================
-        //  Tạo dữ liệu nhân vật ban đầu để LƯU LÊN PLAYFAB
-        //    (chỉ level + name + class)
+        // Lấy StaticDataCharacter tương ứng theo className
         // =======================================================
-        CharacterProgressData data = new CharacterProgressData
+        StaticDataCharacter selectedClassData = null;
+        switch (className.ToLower())
+        {
+            case "archer":
+                selectedClassData = staticArcherData;
+                break;
+            case "mage":
+                selectedClassData = staticMageData;
+                break;
+            case "gunner":
+                selectedClassData = staticGunnerData;
+                break;
+            default:
+                Debug.LogError("Unknown class name: " + className);
+                return;
+        }
+
+        // =======================================================
+        // Tạo dữ liệu nhân vật ban đầu để LƯU LÊN PLAYFAB
+        // =======================================================
+        CharacterProgressData data = new CharacterProgressData(selectedClassData)  // Truyền vào StaticDataCharacter
         {
             characterId = characterId,
             characterName = name,
-            characterClass = className, 
-            level = 1,           
+            characterClass = className,
+            level = 1,  // Mới tạo nhân vật, level là 1
         };
 
         // =======================================================
