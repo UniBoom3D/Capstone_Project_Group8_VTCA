@@ -1,0 +1,15 @@
+Version 1.0 / 2019-05-03 
+  * Initial release
+
+Version 1.1 / 2019-05-21
+  * Add Circular compass
+  * Add new scene with all compass prefabs
+  
+Version 1.2 / 2019-07-31
+  * Fix issue on build for LinearCompass (graduation not visible)
+
+Version 1.3 / 2019-08-06
+  *  fix unused prefab font for redraw graduations for LinearCompass
+  
+  Version 1.4 / 2019-10-19
+  *  fix shader compatibility issue with OpenGLES

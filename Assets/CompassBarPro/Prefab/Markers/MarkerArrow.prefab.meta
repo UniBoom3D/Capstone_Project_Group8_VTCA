@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 64ab14023f51bee4fb7a334dd50b778d
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 144833
+  packageName: Compass Bar Pro
+  packageVersion: 1.3
+  assetPath: Assets/CompassBarPro/Prefab/Markers/MarkerArrow.prefab
+  uploadId: 334986
