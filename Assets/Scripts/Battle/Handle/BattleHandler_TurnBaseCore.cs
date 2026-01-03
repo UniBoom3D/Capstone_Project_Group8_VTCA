@@ -31,7 +31,7 @@ public class BattleHandler_TurnBaseCore : MonoBehaviour
     [SerializeField] protected CinemachineCamera _animationCamera;
 
     [Header("AUDIO")]
-    [SerializeField] protected AudioSource _battleMusic;
+    //[SerializeField] protected AudioSource _battleMusic;
     [SerializeField] protected AudioSource _turnSound;
     [SerializeField] protected AudioSource _impactSound;
     [SerializeField] protected AudioSource _victoryMusic;
@@ -48,11 +48,11 @@ public class BattleHandler_TurnBaseCore : MonoBehaviour
     {
         SetupDummyData();
 
-        if (_battleMusic)
-        {
-            _battleMusic.loop = true;
-            _battleMusic.Play();
-        }
+       // if (_battleMusic)
+       // {
+        //    _battleMusic.loop = true;
+       //     _battleMusic.Play();
+        //}
 
         Debug.Log("🧩 BattleHandler_Base Initialized");
     }
@@ -187,7 +187,7 @@ public class BattleHandler_TurnBaseCore : MonoBehaviour
         bool blueWin = !BlueTeam.IsDefeated && RedTeam.IsDefeated;
         bool redWin = !RedTeam.IsDefeated && BlueTeam.IsDefeated;
 
-        _battleMusic?.Stop();
+        //_battleMusic?.Stop();
         Debug.Log("🏁 Battle Finished");
 
         if (blueWin)
