@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
-public class PlayerController : MonoBehaviour
+public class PlayerBattleController : MonoBehaviour
 {
     [Header("Player Control Settings")]
     public float moveSpeed = 5f;

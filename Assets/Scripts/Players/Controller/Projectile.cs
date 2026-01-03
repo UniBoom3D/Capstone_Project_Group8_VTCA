@@ -14,7 +14,7 @@ public class Projectile : MonoBehaviour
     public bool isLaunched = false;
     private Rigidbody rb;
     private float launchPower;
-    private PlayerController owner;
+    private PlayerBattleController owner;
 
     // Event callback khi nổ (BattleHandler sẽ lắng nghe)
     public event Action OnExploded;
@@ -24,7 +24,7 @@ public class Projectile : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    public void Launch(float power, PlayerController shooter)
+    public void Launch(float power, PlayerBattleController shooter)
     {
         isLaunched = true;
         owner = shooter;
@@ -74,4 +74,5 @@ public class Projectile : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, explosionRadius);
     }
+
 }

@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: ab32beeebbc98cb4d8c2d805e7e32aa2
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 144833
+  packageName: Compass Bar Pro
+  packageVersion: 1.3
+  assetPath: Assets/CompassBarPro/Scripts/PlayerHeading.cs
+  uploadId: 334986

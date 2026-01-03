@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 93794af16ebf78344a5378e244ed6555
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 144833
+  packageName: Compass Bar Pro
+  packageVersion: 1.3
+  assetPath: Assets/CompassBarPro/Demo/Scripts/SliderToHeading.cs
+  uploadId: 334986

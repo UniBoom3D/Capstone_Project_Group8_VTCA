@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: b2204c7b35913114e812164b9ff1327e
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 144833
+  packageName: Compass Bar Pro
+  packageVersion: 1.3
+  assetPath: Assets/CompassBarPro/Prefab/Markers/MarkerChest.prefab
+  uploadId: 334986
