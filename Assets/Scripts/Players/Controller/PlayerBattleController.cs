@@ -7,30 +7,26 @@ public class PlayerBattleController : MonoBehaviour
     [Header("Player Control Settings")]
     public float moveSpeed = 5f;
     public float rotationSpeed = 60f;
-
-    // Kept these so you don't lose Inspector references
-    public Transform firePoint;
-    public GameObject projectilePrefab;
-    public float maxChargePower = 100f;
-    public float chargeSpeed = 40f;
+    public Transform firePoint;              // Nơi bắn đạn ra (gắn ở nòng súng)
+    public GameObject projectilePrefab;      // Prefab đạn (có script Projectile)
+    public float maxChargePower = 100f;      // Lực bắn tối đa
+    public float chargeSpeed = 40f;          // Tốc độ nạp lực khi giữ Space
 
     [Header("Runtime State")]
-    public bool isControllable = false;      // BattleHandler toggles this
+    public bool isControllable = false;      // BattleHandler sẽ bật/tắt điều khiển
     private bool isCharging = false;
     private float currentChargePower = 0f;
     private Vector3 moveDir;
     private CharacterController controller;
+    private Camera playerCamera;
 
-    // REMOVED internal camera reference to use external script
-    // private Camera playerCamera; 
-
-    // Event callback 
+    // Event callback khi bắn xong
     public event Action<Projectile> OnShoot;
 
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
-        // playerCamera = Camera.main; // Disabled internal camera
+        playerCamera = Camera.main;
     }
 
     private void Update()
@@ -39,23 +35,19 @@ public class PlayerBattleController : MonoBehaviour
 
         HandleMovement();
         HandleAiming();
-
-        // --- SHOOTING DISABLED FOR MOVEMENT TESTING ---
-        // HandleShooting();
+        HandleShooting();
     }
 
-    // --- REMOVED INTERNAL CAMERA LOGIC ---
-    // (Use the separate CameraFollow script below instead)
-    /* private void LateUpdate()
+    private void LateUpdate()
     {
+        // Giữ camera theo sau player
         if (playerCamera != null)
         {
             Vector3 camOffset = new Vector3(1, 2, -5);
             playerCamera.transform.position = transform.position + camOffset;
             playerCamera.transform.LookAt(transform.position + Vector3.up * 2);
         }
-    } 
-    */
+    }
 
     // ==========================
     // 🕹️ Movement (local XZ)
@@ -65,21 +57,8 @@ public class PlayerBattleController : MonoBehaviour
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
 
-        // Rotate Character
-        if (h != 0)
-        {
-            transform.Rotate(Vector3.up * h * rotationSpeed * Time.deltaTime);
-        }
-
-        // Move Forward/Back
-        if (v != 0)
-        {
-            Vector3 forwardMove = transform.forward * v;
-            controller.Move(forwardMove * moveSpeed * Time.deltaTime);
-        }
-
-        // Optional: Apply gravity if using CharacterController
-        controller.Move(Physics.gravity * Time.deltaTime);
+        moveDir = transform.right * h + transform.forward * v;
+        controller.Move(moveDir * moveSpeed * Time.deltaTime);
     }
 
 
@@ -88,11 +67,13 @@ public class PlayerBattleController : MonoBehaviour
     // ==========================
     private void HandleAiming()
     {
-        // TODO: Local angle adjustments
+        // TODO: Điều chỉnh góc local x - ngang, y - dọc
     }
 
-    /* // ==========================
-    // Shooting (DISABLED)
+    
+
+    // ==========================
+    // Shooting (hold + release Space)
     // ==========================
     private void HandleShooting()
     {
@@ -107,6 +88,7 @@ public class PlayerBattleController : MonoBehaviour
         {
             currentChargePower += chargeSpeed * Time.deltaTime;
             currentChargePower = Mathf.Clamp(currentChargePower, 0, maxChargePower);
+            // Bạn có thể cập nhật UI thanh lực tại đây
         }
 
         if (isCharging && Input.GetKeyUp(KeyCode.Space))
@@ -117,6 +99,9 @@ public class PlayerBattleController : MonoBehaviour
         }
     }
 
+    // ==========================
+    // Fire Projectile
+    // ==========================
     private void FireProjectile()
     {
         if (projectilePrefab == null || firePoint == null) return;
@@ -127,12 +112,11 @@ public class PlayerBattleController : MonoBehaviour
         if (projectile != null)
         {
             projectile.Launch(currentChargePower, this);
-            OnShoot?.Invoke(projectile); 
+            OnShoot?.Invoke(projectile); // Gửi event cho BattleHandler
         }
 
         Debug.Log($"🚀 Fired projectile with power {currentChargePower}");
     }
-    */
 
     // ==========================
     // 🔒 Control toggling
