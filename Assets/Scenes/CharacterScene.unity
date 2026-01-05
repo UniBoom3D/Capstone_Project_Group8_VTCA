@@ -307,13 +307,12 @@ MonoBehaviour:
     level: 1
     exp: 0
     maxExp: 100
-    characterStats:
-      _health: 0
-      _stamina: 0
-      _attack: 0
-      _magic: 0
-      _armor: 0
-      _magicResist: 0
+    health: 0
+    stamina: 0
+    attack: 0
+    magic: 0
+    armor: 0
+    magicResist: 0
 --- !u!1 &266849270
 GameObject:
   m_ObjectHideFlags: 0
@@ -1606,9 +1605,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterCreator
   characterListLoader: {fileID: 1108733224}
-  staticArcherData: {fileID: 0}
-  staticMageData: {fileID: 0}
-  staticGunnerData: {fileID: 0}
 --- !u!1 &1108733222
 GameObject:
   m_ObjectHideFlags: 0
