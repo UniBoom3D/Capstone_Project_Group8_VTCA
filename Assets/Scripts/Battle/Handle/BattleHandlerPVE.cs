@@ -1,13 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using Unity.Cinemachine;
+using UnityEngine;
 
-public class BattleHandlerPVE : BattleHandler_TurnBaseCore
+public class BattleHandlerPvE : BattleManagerCore
 {
     [Header("PLAYER CONTROLLER (External)")]
-    [SerializeField] private PlayerBattleController playerController; // class bạn đưa
+    [SerializeField] private PlayerBattleController playerController;
 
     [Header("START ORDER")]
     [SerializeField] private bool enemyRedStarts = true;
@@ -25,15 +25,19 @@ public class BattleHandlerPVE : BattleHandler_TurnBaseCore
     [SerializeField] private float aiThinkDelay = 0.25f;
     [SerializeField] private float aiAfterActionDelay = 0.2f;
 
-    // Runtime
-    public ITurnParticipant CurrentActor { get; private set; }
-    private Coroutine battleRoutine;
+    [Header("CAMERA FOLLOW SETTINGS")]
+    [SerializeField] private Camera mainCamera;  // The main camera for the scene
+    [SerializeField] private Transform cameraFollow;  // Camera follow target
 
-    // Flag để tránh double-end turn nếu OnShoot bị gọi nhiều lần
+    // Runtime state
+    public ITurnParticipant CurrentActor { get; private set; }
     private bool awaitingPlayerAction;
 
-    protected virtual void Awake()
+    public string currentTeamName; // Add this line to keep track of the current team's name
+
+    protected override void Awake()
     {
+        base.Awake();
         if (playerController == null) playerController = FindFirstObjectByType<PlayerBattleController>();
     }
 
@@ -49,13 +53,13 @@ public class BattleHandlerPVE : BattleHandler_TurnBaseCore
         isBattleActive = true;
         currentState = BattleState3D.Start;
 
-        if (battleRoutine != null) StopCoroutine(battleRoutine);
-        battleRoutine = StartCoroutine(BattleLoop());
+        // Start battle routine
+        StartCoroutine(BattleLoop());
     }
 
     public void NotifyActionDone()
     {
-        isPlayerActionDone = true;
+        isActionDone = true;
     }
 
     #endregion
@@ -78,22 +82,12 @@ public class BattleHandlerPVE : BattleHandler_TurnBaseCore
 
             if (currentState == BattleState3D.RedTeamTurn)
             {
-                yield return HandleTeamPhase(
-                    actingTeam: RedTeam,
-                    enemyTeam: BlueTeam,
-                    isPlayerTeam: false
-                );
-
+                yield return HandleTeamPhase(RedTeam, BlueTeam, false); // Enemy team's turn
                 currentState = BattleState3D.BlueTeamTurn;
             }
             else // BlueTeamTurn
             {
-                yield return HandleTeamPhase(
-                    actingTeam: BlueTeam,
-                    enemyTeam: RedTeam,
-                    isPlayerTeam: true
-                );
-
+                yield return HandleTeamPhase(BlueTeam, RedTeam, true); // Player team's turn
                 currentState = BattleState3D.RedTeamTurn;
             }
 
@@ -105,12 +99,10 @@ public class BattleHandlerPVE : BattleHandler_TurnBaseCore
     private IEnumerator HandleStart()
     {
         currentTeamName = "Init";
-        SetActiveCamera(_startCamera);
-
-        // đảm bảo player bị khóa trước khi battle bắt đầu
-        SetPlayerControl(false);
-
         yield return new WaitForSeconds(0.2f);
+
+        // Lock player control before battle starts
+        SetPlayerControl(false);
     }
 
     private IEnumerator HandleTeamPhase(BattleTeamData actingTeam, BattleTeamData enemyTeam, bool isPlayerTeam)
@@ -119,66 +111,50 @@ public class BattleHandlerPVE : BattleHandler_TurnBaseCore
 
         currentTeamName = actingTeam.TeamName;
 
-        SetActiveCamera(isPlayerTeam ? _blueTeamCamera : _redTeamCamera);
-
-        // Snapshot danh sách sống tại đầu phase
-        List<ITurnParticipant> phaseOrder = actingTeam.Members
-            .Where(m => m != null && m.IsAlive)
-            .ToList();
-
-        if (phaseOrder.Count == 0) yield break;
-
-        foreach (var actor in phaseOrder)
+        // Update camera follow target based on the current team
+        if (isPlayerTeam)
         {
-            if (!isBattleActive) yield break;
-            if (CheckBattleFinished(out _)) yield break;
-            if (actor == null || !actor.IsAlive) continue;
+            // Player team: Set camera to follow each individual player unit
+            SetPlayerCameraFollow(true);
+        }
+        else
+        {
+            // Enemy team: Set camera to follow the enemy team as a whole
+            SetEnemyCameraFollow();
+        }
 
-            CurrentActor = actor;
-
-            // reset per-unit
-            isPlayerActionDone = false;
-            turnTimer = 0f;
-
-            Debug.Log($"--- [{actingTeam.TeamName}] {actor.Name}'s Turn ---");
-
-            if (isPlayerTeam)
+        // Process turns for each team member
+        if (isPlayerTeam)
+        {
+            // BlueTeam (Player team) - Individual turns
+            foreach (var actor in actingTeam.Members.Where(m => m.IsAlive))
             {
-                // ✅ Player unit turn: bật điều khiển và đợi OnShoot để kết thúc
-                yield return HandlePlayerUnitTurn(actor, actingTeam, enemyTeam);
-            }
-            else
-            {
-                // ✅ Enemy unit turn: đơn giản gọi TakeTurn() (sau này thay bằng enemy controller/AI)
-                yield return HandleEnemyUnitTurn(actor, actingTeam, enemyTeam);
-            }
+                if (!isBattleActive) yield break;
+                if (CheckBattleFinished(out _)) yield break;
 
-            if (betweenUnitDelay > 0f)
-                yield return new WaitForSeconds(betweenUnitDelay);
+                CurrentActor = actor;
+                yield return HandlePlayerUnitTurn(actor);
+            }
+        }
+        else
+        {
+            // RedTeam (Enemy team) - All units move and attack together
+            yield return HandleEnemyUnitTurn(actingTeam);
         }
 
         // End of phase cleanup
         if (isPlayerTeam) SetPlayerControl(false);
-
         CurrentActor = null;
     }
 
-    private IEnumerator HandlePlayerUnitTurn(ITurnParticipant actor, BattleTeamData myTeam, BattleTeamData enemyTeam)
+    private IEnumerator HandlePlayerUnitTurn(ITurnParticipant actor)
     {
-        // Quy ước hiện tại: playerController điều khiển 1 nhân vật player.
-        // Nếu BlueTeam có nhiều nhân vật player sau này, bạn sẽ cần mapping actor -> controller tương ứng.
-        // Hiện tại handler chỉ xử lý “đến lượt player thì bật control và chờ bắn”.
-
         awaitingPlayerAction = true;
 
         HookPlayerShootEvent(true);
         SetPlayerControl(true);
 
-        // Nếu bạn muốn actor.TakeTurn() tự set UI/stance thì gọi ở đây cũng được,
-        // nhưng vì controller do người khác xử lý, tạm không can thiệp:
-        // actor.TakeTurn();
-
-        while (!isPlayerActionDone)
+        while (!isActionDone)
         {
             turnTimer += Time.deltaTime;
 
@@ -201,31 +177,28 @@ public class BattleHandlerPVE : BattleHandler_TurnBaseCore
         awaitingPlayerAction = false;
     }
 
-    private IEnumerator HandleEnemyUnitTurn(ITurnParticipant actor, BattleTeamData myTeam, BattleTeamData enemyTeam)
+    private IEnumerator HandleEnemyUnitTurn(BattleTeamData actingTeam)
     {
-        // Fallback AI trong handler
+        // Fallback AI in handler (replace with AI logic later)
         yield return new WaitForSeconds(aiThinkDelay);
 
-        actor.TakeTurn();
-
-        yield return new WaitForSeconds(aiAfterActionDelay);
+        foreach (var enemy in actingTeam.Members.Where(m => m.IsAlive))
+        {
+            enemy.TakeTurn();
+            yield return new WaitForSeconds(aiAfterActionDelay);
+        }
 
         NotifyActionDone();
-
-        // Nếu sau này enemy action có anim, bạn sẽ chuyển sang:
-        // enemyController sẽ gọi NotifyActionDone() khi anim xong.
         yield break;
     }
 
     private IEnumerator HandleFinish(bool playerWin)
     {
-        currentState = BattleState3D.Finish;
+        currentState = BattleState3D.Endbattle;
         isBattleActive = false;
 
         SetPlayerControl(false);
         HookPlayerShootEvent(false);
-
-        SetActiveCamera(_startCamera);
 
         Debug.Log(playerWin ? "[BATTLE] Victory" : "[BATTLE] Defeat");
         yield return null;
@@ -239,20 +212,20 @@ public class BattleHandlerPVE : BattleHandler_TurnBaseCore
     {
         if (playerController == null) return;
 
-        // tránh double subscribe
+        // Avoid double subscription
         playerController.OnShoot -= OnPlayerShoot;
         if (hook) playerController.OnShoot += OnPlayerShoot;
     }
 
     private void OnPlayerShoot(Projectile projectile)
     {
-        // Chỉ xử lý nếu đang “đợi action” trong player unit turn
+        // Only process if waiting for player action during unit turn
         if (!awaitingPlayerAction) return;
 
-        // nếu projectile bắn nhiều lần spam, chỉ ăn 1 lần
+        // Prevent double actions if projectile shoots many times
         awaitingPlayerAction = false;
 
-        // Kết thúc lượt sau 1 chút (để controller kịp spawn projectile)
+        // End turn after a brief delay (to let controller spawn the projectile)
         StartCoroutine(EndTurnAfterDelay(endTurnAfterShootDelay));
     }
 
@@ -300,9 +273,51 @@ public class BattleHandlerPVE : BattleHandler_TurnBaseCore
 
     private void SetActiveCamera(CinemachineCamera cam)
     {
-        if (_startCamera != null) _startCamera.gameObject.SetActive(cam == _startCamera);
-        if (_blueTeamCamera != null) _blueTeamCamera.gameObject.SetActive(cam == _blueTeamCamera);
-        if (_redTeamCamera != null) _redTeamCamera.gameObject.SetActive(cam == _redTeamCamera);
+        if (cam != null) cam.Priority = 20;
+    }
+
+    private void SetPlayerCameraFollow(bool enable)
+    {
+        if (enable)
+        {
+            // Set the camera to follow the player (the currently active unit in BlueTeam)
+            cameraFollow = CurrentActor != null ? CurrentActor.transform : cameraFollow;
+            mainCamera.transform.position = cameraFollow.position;
+            mainCamera.transform.LookAt(cameraFollow);
+        }
+    }
+
+    private void SetEnemyCameraFollow()
+    {
+        // Set the camera to follow the enemy team as a whole
+        cameraFollow = RedTeam.Members.FirstOrDefault(m => m.IsAlive)?.transform;
+        if (cameraFollow != null)
+        {
+            mainCamera.transform.position = cameraFollow.position;
+            mainCamera.transform.LookAt(cameraFollow);
+        }
+    }
+
+    #endregion
+
+    #region OnTick Implementation
+
+    protected override void OnTick(BattleState3D state)
+    {
+        // Handle game logic for each state
+        switch (state)
+        {
+            case BattleState3D.BlueTeamTurn:
+                // Handle BlueTeam's turn (could be a more specific logic here)
+                break;
+            case BattleState3D.RedTeamTurn:
+                // Handle RedTeam's turn (could be a more specific logic here)
+                break;
+            case BattleState3D.Endbattle:
+                // Handle end of battle logic (could be a more specific logic here)
+                break;
+                // Handle other states if needed
+        }
     }
 
     #endregion
