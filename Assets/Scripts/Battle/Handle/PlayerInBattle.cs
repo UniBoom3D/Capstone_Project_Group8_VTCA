@@ -9,6 +9,7 @@ public class PlayerInBattle : ITurnParticipant
     public int Armor { get; private set; }
     public int MagicResist { get; private set; }
 
+    public Transform transform { get; set; }
     public bool IsAlive => HP > 0;
 
     //public PlayerInBattle(CharacterProgressData data)
