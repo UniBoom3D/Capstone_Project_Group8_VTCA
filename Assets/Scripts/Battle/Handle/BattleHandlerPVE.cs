@@ -7,7 +7,7 @@ using UnityEngine;
 public class BattleHandlerPvE : BattleManagerCore
 {
     [Header("PLAYER CONTROLLER (External)")]
-    [SerializeField] private PlayerBattleController playerController;
+    [SerializeField] private PlayerBattleController playerBattlerController;
 
     [Header("START ORDER")]
     [SerializeField] private bool enemyRedStarts = true;
@@ -38,7 +38,7 @@ public class BattleHandlerPvE : BattleManagerCore
     protected override void Awake()
     {
         base.Awake();
-        if (playerController == null) playerController = FindFirstObjectByType<PlayerBattleController>();
+        if (playerBattlerController == null) playerBattlerController = FindFirstObjectByType<PlayerBattleController>();
     }
 
     #region Public API
@@ -210,11 +210,11 @@ public class BattleHandlerPvE : BattleManagerCore
 
     private void HookPlayerShootEvent(bool hook)
     {
-        if (playerController == null) return;
+        if (playerBattlerController == null) return;
 
         // Avoid double subscription
-        playerController.OnShoot -= OnPlayerShoot;
-        if (hook) playerController.OnShoot += OnPlayerShoot;
+        playerBattlerController.OnShoot -= OnPlayerShoot;
+        if (hook) playerBattlerController.OnShoot += OnPlayerShoot;
     }
 
     private void OnPlayerShoot(Projectile projectile)
@@ -243,8 +243,8 @@ public class BattleHandlerPvE : BattleManagerCore
 
     private void SetPlayerControl(bool enable)
     {
-        if (playerController == null) return;
-        playerController.EnableControl(enable);
+        if (playerBattlerController == null) return;
+        playerBattlerController.EnableControl(enable);
     }
 
     #endregion
