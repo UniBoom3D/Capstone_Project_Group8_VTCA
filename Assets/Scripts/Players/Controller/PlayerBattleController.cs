@@ -1,28 +1,29 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.UI; // <--- 1. Added this for the UI Slider
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerBattleController : MonoBehaviour
 {
+    [Header("UI Settings")]
+    public Slider powerSlider; // <--- 2. Drag your Red Slider here in Inspector!
+
     [Header("Player Control Settings")]
     public float moveSpeed = 5f;
     public float rotationSpeed = 60f;
 
-    // Kept these so you don't lose Inspector references
+    [Header("Weapon Settings")]
     public Transform firePoint;
     public GameObject projectilePrefab;
     public float maxChargePower = 100f;
     public float chargeSpeed = 40f;
 
     [Header("Runtime State")]
-    public bool isControllable = false;      // BattleHandler toggles this
+    public bool isControllable = false;
     private bool isCharging = false;
     private float currentChargePower = 0f;
     private Vector3 moveDir;
     private CharacterController controller;
-
-    // REMOVED internal camera reference to use external script
-    // private Camera playerCamera; 
 
     // Event callback 
     public event Action<Projectile> OnShoot;
@@ -30,7 +31,6 @@ public class PlayerBattleController : MonoBehaviour
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
-        // playerCamera = Camera.main; // Disabled internal camera
     }
 
     private void Update()
@@ -39,29 +39,17 @@ public class PlayerBattleController : MonoBehaviour
 
         HandleMovement();
         HandleAiming();
-
-        // --- SHOOTING DISABLED FOR MOVEMENT TESTING ---
-        // HandleShooting();
+        HandleShooting(); // <--- 3. Re-enabled Shooting
     }
-
-    // --- REMOVED INTERNAL CAMERA LOGIC ---
-    // (Use the separate CameraFollow script below instead)
-    /* private void LateUpdate()
-    {
-        if (playerCamera != null)
-        {
-            Vector3 camOffset = new Vector3(1, 2, -5);
-            playerCamera.transform.position = transform.position + camOffset;
-            playerCamera.transform.LookAt(transform.position + Vector3.up * 2);
-        }
-    } 
-    */
 
     // ==========================
     // 🕹️ Movement (local XZ)
     // ==========================
     private void HandleMovement()
     {
+        // Safety check to prevent crashes if Component is disabled
+        if (controller == null || !controller.enabled) return;
+
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
 
@@ -78,7 +66,7 @@ public class PlayerBattleController : MonoBehaviour
             controller.Move(forwardMove * moveSpeed * Time.deltaTime);
         }
 
-        // Optional: Apply gravity if using CharacterController
+        // Apply Gravity
         controller.Move(Physics.gravity * Time.deltaTime);
     }
 
@@ -88,32 +76,56 @@ public class PlayerBattleController : MonoBehaviour
     // ==========================
     private void HandleAiming()
     {
-        // TODO: Local angle adjustments
+        // TODO: Local angle adjustments if needed
     }
 
-    /* // ==========================
-    // Shooting (DISABLED)
+    // ==========================
+    // 💥 Shooting (With UI Slider)
     // ==========================
     private void HandleShooting()
     {
+        // 1. Start Charging (Press Space)
         if (Input.GetKeyDown(KeyCode.Space))
         {
             isCharging = true;
             currentChargePower = 0;
             Debug.Log("Start charging shot!");
+
+            // Initialize Slider
+            if (powerSlider != null)
+            {
+                powerSlider.gameObject.SetActive(true); // Show it
+                powerSlider.maxValue = maxChargePower;
+                powerSlider.value = 0;
+            }
         }
 
+        // 2. Charging Loop (Hold Space)
         if (isCharging && Input.GetKey(KeyCode.Space))
-{
+        {
             currentChargePower += chargeSpeed * Time.deltaTime;
             currentChargePower = Mathf.Clamp(currentChargePower, 0, maxChargePower);
+
+            // Update visual slider
+            if (powerSlider != null)
+            {
+                powerSlider.value = currentChargePower;
+            }
         }
 
+        // 3. Fire (Release Space)
         if (isCharging && Input.GetKeyUp(KeyCode.Space))
         {
             FireProjectile();
             isCharging = false;
             currentChargePower = 0;
+
+            // Reset Slider
+            if (powerSlider != null)
+            {
+                powerSlider.value = 0;
+                // Optional: powerSlider.gameObject.SetActive(false); // Hide after shooting?
+            }
         }
     }
 
@@ -126,13 +138,12 @@ public class PlayerBattleController : MonoBehaviour
 
         if (projectile != null)
         {
-            projectile.Launch(currentChargePower, this);
-            OnShoot?.Invoke(projectile); 
+            projectile.Launch(currentChargePower, this); // Use "this" because we are inside PlayerBattleController
+            OnShoot?.Invoke(projectile);
         }
 
         Debug.Log($"🚀 Fired projectile with power {currentChargePower}");
     }
-    */
 
     // ==========================
     // 🔒 Control toggling
@@ -142,4 +153,4 @@ public class PlayerBattleController : MonoBehaviour
         isControllable = enable;
         Debug.Log($"Player control: {(enable ? "ENABLED" : "DISABLED")}");
     }
-}   
+}
