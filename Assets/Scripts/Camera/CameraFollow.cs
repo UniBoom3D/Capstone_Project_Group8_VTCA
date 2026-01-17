@@ -48,13 +48,13 @@ public class CameraFollow : MonoBehaviour
     void HandleAngleInput()
     {
         // Press I to Increase Angle (Move Camera Up)
-        if (Input.GetKey(KeyCode.I))
+        if (Input.GetKey(KeyCode.K))
         {
             currentAngle += rotateSpeed * Time.deltaTime;
         }
 
         // Press K to Decrease Angle (Move Camera Down)
-        if (Input.GetKey(KeyCode.K))
+        if (Input.GetKey(KeyCode.I))
         {
             currentAngle -= rotateSpeed * Time.deltaTime;
         }
