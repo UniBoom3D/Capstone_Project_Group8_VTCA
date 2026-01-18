@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public abstract class StaticDataEnemies
+public abstract class StaticDataEnemies : ScriptableObject
 {
     [Header("Thông tin")]
     public string className;
