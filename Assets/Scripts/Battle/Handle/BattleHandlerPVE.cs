@@ -13,27 +13,24 @@ public class BattleHandlerPvE : BattleManagerCore
     [SerializeField] private bool enemyRedStarts = true;
 
     [Header("TEAM PHASE SETTINGS")]
-    [SerializeField] private float perUnitTimeLimitSeconds = 20f; // time limit cho mỗi member
+    [SerializeField] private float perUnitTimeLimitSeconds = 20f;
     [SerializeField] private float betweenUnitDelay = 0.12f;
     [SerializeField] private float betweenTeamDelay = 0.2f;
 
     [Header("PLAYER TURN END RULE")]
-    [Tooltip("Sau khi bắn (OnShoot), chờ thêm chút rồi mới end unit turn (tránh end quá gấp).")]
     [SerializeField] private float endTurnAfterShootDelay = 0.1f;
 
-    [Header("AI FALLBACK (if enemy has no AI controller)")]
+    [Header("AI FALLBACK")]
     [SerializeField] private float aiThinkDelay = 0.25f;
     [SerializeField] private float aiAfterActionDelay = 0.2f;
 
     [Header("CAMERA FOLLOW SETTINGS")]
-    [SerializeField] private Camera mainCamera;  // The main camera for the scene
-    [SerializeField] private Transform cameraFollow;  // Camera follow target
+    [SerializeField] private Camera mainCamera;
+    [SerializeField] private Transform cameraFollow;
 
-    // Runtime state
     public ITurnParticipant CurrentActor { get; private set; }
     private bool awaitingPlayerAction;
-
-    public string currentTeamName; // Add this line to keep track of the current team's name
+    public string currentTeamName;
 
     protected override void Awake()
     {
@@ -52,8 +49,6 @@ public class BattleHandlerPvE : BattleManagerCore
 
         isBattleActive = true;
         currentState = BattleState3D.Start;
-
-        // Start battle routine
         StartCoroutine(BattleLoop());
     }
 
@@ -82,12 +77,12 @@ public class BattleHandlerPvE : BattleManagerCore
 
             if (currentState == BattleState3D.RedTeamTurn)
             {
-                yield return HandleTeamPhase(RedTeam, BlueTeam, false); // Enemy team's turn
+                yield return HandleTeamPhase(RedTeam, BlueTeam, false);
                 currentState = BattleState3D.BlueTeamTurn;
             }
-            else // BlueTeamTurn
+            else
             {
-                yield return HandleTeamPhase(BlueTeam, RedTeam, true); // Player team's turn
+                yield return HandleTeamPhase(BlueTeam, RedTeam, true);
                 currentState = BattleState3D.RedTeamTurn;
             }
 
@@ -100,8 +95,6 @@ public class BattleHandlerPvE : BattleManagerCore
     {
         currentTeamName = "Init";
         yield return new WaitForSeconds(0.2f);
-
-        // Lock player control before battle starts
         SetPlayerControl(false);
     }
 
@@ -111,22 +104,13 @@ public class BattleHandlerPvE : BattleManagerCore
 
         currentTeamName = actingTeam.TeamName;
 
-        // Update camera follow target based on the current team
         if (isPlayerTeam)
-        {
-            // Player team: Set camera to follow each individual player unit
             SetPlayerCameraFollow(true);
-        }
         else
-        {
-            // Enemy team: Set camera to follow the enemy team as a whole
             SetEnemyCameraFollow();
-        }
 
-        // Process turns for each team member
         if (isPlayerTeam)
         {
-            // BlueTeam (Player team) - Individual turns
             foreach (var actor in actingTeam.Members.Where(m => m.IsAlive))
             {
                 if (!isBattleActive) yield break;
@@ -138,11 +122,9 @@ public class BattleHandlerPvE : BattleManagerCore
         }
         else
         {
-            // RedTeam (Enemy team) - All units move and attack together
             yield return HandleEnemyUnitTurn(actingTeam);
         }
 
-        // End of phase cleanup
         if (isPlayerTeam) SetPlayerControl(false);
         CurrentActor = null;
     }
@@ -150,7 +132,6 @@ public class BattleHandlerPvE : BattleManagerCore
     private IEnumerator HandlePlayerUnitTurn(ITurnParticipant actor)
     {
         awaitingPlayerAction = true;
-
         HookPlayerShootEvent(true);
         SetPlayerControl(true);
 
@@ -160,18 +141,15 @@ public class BattleHandlerPvE : BattleManagerCore
 
             if (perUnitTimeLimitSeconds > 0f && turnTimer >= perUnitTimeLimitSeconds)
             {
-                Debug.LogWarning($"[TURN TIMEOUT] Player unit {actor.Name} timed out. Force end.");
+                Debug.LogWarning($"[TURN TIMEOUT] Player unit {actor.Name} timed out.");
                 ForceEndPlayerUnitTurn();
                 break;
             }
 
-            if (CheckBattleFinished(out _))
-                break;
-
+            if (CheckBattleFinished(out _)) break;
             yield return null;
         }
 
-        // Cleanup
         SetPlayerControl(false);
         HookPlayerShootEvent(false);
         awaitingPlayerAction = false;
@@ -179,7 +157,6 @@ public class BattleHandlerPvE : BattleManagerCore
 
     private IEnumerator HandleEnemyUnitTurn(BattleTeamData actingTeam)
     {
-        // Fallback AI in handler (replace with AI logic later)
         yield return new WaitForSeconds(aiThinkDelay);
 
         foreach (var enemy in actingTeam.Members.Where(m => m.IsAlive))
@@ -196,36 +173,63 @@ public class BattleHandlerPvE : BattleManagerCore
     {
         currentState = BattleState3D.Endbattle;
         isBattleActive = false;
-
         SetPlayerControl(false);
         HookPlayerShootEvent(false);
-
         Debug.Log(playerWin ? "[BATTLE] Victory" : "[BATTLE] Defeat");
         yield return null;
     }
 
     #endregion
 
-    #region Player Shoot Hook
+    #region Helpers
+
+    private void SetPlayerCameraFollow(bool enable)
+    {
+        if (enable)
+        {
+            // FIX: Check if actor is a MonoBehaviour to get Transform
+            Transform targetTransform = null;
+            if (CurrentActor is MonoBehaviour mono)
+            {
+                targetTransform = mono.transform;
+            }
+
+            cameraFollow = targetTransform != null ? targetTransform : cameraFollow;
+
+            if (cameraFollow != null && mainCamera != null)
+            {
+                mainCamera.transform.position = cameraFollow.position;
+                mainCamera.transform.LookAt(cameraFollow);
+            }
+        }
+    }
+
+    private void SetEnemyCameraFollow()
+    {
+        // FIX: Check if actor is a MonoBehaviour to get Transform
+        var aliveEnemy = RedTeam.Members.FirstOrDefault(m => m.IsAlive);
+        if (aliveEnemy is MonoBehaviour enemyMono)
+        {
+            cameraFollow = enemyMono.transform;
+            if (mainCamera != null)
+            {
+                mainCamera.transform.position = cameraFollow.position;
+                mainCamera.transform.LookAt(cameraFollow);
+            }
+        }
+    }
 
     private void HookPlayerShootEvent(bool hook)
     {
         if (playerBattlerController == null) return;
-
-        // Avoid double subscription
         playerBattlerController.OnShoot -= OnPlayerShoot;
         if (hook) playerBattlerController.OnShoot += OnPlayerShoot;
     }
 
     private void OnPlayerShoot(Projectile projectile)
     {
-        // Only process if waiting for player action during unit turn
         if (!awaitingPlayerAction) return;
-
-        // Prevent double actions if projectile shoots many times
         awaitingPlayerAction = false;
-
-        // End turn after a brief delay (to let controller spawn the projectile)
         StartCoroutine(EndTurnAfterDelay(endTurnAfterShootDelay));
     }
 
@@ -247,78 +251,17 @@ public class BattleHandlerPvE : BattleManagerCore
         playerBattlerController.EnableControl(enable);
     }
 
-    #endregion
-
-    #region Helpers
-
     private bool CheckBattleFinished(out bool playerWin)
     {
         playerWin = false;
         if (BlueTeam == null || RedTeam == null) return false;
-
-        bool blueDefeated = BlueTeam.IsDefeated;
-        bool redDefeated = RedTeam.IsDefeated;
-
-        if (blueDefeated && redDefeated)
-        {
-            playerWin = false;
-            return true;
-        }
-
-        if (blueDefeated) { playerWin = false; return true; }
-        if (redDefeated) { playerWin = true; return true; }
-
+        if (BlueTeam.IsDefeated && RedTeam.IsDefeated) return true;
+        if (BlueTeam.IsDefeated) { playerWin = false; return true; }
+        if (RedTeam.IsDefeated) { playerWin = true; return true; }
         return false;
     }
 
-    private void SetActiveCamera(CinemachineCamera cam)
-    {
-        if (cam != null) cam.Priority = 20;
-    }
-
-    private void SetPlayerCameraFollow(bool enable)
-    {
-        if (enable)
-        {
-            // Set the camera to follow the player (the currently active unit in BlueTeam)
-            cameraFollow = CurrentActor != null ? CurrentActor.transform : cameraFollow;
-            mainCamera.transform.position = cameraFollow.position;
-            mainCamera.transform.LookAt(cameraFollow);
-        }
-    }
-
-    private void SetEnemyCameraFollow()
-    {
-        // Set the camera to follow the enemy team as a whole
-        cameraFollow = RedTeam.Members.FirstOrDefault(m => m.IsAlive)?.transform;
-        if (cameraFollow != null)
-        {
-            mainCamera.transform.position = cameraFollow.position;
-            mainCamera.transform.LookAt(cameraFollow);
-        }
-    }
-
-    #endregion
-
-    #region OnTick Implementation
-
-    protected override void OnTick(BattleState3D state)
-    {
-        // Handle game logic for each state
-        switch (state)
-        {
-            case BattleState3D.BlueTeamTurn:
-                // Handle BlueTeam's turn (could be a more specific logic here)
-                break;
-            case BattleState3D.RedTeamTurn:
-                // Handle RedTeam's turn (could be a more specific logic here)
-                break;
-            case BattleState3D.Endbattle:
-                // Handle end of battle logic (could be a more specific logic here)
-                break;
-                // Handle other states if needed
-        }
-    }
+    protected override void OnTick(BattleState3D state) { }
 
     #endregion
 }
