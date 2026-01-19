@@ -120,7 +120,7 @@ public class PlayerBattleController : MonoBehaviour
         {
             float range = maxChargePower - minChargePower;
             LastFiredPower = minChargePower + Mathf.PingPong(chargeTimer * chargeSpeed, range);
-
+            Debug.Log($"🚀 Power Locked at: {LastFiredPower}");
             FireProjectile();
 
             isCharging = false;
