@@ -1,120 +1,112 @@
 ﻿using UnityEngine;
+using System.Collections;
 
-// ✅ FIXED: Added ITurnParticipant so the BattleManager can control this enemy
 public class TurtleEnemyAction : MonoBehaviour, ITurnParticipant
 {
     // =========================================================
-    // 🟢 INTERFACE IMPLEMENTATION (Required by BattleManager)
+    // 🟢 INTERFACE IMPLEMENTATION
     // =========================================================
     public string Name => gameObject.name;
-
-    // 1. HP: We give the turtle 50 HP
     public int HP { get; private set; } = 50;
-
-    // 2. IsAlive: Checks if HP is > 0
     public bool IsAlive => HP > 0;
+    Transform ITurnParticipant.transform { get => this.transform; set { } }
 
-    // 3. TakeDamage: Logic to lose HP
     public void TakeDamage(int dmg)
     {
         HP -= dmg;
-        Debug.Log($"💥 🐢 {Name} took {dmg} damage! Remaining HP: {HP}");
-        if (HP <= 0)
-        {
-            Debug.Log($"💀 {Name} is defeated!");
-            gameObject.SetActive(false); // Hide the turtle when dead
-        }
+        Debug.Log($"💥 {Name} took {dmg} damage! Remaining HP: {HP}");
+        if (HP <= 0) gameObject.SetActive(false);
     }
 
-    // 4. Transform Fix: Explicitly implement the interface to handle the 'set' requirement
-    Transform ITurnParticipant.transform
-    {
-        get => this.transform;
-        set { /* Unity Transform is read-only, so we do nothing */ }
-    }
-
-    // 5. TakeTurn: This is what BattleManager calls automatically
     public void TakeTurn()
     {
-        // We simply call your custom logic function
-        ExecuteTurn();
+        StartCoroutine(AI_ExecuteTurn());
     }
     // =========================================================
 
-    [Header("Target")]
-    [SerializeField] private Transform playerTarget;
+    [Header("AI Settings")]
+    public float moveSpeed = 5f;
+    public float attackRange = 15f; // ✅ Reduced to 15 so it walks first!
+    public float moveDuration = 1.5f;
 
-    [Header("Movement")]
-    [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float attackRange = 30f;
+    [Header("References")]
+    public Transform playerTarget;      // ✅ Manual slot to ensure we find player
+    public GameObject projectilePrefab;
+    public Transform firePoint;
 
-    /// <summary>
-    /// BattleHandlerPvE assigns target here
-    /// </summary>
-    public void SetTarget(Transform target)
+    private IEnumerator AI_ExecuteTurn()
     {
-        playerTarget = target;
-    }
+        Debug.Log("🐢 Turtle Turn Started...");
 
-    // =====================================================
-    // TURN LOGIC
-    // =====================================================
-
-    /// <summary>
-    /// Called once per turn via TakeTurn()
-    /// </summary>
-    public void ExecuteTurn()
-    {
-        // Auto-find player if target is missing
+        // 1. Find Player (Auto or Manual)
         if (playerTarget == null)
         {
-            var playerObj = GameObject.FindGameObjectWithTag("Player");
-            if (playerObj != null) playerTarget = playerObj.transform;
+            GameObject p = GameObject.FindGameObjectWithTag("Player");
+            if (p != null) playerTarget = p.transform;
         }
 
+        // 🚨 ERROR CHECK: If we still have no target, complain loudly!
         if (playerTarget == null)
         {
-            Debug.LogWarning("[TurtleEnemyAction] Player target missing.");
-            return;
+            Debug.LogError("❌ TURTLE ERROR: Cannot find Player! Make sure Player has tag 'Player' or drag it into the Inspector slot.");
+            yield break;
         }
+
+        // 2. Face the Player
+        Vector3 directionToPlayer = (playerTarget.position - transform.position).normalized;
+        directionToPlayer.y = 0;
+        if (directionToPlayer != Vector3.zero)
+            transform.rotation = Quaternion.LookRotation(directionToPlayer);
 
         float distance = Vector3.Distance(transform.position, playerTarget.position);
+        Debug.Log($"🐢 Distance to Player: {distance:F1} (Range: {attackRange})");
 
-        if (distance <= attackRange)
+        // 3. MOVE (Only if far away)
+        if (distance > attackRange)
         {
-            AttackPlayer();
+            Debug.Log("🐢 Moving closer...");
+            float timer = 0f;
+            while (timer < moveDuration)
+            {
+                if (Vector3.Distance(transform.position, playerTarget.position) <= attackRange) break;
+                transform.position += transform.forward * moveSpeed * Time.deltaTime;
+                timer += Time.deltaTime;
+                yield return null;
+            }
         }
         else
         {
-            MoveToPlayer();
+            Debug.Log("🐢 Already in range, skipping movement.");
         }
+
+        // 4. ATTACK
+        yield return new WaitForSeconds(0.5f); // Take aim
+        AttackPlayer();
+
+        Debug.Log("🐢 Turn Complete.");
     }
 
-    // =====================================================
-    // ACTIONS
-    // =====================================================
-
-    public void MoveToPlayer()
+    private void AttackPlayer()
     {
-        Vector3 direction = (playerTarget.position - transform.position).normalized;
+        if (projectilePrefab != null && firePoint != null)
+        {
+            Debug.Log("🔥 TURTLE FIRE!");
 
-        // Simple movement (Teleport/Snap for now)
-        transform.position += direction * moveSpeed;
+            // Aim at player + slightly up
+            Vector3 aimDir = (playerTarget.position - firePoint.position).normalized;
 
-        // Look at player
-        transform.LookAt(playerTarget);
+            GameObject projObj = Instantiate(projectilePrefab, firePoint.position, Quaternion.LookRotation(aimDir));
+            Projectile projectile = projObj.GetComponent<Projectile>();
 
-        Debug.Log("🐢 Turtle moves closer to player.");
-    }
-
-    public void AttackPlayer()
-    {
-        Debug.Log("🐢 Turtle attacks the player!");
-        // Logic to deal damage goes here later
-    }
-
-    public void OnDestroy()
-    {
-        // Cleanup if needed
+            if (projectile != null)
+            {
+                float power = Vector3.Distance(transform.position, playerTarget.position) * 1.5f;
+                projectile.Launch(Mathf.Clamp(power, 20f, 80f), this);
+            }
+        }
+        else
+        {
+            Debug.LogError("❌ Turtle missing Projectile Prefab or FirePoint!");
+        }
     }
 }
