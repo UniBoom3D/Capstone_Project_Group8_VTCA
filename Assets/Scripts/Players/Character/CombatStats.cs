@@ -1,24 +1,52 @@
-﻿using System;
+﻿using UnityEngine;
 
-
-[Serializable]
-public struct CombatStats
+public class CombatStats : MonoBehaviour
 {
-    public int health;
-    public int stamina;
-    public int attack;
-    public int magic;
-    public int armor;
-    public int magicResist;
+    [Header("Configuration")]
+    [Tooltip("Stamina cost per second while moving")]
+    public float moveStaminaCost = 10f;
 
-    // Constructor để khởi tạo CombatStats từ CharacterProgressData
-    public CombatStats(int health, int stamina, int attack, int magic, int armor, int magicResist)
+    [Header("Base Stats (Max)")]
+    public int maxHealth = 100;
+    public float maxStamina = 100f;
+    public int attackDamage = 20;
+    public int armor = 5;
+
+    [Header("Runtime Values (Read Only)")]
+    public int currentHealth;
+    public float currentStamina;
+
+    private void Awake()
     {
-        this.health = health;
-        this.stamina = stamina;
-        this.attack = attack;
-        this.magic = magic;
-        this.armor = armor;
-        this.magicResist = magicResist;
+        ResetTurnStats();
+        currentHealth = maxHealth;
+    }
+
+    public void ResetTurnStats()
+    {
+        currentStamina = maxStamina;
+        Debug.Log($"🔄 Turn Start: Stamina Refilled to {maxStamina}");
+    }
+
+    public bool HasStamina()
+    {
+        return currentStamina > 0;
+    }
+
+    public void UseStamina(float amount)
+    {
+        currentStamina -= amount;
+        if (currentStamina < 0) currentStamina = 0;
+
+        // 🟢 ADDED LOG HERE
+        // ":F1" formats the number to 1 decimal place (e.g., "85.4") to avoid messy numbers
+        Debug.Log($"⚡ Stamina: {currentStamina:F1} / {maxStamina}");
+    }
+
+    public void TakeDamage(int dmg)
+    {
+        int finalDamage = Mathf.Max(1, dmg - armor);
+        currentHealth -= finalDamage;
+        Debug.Log($"{gameObject.name} took {finalDamage} dmg. HP: {currentHealth}");
     }
 }
