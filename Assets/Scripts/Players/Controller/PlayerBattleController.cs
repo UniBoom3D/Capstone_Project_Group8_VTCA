@@ -7,44 +7,38 @@ using UnityEngine.UI;
 public class PlayerBattleController : MonoBehaviour, ITurnParticipant
 {
     [Header("Stats Link")]
-    [Tooltip("Drag the CombatStats component here")]
     public CombatStats myStats;
 
     // =========================================================
-    // 🟢 INTERFACE IMPLEMENTATION (Required for Battle)
+    // 🟢 INTERFACE IMPLEMENTATION
     // =========================================================
     public string Name => gameObject.name;
-
-    // Read HP directly from CombatStats script
     public int HP => myStats != null ? myStats.currentHealth : 0;
-
-    // Check if alive based on that HP
     public bool IsAlive => HP > 0;
-
-    // Explicit Transform Implementation (Satisfies the interface requirement)
     Transform ITurnParticipant.transform
     {
         get => this.transform;
-        set { /* Unity Transform is read-only */ }
+        set { }
     }
 
     public void TakeDamage(int dmg)
     {
-        // Pass the damage to the stats script
-        if (myStats != null)
-        {
-            myStats.TakeDamage(dmg);
-        }
+        if (myStats != null) myStats.TakeDamage(dmg);
     }
 
-    public void TakeTurn()
-    {
-        // Player turn is handled by Input in Update(), so this stays empty.
-    }
+    public void TakeTurn() { } // Handled by Update
     // =========================================================
 
     [Header("UI Settings")]
     public Slider powerSlider;
+
+    [Header("Visuals & Audio")]
+    public TrajectoryPredictor trajectory; // 👈 NEW SLOT FOR THE LINE
+    public GameObject ammoMeshToHide;
+    public float reloadTime = 2f;
+    public AudioSource audioSource;
+    public AudioClip fireClip;
+    public AudioClip reloadClip;
 
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
@@ -60,13 +54,6 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
     public float minChargePower = 0f;
     [Tooltip("How fast the bar moves back and forth")]
     public float chargeSpeed = 50f;
-
-    [Header("Visuals & Audio")]
-    public GameObject ammoMeshToHide;
-    public float reloadTime = 2f;
-    public AudioSource audioSource;
-    public AudioClip fireClip;
-    public AudioClip reloadClip;
 
     public float LastFiredPower { get; private set; }
 
@@ -84,20 +71,15 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
         controller = GetComponent<CharacterController>();
         if (audioSource == null) audioSource = GetComponent<AudioSource>();
         if (powerSlider != null) powerSlider.gameObject.SetActive(false);
-
-        // Auto-find stats if forgotten
         if (myStats == null) myStats = GetComponent<CombatStats>();
     }
 
     private void Update()
     {
-        // 1. GRAVITY (Always apply so you don't float)
+        // Gravity
         if (controller != null && controller.enabled)
-        {
             controller.Move(Physics.gravity * Time.deltaTime);
-        }
 
-        // 2. INPUT (Only if it's my turn)
         if (!isControllable) return;
 
         HandleMovement();
@@ -109,27 +91,15 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
     {
         if (controller == null || !controller.enabled) return;
 
-        float h = Input.GetAxis("Horizontal"); // Rotate
-        float v = Input.GetAxis("Vertical");   // Move Forward/Back
+        float h = Input.GetAxis("Horizontal");
+        float v = Input.GetAxis("Vertical");
 
-        // ROTATION (Always Allowed - Free)
-        if (h != 0)
+        if (h != 0) transform.Rotate(Vector3.up * h * rotationSpeed * Time.deltaTime);
+
+        if (v != 0 && myStats != null && myStats.HasStamina())
         {
-            transform.Rotate(Vector3.up * h * rotationSpeed * Time.deltaTime);
-        }
-
-        // MOVEMENT (Costs Stamina)
-        if (v != 0)
-        {
-            // Check if we have enough stamina
-            if (myStats != null && myStats.HasStamina())
-            {
-                controller.Move(transform.forward * v * moveSpeed * Time.deltaTime);
-
-                // Drain stamina over time
-                myStats.UseStamina(myStats.moveStaminaCost * Time.deltaTime);
-            }
-            // If no stamina, we simply don't call controller.Move(), effectively locking the player.
+            controller.Move(transform.forward * v * moveSpeed * Time.deltaTime);
+            myStats.UseStamina(myStats.moveStaminaCost * Time.deltaTime);
         }
     }
 
@@ -162,13 +132,22 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
             }
         }
 
-        // 2. Charging Loop (Ping Pong)
+        // 2. Charging (Draw Line)
         if (isCharging && Input.GetKey(KeyCode.Space))
         {
             chargeTimer += Time.deltaTime;
             float range = maxChargePower - minChargePower;
             float currentPower = minChargePower + Mathf.PingPong(chargeTimer * chargeSpeed, range);
+
             if (powerSlider != null) powerSlider.value = currentPower;
+
+            // 🟢 PREDICTION LOGIC
+            // Must match the math in Projectile.Launch exactly (forward * power * 0.5)
+            if (trajectory != null && firePoint != null)
+            {
+                Vector3 predictedVel = firePoint.forward * currentPower * 0.5f;
+                trajectory.ShowTrajectory(firePoint.position, predictedVel);
+            }
         }
 
         // 3. Fire
@@ -177,8 +156,10 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
             float range = maxChargePower - minChargePower;
             LastFiredPower = minChargePower + Mathf.PingPong(chargeTimer * chargeSpeed, range);
 
-            Debug.Log($"🚀 Power Locked at: {LastFiredPower}");
+            // Hide the line immediately
+            if (trajectory != null) trajectory.Hide();
 
+            Debug.Log($"🚀 Power Locked at: {LastFiredPower}");
             FireProjectile();
 
             isCharging = false;
@@ -230,15 +211,12 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
     {
         isControllable = enable;
 
-        // Reset Stats when turn begins
-        if (enable && myStats != null)
-        {
-            myStats.ResetTurnStats();
-        }
+        if (enable && myStats != null) myStats.ResetTurnStats();
 
         if (!enable)
         {
             isCharging = false;
+            if (trajectory != null) trajectory.Hide(); // Ensure line is hidden if turn ends abruptly
             if (powerSlider != null) { powerSlider.value = 0; powerSlider.gameObject.SetActive(false); }
         }
 

@@ -1,95 +1,79 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-// 1. Rename the class to match what PlayerBattleController expects: "Projectile"
 [RequireComponent(typeof(Rigidbody))]
 public class Projectile : MonoBehaviour
 {
-    // --- Config ---
     [Header("Settings")]
-    public float speed = 100; // Used as force multiplier now
+    public float speed = 100; // Not used directly for force anymore, but good to keep
     public LayerMask collisionLayerMask;
 
-    // --- Explosion VFX ---
+    [Header("References")]
     public GameObject rocketExplosion;
-
-    // --- Projectile Mesh ---
     public MeshRenderer projectileMesh;
-
-    // --- Audio ---
     public AudioSource inFlightAudioSource;
-
-    // --- VFX ---
     public ParticleSystem disableOnHit;
 
-    // --- Internal State ---
+    // Internal State
     private bool targetHit;
     private Rigidbody rb;
+    private ITurnParticipant myShooter;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        rb.useGravity = false; // Disable gravity until we launch
+        rb.useGravity = false; // Disable gravity until fired
+        rb.interpolation = RigidbodyInterpolation.Interpolate; // Smoother movement
     }
 
     /// <summary>
-    /// Called by PlayerBattleController to fire the bullet
+    /// Fires the projectile with a specific velocity calculated by the controller
     /// </summary>
     public void Launch(float power, ITurnParticipant shooter)
     {
-        // Enable physics now that we are firing
-        rb.useGravity = true;
+        myShooter = shooter;
+        rb.useGravity = true; // Gravity ON
 
-        // Calculate Launch Force: Forward + Upward Arc
-        // We use 'power' from your charge bar combined with 'speed'
-        Vector3 force = transform.forward * power * 0.5f + transform.up * (power * 0.2f);
+        // 🚀 PHYSICS: Convert Power to Velocity
+        // We multiply by 0.5f to make the charge bar feel responsive without shooting into space
+        Vector3 launchVelocity = transform.forward * power * 0.5f;
 
-        rb.AddForce(force, ForceMode.Impulse);
+        rb.linearVelocity = launchVelocity;
 
         // Play Audio
         if (inFlightAudioSource != null && !inFlightAudioSource.isPlaying)
             inFlightAudioSource.Play();
 
-        // Safety: Destroy after 8 seconds if it hits nothing so the turn ends
+        // Safety: Destroy after 8 seconds if it hits nothing
         Destroy(gameObject, 8f);
     }
 
-    // We removed Update() because we are using Physics (Rigidbody) for movement now!
-    // This allows the bullet to arc like in Gunny/Worms instead of flying straight.
-
-    /// <summary>
-    /// Explodes on contact.
-    /// </summary>
     private void OnCollisionEnter(Collision collision)
     {
-        // Prevent double hits
         if (targetHit || !enabled) return;
 
-        // 1. Logic: Apply Damage
+        // 1. Damage Logic
         ITurnParticipant victim = collision.gameObject.GetComponent<ITurnParticipant>();
         if (victim != null)
         {
-            victim.TakeDamage(25); // Apply 25 damage (you can change this later)
+            // Don't hurt yourself (optional, but good for safety)
+            if (victim == myShooter) return;
+
+            victim.TakeDamage(25);
             Debug.Log($"🎯 Hit {victim.Name}!");
         }
 
-        // 2. Visuals: Explode
+        // 2. Visuals
         Explode();
         targetHit = true;
 
-        // 3. Cleanup: Disable mesh/colliders so it looks "gone" immediately
         if (projectileMesh != null) projectileMesh.enabled = false;
         if (inFlightAudioSource != null) inFlightAudioSource.Stop();
         if (disableOnHit != null) disableOnHit.Stop();
 
-        foreach (Collider col in GetComponents<Collider>())
-        {
-            col.enabled = false;
-        }
+        foreach (Collider col in GetComponents<Collider>()) col.enabled = false;
 
-        // 4. IMPORTANT: Destroy the object. 
-        // The BattleHandler is waiting for this object to become 'null' to end the turn.
-        // We wait a tiny bit (2s) for trail particles to fade, then destroy.
+        // 3. Destroy to end turn
         Destroy(gameObject, 2f);
     }
 
