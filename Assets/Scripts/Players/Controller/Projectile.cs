@@ -1,78 +1,103 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections;
 
+// 1. Rename the class to match what PlayerBattleController expects: "Projectile"
 [RequireComponent(typeof(Rigidbody))]
 public class Projectile : MonoBehaviour
 {
-    [Header("Projectile Settings")]
-    public float lifeTime = 8f;          // thời gian tối đa bay
-    public float explosionRadius = 3f;   // bán kính nổ (vùng ảnh hưởng)
-    public GameObject explosionEffect;   // prefab hiệu ứng nổ (optional)
-    public LayerMask hitLayers;
+    // --- Config ---
+    [Header("Settings")]
+    public float speed = 100; // Used as force multiplier now
+    public LayerMask collisionLayerMask;
 
-    [Header("Runtime State")]
-    public bool isLaunched = false;
+    // --- Explosion VFX ---
+    public GameObject rocketExplosion;
+
+    // --- Projectile Mesh ---
+    public MeshRenderer projectileMesh;
+
+    // --- Audio ---
+    public AudioSource inFlightAudioSource;
+
+    // --- VFX ---
+    public ParticleSystem disableOnHit;
+
+    // --- Internal State ---
+    private bool targetHit;
     private Rigidbody rb;
-    private float launchPower;
-    private PlayerBattleController owner;
-
-    // Event callback khi nổ (BattleHandler sẽ lắng nghe)
-    public event Action OnExploded;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        rb.useGravity = false; // Disable gravity until we launch
     }
 
-    public void Launch(float power, PlayerBattleController shooter)
+    /// <summary>
+    /// Called by PlayerBattleController to fire the bullet
+    /// </summary>
+    public void Launch(float power, ITurnParticipant shooter)
     {
-        isLaunched = true;
-        owner = shooter;
-        launchPower = power;
+        // Enable physics now that we are firing
+        rb.useGravity = true;
 
-        rb.isKinematic = false;
-        rb.AddForce(transform.forward * power, ForceMode.Impulse);
+        // Calculate Launch Force: Forward + Upward Arc
+        // We use 'power' from your charge bar combined with 'speed'
+        Vector3 force = transform.forward * power * 0.5f + transform.up * (power * 0.2f);
 
-        Debug.Log($"💥 Projectile launched with {power} force from {owner.name}");
-        Destroy(gameObject, lifeTime);
+        rb.AddForce(force, ForceMode.Impulse);
+
+        // Play Audio
+        if (inFlightAudioSource != null && !inFlightAudioSource.isPlaying)
+            inFlightAudioSource.Play();
+
+        // Safety: Destroy after 8 seconds if it hits nothing so the turn ends
+        Destroy(gameObject, 8f);
     }
 
+    // We removed Update() because we are using Physics (Rigidbody) for movement now!
+    // This allows the bullet to arc like in Gunny/Worms instead of flying straight.
+
+    /// <summary>
+    /// Explodes on contact.
+    /// </summary>
     private void OnCollisionEnter(Collision collision)
     {
-        if (!isLaunched) return;
+        // Prevent double hits
+        if (targetHit || !enabled) return;
 
-        Debug.Log($"💢 Projectile hit: {collision.gameObject.name}");
+        // 1. Logic: Apply Damage
+        ITurnParticipant victim = collision.gameObject.GetComponent<ITurnParticipant>();
+        if (victim != null)
+        {
+            victim.TakeDamage(25); // Apply 25 damage (you can change this later)
+            Debug.Log($"🎯 Hit {victim.Name}!");
+        }
+
+        // 2. Visuals: Explode
         Explode();
+        targetHit = true;
+
+        // 3. Cleanup: Disable mesh/colliders so it looks "gone" immediately
+        if (projectileMesh != null) projectileMesh.enabled = false;
+        if (inFlightAudioSource != null) inFlightAudioSource.Stop();
+        if (disableOnHit != null) disableOnHit.Stop();
+
+        foreach (Collider col in GetComponents<Collider>())
+        {
+            col.enabled = false;
+        }
+
+        // 4. IMPORTANT: Destroy the object. 
+        // The BattleHandler is waiting for this object to become 'null' to end the turn.
+        // We wait a tiny bit (2s) for trail particles to fade, then destroy.
+        Destroy(gameObject, 2f);
     }
 
     private void Explode()
     {
-        if (explosionEffect)
+        if (rocketExplosion != null)
         {
-            Instantiate(explosionEffect, transform.position, Quaternion.identity);
+            Instantiate(rocketExplosion, transform.position, Quaternion.identity);
         }
-
-        // Tính sát thương vùng nổ
-        Collider[] hitObjects = Physics.OverlapSphere(transform.position, explosionRadius, hitLayers);
-        foreach (Collider col in hitObjects)
-        {
-            var participant = col.GetComponent<ITurnParticipant>();
-            if (participant != null)
-            {
-                int damage = Mathf.RoundToInt(launchPower / 2f);
-                participant.TakeDamage(damage);
-                Debug.Log($"🔥 Hit {col.name} for {damage} dmg!");
-            }
-        }
-
-        OnExploded?.Invoke();
-        Destroy(gameObject);
     }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, explosionRadius);
-    }
-
 }

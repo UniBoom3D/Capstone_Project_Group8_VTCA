@@ -131,7 +131,7 @@ public class BattleHandlerPvE : BattleManagerCore
 
         Debug.Log($"=== Player turn {playerTurnCount}/{limitedTurnForPlayer} ===");
 
-        // Turn limit rule: nếu vượt 20 lượt mà enemy còn sống => enemy thắng
+        // Turn limit rule
         if (playerTurnCount > limitedTurnForPlayer && !RedTeam.IsDefeated)
         {
             playerWinResult = false;
@@ -145,26 +145,46 @@ public class BattleHandlerPvE : BattleManagerCore
 
             CurrentActor = actor;
 
-            // Camera follow theo "CameraFollowPlayer" của actor
+            Debug.Log($"👉 It is now {actor.Name}'s Turn!");
+
             FocusCamera(GetPlayerCameraFollow(actor));
 
-            // 1 unit = chờ player bắn 1 lần (OnShoot) rồi end unit turn
             isActionDone = false;
             awaitingPlayerAction = true;
+            bool cheatUsed = false; // Prevents pressing O multiple times
 
             HookPlayerShootEvent(true);
             SetPlayerControl(true);
 
+            // --- WAITING LOOP ---
             while (!isActionDone && isBattleActive)
-                yield return null;
+            {
+                // 🛠️ CHEAT: Press 'O' to skip turn in 5 seconds
+                if (!cheatUsed && Input.GetKeyDown(KeyCode.O))
+                {
+                    cheatUsed = true;
+                    Debug.Log("⏳ Cheat Activated: Ending turn in 5 seconds...");
 
+                    // 1. Lock controls immediately so you can't shoot/move
+                    SetPlayerControl(false);
+                    HookPlayerShootEvent(false);
+                    awaitingPlayerAction = false;
+
+                    // 2. Start the 5-second countdown to force end the turn
+                    StartCoroutine(EndUnitTurnAfterDelay(5f));
+                }
+
+                yield return null;
+            }
+            // -------------------
+
+            // Cleanup (safe to call even if cheat handled it already)
             SetPlayerControl(false);
             HookPlayerShootEvent(false);
             awaitingPlayerAction = false;
 
             CurrentActor = null;
 
-            // Win check giữa lượt
             if (RedTeam.IsDefeated) { playerWinResult = true; EndBattle(); yield break; }
             if (BlueTeam.IsDefeated) { playerWinResult = false; EndBattle(); yield break; }
         }
@@ -172,7 +192,6 @@ public class BattleHandlerPvE : BattleManagerCore
         if (phaseDelay > 0f) yield return new WaitForSeconds(phaseDelay);
         SetState(BattleState3D.RedTeamTurn);
     }
-
     // =========================
     // Shoot hook -> end unit turn
     // =========================

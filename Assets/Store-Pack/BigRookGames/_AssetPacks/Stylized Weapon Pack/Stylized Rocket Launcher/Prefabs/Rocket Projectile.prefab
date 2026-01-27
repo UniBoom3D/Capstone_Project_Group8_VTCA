@@ -197,9 +197,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 323248439922596483}
-  - component: {fileID: 988175382482574601}
   - component: {fileID: 91128310120046435}
   - component: {fileID: 7870026953430193671}
+  - component: {fileID: -8418067541176588748}
   m_Layer: 0
   m_Name: Rocket Projectile
   m_TagString: Untagged
@@ -223,26 +223,6 @@ Transform:
   - {fileID: 5088939673380300228}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &988175382482574601
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4092872357349286730}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f84d8719e40fbf1469ae5d0cf8f9903e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 25
-  collisionLayerMask:
-    serializedVersion: 2
-    m_Bits: 1
-  rocketExplosion: {fileID: 1764654978243476, guid: a98b15aa948478849b54661e4d9a317e, type: 3}
-  projectileMesh: {fileID: 7375337548765109680}
-  inFlightAudioSource: {fileID: 136168842684345051}
-  disableOnHit: {fileID: 4361980691020798282}
 --- !u!54 &91128310120046435
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -291,6 +271,26 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-8418067541176588748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4092872357349286730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a63236a53e6db6844909b4438e613ebf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Projectile
+  speed: 100
+  collisionLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  rocketExplosion: {fileID: 1764654978243476, guid: a98b15aa948478849b54661e4d9a317e, type: 3}
+  projectileMesh: {fileID: 7375337548765109680}
+  inFlightAudioSource: {fileID: 136168842684345051}
+  disableOnHit: {fileID: 4361980691020798282}
 --- !u!1001 &4483190134865152260
 PrefabInstance:
   m_ObjectHideFlags: 0

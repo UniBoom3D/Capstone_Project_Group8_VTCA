@@ -1,7 +1,46 @@
 ﻿using UnityEngine;
 
-public class TurtleEnemyAction : MonoBehaviour
+// ✅ FIXED: Added ITurnParticipant so the BattleManager can control this enemy
+public class TurtleEnemyAction : MonoBehaviour, ITurnParticipant
 {
+    // =========================================================
+    // 🟢 INTERFACE IMPLEMENTATION (Required by BattleManager)
+    // =========================================================
+    public string Name => gameObject.name;
+
+    // 1. HP: We give the turtle 50 HP
+    public int HP { get; private set; } = 50;
+
+    // 2. IsAlive: Checks if HP is > 0
+    public bool IsAlive => HP > 0;
+
+    // 3. TakeDamage: Logic to lose HP
+    public void TakeDamage(int dmg)
+    {
+        HP -= dmg;
+        Debug.Log($"💥 🐢 {Name} took {dmg} damage! Remaining HP: {HP}");
+        if (HP <= 0)
+        {
+            Debug.Log($"💀 {Name} is defeated!");
+            gameObject.SetActive(false); // Hide the turtle when dead
+        }
+    }
+
+    // 4. Transform Fix: Explicitly implement the interface to handle the 'set' requirement
+    Transform ITurnParticipant.transform
+    {
+        get => this.transform;
+        set { /* Unity Transform is read-only, so we do nothing */ }
+    }
+
+    // 5. TakeTurn: This is what BattleManager calls automatically
+    public void TakeTurn()
+    {
+        // We simply call your custom logic function
+        ExecuteTurn();
+    }
+    // =========================================================
+
     [Header("Target")]
     [SerializeField] private Transform playerTarget;
 
@@ -10,7 +49,7 @@ public class TurtleEnemyAction : MonoBehaviour
     [SerializeField] private float attackRange = 30f;
 
     /// <summary>
-    /// BattleHandlerPvE gán target ngay khi spawn
+    /// BattleHandlerPvE assigns target here
     /// </summary>
     public void SetTarget(Transform target)
     {
@@ -18,14 +57,21 @@ public class TurtleEnemyAction : MonoBehaviour
     }
 
     // =====================================================
-    // TURN ENTRY POINT
+    // TURN LOGIC
     // =====================================================
 
     /// <summary>
-    /// Gọi 1 lần duy nhất mỗi turn của enemy
+    /// Called once per turn via TakeTurn()
     /// </summary>
     public void ExecuteTurn()
     {
+        // Auto-find player if target is missing
+        if (playerTarget == null)
+        {
+            var playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null) playerTarget = playerObj.transform;
+        }
+
         if (playerTarget == null)
         {
             Debug.LogWarning("[TurtleEnemyAction] Player target missing.");
@@ -48,44 +94,27 @@ public class TurtleEnemyAction : MonoBehaviour
     // ACTIONS
     // =====================================================
 
-    /// <summary>
-    /// Di chuyển về phía player cho tới khi vào tầm
-    /// </summary>
     public void MoveToPlayer()
     {
         Vector3 direction = (playerTarget.position - transform.position).normalized;
 
-        // TODO: giới hạn quãng đường di chuyển theo stamina
+        // Simple movement (Teleport/Snap for now)
         transform.position += direction * moveSpeed;
+
+        // Look at player
+        transform.LookAt(playerTarget);
 
         Debug.Log("🐢 Turtle moves closer to player.");
     }
 
-    /// <summary>
-    /// Tấn công player và kết thúc turn
-    /// </summary>
     public void AttackPlayer()
     {
         Debug.Log("🐢 Turtle attacks the player!");
-
-        // TODO: gửi event / gọi CombatResolver để tính damage
-        // TODO: trừ stamina khi tấn công (sau)
-
-        EndTurn();
+        // Logic to deal damage goes here later
     }
 
-    // =====================================================
-    // TURN END
-    // =====================================================
-
-    private void EndTurn()
+    public void OnDestroy()
     {
-        // BattleHandlerPvE sẽ bắt NotifyActionDone() sau này
-        Debug.Log("🐢 Turtle ends its turn.");
-    }
-
-    private void OnDestroy()
-    {
-        // Cleanup nếu cần
+        // Cleanup if needed
     }
 }
