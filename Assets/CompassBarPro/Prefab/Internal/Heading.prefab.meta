@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: eb3e2c616aca982429b4524ca61df984
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 144833
+  packageName: Compass Bar Pro
+  packageVersion: 1.3
+  assetPath: Assets/CompassBarPro/Prefab/Internal/Heading.prefab
+  uploadId: 334986

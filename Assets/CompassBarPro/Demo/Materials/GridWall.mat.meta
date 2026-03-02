@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fbf9981144accb24281dd797167fcddb
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 144833
+  packageName: Compass Bar Pro
+  packageVersion: 1.3
+  assetPath: Assets/CompassBarPro/Demo/Materials/GridWall.mat
+  uploadId: 334986

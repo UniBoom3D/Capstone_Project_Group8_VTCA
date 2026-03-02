@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: c4aac7e42fcd1ad42ada45c582d9c396
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 144833
+  packageName: Compass Bar Pro
+  packageVersion: 1.3
+  assetPath: Assets/CompassBarPro/Demo/Scripts/ZoomIndicator.cs
+  uploadId: 334986

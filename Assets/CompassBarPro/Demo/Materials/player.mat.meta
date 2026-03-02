@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 4b44a449e9038ac43b67af95964cd287
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 144833
+  packageName: Compass Bar Pro
+  packageVersion: 1.3
+  assetPath: Assets/CompassBarPro/Demo/Materials/player.mat
+  uploadId: 334986
