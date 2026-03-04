@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class CombatStats : MonoBehaviour
 {
@@ -48,5 +49,10 @@ public class CombatStats : MonoBehaviour
         int finalDamage = Mathf.Max(1, dmg - armor);
         currentHealth -= finalDamage;
         Debug.Log($"{gameObject.name} took {finalDamage} dmg. HP: {currentHealth}");
+    }
+
+    internal void TakeDamage(float damage)
+    {
+        throw new NotImplementedException();
     }
 }
