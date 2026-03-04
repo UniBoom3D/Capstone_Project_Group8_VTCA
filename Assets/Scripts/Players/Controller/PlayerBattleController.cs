@@ -13,7 +13,7 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
     // 🟢 INTERFACE IMPLEMENTATION
     // =========================================================
     public string Name => gameObject.name;
-    public int HP => myStats != null ? myStats.currentHealth : 0;
+    public float HP => myStats != null ? myStats.currentHealth : 0;
     public bool IsAlive => HP > 0;
     Transform ITurnParticipant.transform
     {
@@ -21,9 +21,9 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
         set { }
     }
 
-    public void TakeDamage(int dmg)
+    public void TakeDamage(float damage)
     {
-        if (myStats != null) myStats.TakeDamage(dmg);
+        if (myStats != null) myStats.TakeDamage(damage);
     }
 
     public void TakeTurn() { } // Handled by Update
@@ -221,5 +221,15 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
         }
 
         Debug.Log($"Player control: {(enable ? "ENABLED" : "DISABLED")}");
+    }
+
+    void ITurnParticipant.TakeDamage(float damage)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void TakeDamage(int dmg)
+    {
+        throw new NotImplementedException();
     }
 }

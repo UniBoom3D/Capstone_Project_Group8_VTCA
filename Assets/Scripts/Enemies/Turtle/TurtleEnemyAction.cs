@@ -7,14 +7,20 @@ public class TurtleEnemyAction : MonoBehaviour, ITurnParticipant
     // 🟢 INTERFACE IMPLEMENTATION
     // =========================================================
     public string Name => gameObject.name;
-    public int HP { get; private set; } = 50;
+    public float HP { get; private set; } = 50;
     public bool IsAlive => HP > 0;
     Transform ITurnParticipant.transform { get => this.transform; set { } }
 
-    public void TakeDamage(int dmg)
+    float ITurnParticipant.HP => throw new System.NotImplementedException();
+
+    string ITurnParticipant.Name => throw new System.NotImplementedException();
+
+    bool ITurnParticipant.IsAlive => throw new System.NotImplementedException();
+
+    public void TakeDamage(float damage)
     {
-        HP -= dmg;
-        Debug.Log($"💥 {Name} took {dmg} damage! Remaining HP: {HP}");
+        HP -= damage;
+        Debug.Log($"💥 {Name} took {damage} damage! Remaining HP: {HP}");
         if (HP <= 0) gameObject.SetActive(false);
     }
 
@@ -108,5 +114,20 @@ public class TurtleEnemyAction : MonoBehaviour, ITurnParticipant
         {
             Debug.LogError("❌ Turtle missing Projectile Prefab or FirePoint!");
         }
+    }
+
+    void ITurnParticipant.TakeDamage(float damage)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    void ITurnParticipant.TakeTurn()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    void ITurnParticipant.TakeDamage(int dmg)
+    {
+        throw new System.NotImplementedException();
     }
 }
