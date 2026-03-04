@@ -1,11 +1,15 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class SkillManager : MonoBehaviour
 {
     public List<SkillData> defaultSkills;
 
     private List<SkillData> pendingSkills = new List<SkillData>();
+
+    public event Action<SkillData> OnSkillActivated;
+    public event Action OnSkillsConsumed;
 
     public void ActivateSkill(int index)
     {
@@ -17,6 +21,8 @@ public class SkillManager : MonoBehaviour
 
         Debug.Log($"🧠 Skill {skill.skillName} activated (pending)");
         Debug.Log("💰 Saitama cost consumed (log only)");
+
+        OnSkillActivated?.Invoke(skill);
     }
 
     public ShotModifier ConsumePendingSkills()
@@ -29,6 +35,8 @@ public class SkillManager : MonoBehaviour
         }
 
         pendingSkills.Clear();
+
+        OnSkillsConsumed?.Invoke();
 
         return modifier;
     }
