@@ -307,12 +307,13 @@ MonoBehaviour:
     level: 1
     exp: 0
     maxExp: 100
-    health: 0
-    stamina: 0
-    attack: 0
-    magic: 0
-    armor: 0
-    magicResist: 0
+    characterStats:
+      _health: 0
+      _stamina: 0
+      _attack: 0
+      _magic: 0
+      _armor: 0
+      _magicResist: 0
 --- !u!1 &266849270
 GameObject:
   m_ObjectHideFlags: 0
@@ -1485,7 +1486,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -1605,6 +1607,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterCreator
   characterListLoader: {fileID: 1108733224}
+  staticArcherData: {fileID: 0}
+  staticMageData: {fileID: 0}
+  staticGunnerData: {fileID: 0}
 --- !u!1 &1108733222
 GameObject:
   m_ObjectHideFlags: 0
@@ -3659,7 +3664,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
