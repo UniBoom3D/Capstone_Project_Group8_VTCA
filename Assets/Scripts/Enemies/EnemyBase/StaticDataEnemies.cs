@@ -2,19 +2,20 @@
 
 public abstract class StaticDataEnemies : ScriptableObject
 {
-    [Header("Thông tin")]
+    [Header("Info")]
     public string className;
     public string description;
     public Sprite icon;
 
-    [Header("Thông số")]
-    public int _baseHealth;
-    public int _baseStamina;
-    public int _baseAttack;
-    public int _baseMagic;
-    public int _baseArmor;
-    public int _baseMagicResist;
+    [Header("Base Stats")]
+    public int baseHealth;
+    public int baseStamina;
+    public int baseAttack;
+    public int baseMagic;
+    public int baseArmor;
+    public int baseMagicResist;
 
-   
-
+    [Header("Combat")]
+    public float moveSpeed;
+    public float attackRange;
 }
