@@ -11,12 +11,12 @@ public enum BattleState3D
 }
 
 /// <summary>
-/// BattleManagerCore (Abstract Parent)
+/// BattleCore (Abstract Parent)
 /// - Owns: 5-state game flow + shared runtime fields + timer helper
 /// - Does NOT: setup data, spawn units, decide mode rules, handle audio or cameras
 /// - Child (PVE/1v1/2v2/Boss...) implements OnTick + optional hooks
 /// </summary>
-public abstract class BattleManagerCore : MonoBehaviour
+public abstract class BattleCore : MonoBehaviour
 {
     [Header("STATE")]
     [SerializeField] protected BattleState3D currentState = BattleState3D.Start;
