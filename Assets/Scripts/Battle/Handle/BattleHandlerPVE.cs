@@ -2,8 +2,11 @@
 using System.Linq;
 using UnityEngine;
 
-public class BattleHandlerPvE : BattleManagerCore
+public class BattleHandlerPvE : BattleCore
 {
+    public static BattleHandlerPvE Instance { get; private set; }
+
+    
     [Header("PLAYER CONTROLLER")]
     [SerializeField] private PlayerBattleController playerBattlerController;
 
@@ -24,6 +27,12 @@ public class BattleHandlerPvE : BattleManagerCore
     private int playerTurnCount;
     private bool playerWinResult;
     private Coroutine phaseRoutine;
+
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     // =========================
     // Public API

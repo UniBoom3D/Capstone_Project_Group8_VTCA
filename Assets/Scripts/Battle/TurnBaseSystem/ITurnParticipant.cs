@@ -5,10 +5,10 @@ public interface ITurnParticipant
     string Name { get; }
     float HP { get; }
     bool IsAlive { get; }
-    Transform transform { get; set; } 
+    //Transform transform { get; set; } 
 
     void TakeTurn(); // hành động trong lượt
 
-    void TakeDamage(int dmg);
+    //void TakeDamage(int dmg);
     void TakeDamage(float damage);
 }

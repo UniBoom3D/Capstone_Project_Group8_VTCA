@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class BattleManager : MonoBehaviour
+public class BattleController : MonoBehaviour
 {
     [Header("References")]
     public BattleHandlerPvE battleHandler;
