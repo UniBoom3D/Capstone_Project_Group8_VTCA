@@ -11,19 +11,20 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e43abc2e356ec054dac53e5966476120, type: 3}
   m_Name: TurtleData
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyData
+  m_EditorClassIdentifier: Assembly-CSharp::TurtleData
   className: Turtle
-  description: 
+  description: Level 1
   icon: {fileID: 0}
-  baseHealth: 0
-  baseStamina: 0
-  baseAttack: 0
-  baseMagic: 0
-  baseArmor: 0
-  baseMagicResist: 0
-  moveSpeed: 0
-  attackRange: 0
-  projectilePower: 0
-  projectileArcHeight: 0
-  aimTime: 0
-  aimAccuracy: 0
+  baseHealth: 20
+  baseStamina: 5
+  baseAttack: 5
+  baseMagic: 5
+  baseArmor: 5
+  baseMagicResist: 5
+  moveSpeed: 4
+  attackRange: 5
+  projectilePower: 5
+  projectileArcHeight: 5
+  aimTime: 0.1
+  aimAccuracy: 0.2
+  turtlePrefab: {fileID: 5581053950119468367, guid: 854c76743bf9dd749ba40639c0fa4a87, type: 3}

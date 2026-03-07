@@ -12,8 +12,11 @@ EditorBuildSettings:
     path: Assets/Scenes/CharacterScene.unity
     guid: 4d4d3697f15e7a7438dca69f9e1224c5
   - enabled: 1
-    path: Assets/Scenes/Battle-test.unity
+    path: Assets/Scenes/BattleTurtleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/TurtleMap.unity
+    guid: 94ec95611e2dd284db1df03dffade4ef
   - enabled: 0
     path: Assets/Scenes/RoomScene.unity
     guid: 9ac18e8a52028054bb408b03580424fb
