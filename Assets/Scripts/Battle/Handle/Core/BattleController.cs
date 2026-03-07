@@ -11,7 +11,7 @@ public class BattleController : MonoBehaviour
     public string mapSceneName;
 
     [Header("UI")]
-    public LoadingUI loadingUI;
+    public Canvas loadingCanvas;
 
     private bool hasStarted = false;
 
@@ -30,11 +30,18 @@ public class BattleController : MonoBehaviour
         Debug.Log("BattleController: Start Battle");
 
         // 1️⃣ show loading
-        loadingUI.Show();
+        if (loadingCanvas != null)
+            loadingCanvas.gameObject.SetActive(true);
 
         // 2️⃣ load map
         AsyncOperation loadOp =
             SceneManager.LoadSceneAsync(mapSceneName, LoadSceneMode.Additive);
+
+        if (loadOp == null)
+        {
+            Debug.LogError("Scene load failed. Scene not found in Build Settings.");
+            yield break;
+        }
 
         while (!loadOp.isDone)
         {
@@ -43,13 +50,11 @@ public class BattleController : MonoBehaviour
 
         Debug.Log("Map Loaded");
 
-        // 3️⃣ fake loading
-        yield return StartCoroutine(loadingUI.FakeLoading());
+        // 3️⃣ hide loading
+        if (loadingCanvas != null)
+            loadingCanvas.gameObject.SetActive(false);
 
-        // 4️⃣ hide loading
-        loadingUI.Hide();
-
-        // 5️⃣ start battle
+        // 4️⃣ start battle
         if (battleHandler != null)
         {
             battleHandler.OnBattleEnded += OnBattleFinished;
@@ -62,7 +67,8 @@ public class BattleController : MonoBehaviour
     {
         Debug.Log("Battle Finished");
 
-        loadingUI.Show();
+        if (loadingCanvas != null)
+            loadingCanvas.gameObject.SetActive(true);
 
         Debug.Log("room load");
     }
