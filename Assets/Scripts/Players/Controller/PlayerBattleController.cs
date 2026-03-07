@@ -15,11 +15,11 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
     public string Name => gameObject.name;
     public float HP => myStats != null ? myStats.currentHealth : 0;
     public bool IsAlive => HP > 0;
-    Transform ITurnParticipant.transform
-    {
-        get => this.transform;
-        set { }
-    }
+    //Transform ITurnParticipant.transform
+    //{
+    //    get => this.transform;
+    //    set { }
+    //}
 
     public void TakeDamage(float damage)
     {
@@ -223,13 +223,13 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
         Debug.Log($"Player control: {(enable ? "ENABLED" : "DISABLED")}");
     }
 
-    void ITurnParticipant.TakeDamage(float damage)
-    {
-        throw new NotImplementedException();
-    }
+    //void ITurnParticipant.TakeDamage(float damage)
+    //{
+    //    throw new NotImplementedException();
+    //}
 
-    public void TakeDamage(int dmg)
-    {
-        throw new NotImplementedException();
-    }
+    //public void TakeDamage(int dmg)
+    //{
+    //    throw new NotImplementedException();
+    //}
 }
