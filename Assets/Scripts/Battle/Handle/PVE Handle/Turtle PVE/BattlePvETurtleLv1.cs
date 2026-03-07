@@ -1,123 +1,188 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
+using System.Linq;
+using UnityEngine;
 
-public class BattlePvETurtleLv1 : BattleHandlerPvE
+public class BattlePvETurtleLv1 : BattleCore
 {
-    [Header("Map")]
-    [SerializeField] private Transform mapPrefab;
+    [Header("Controllers")]
+    public PlayerBattleController playerController;
 
-    [Header("Spawn Containers")]
-    [SerializeField] private Transform spawnPlayerContainer;
-    [SerializeField] private Transform spawnEnemyContainer;
+    [Header("Settings")]
+    public int maxPlayerTurn = 20;
+    public float phaseDelay = 1f;
 
-    [Header("Prefabs")]
-    [SerializeField] private GameObject playerPrefab;
-    [SerializeField] private GameObject turtleEnemyPrefab;
+    private int playerTurnCount;
+    private bool playerWin;
 
-    private List<Transform> playerSpawnPoints = new();
-    private List<Transform> enemySpawnPoints = new();
+    private Coroutine phaseRoutine;
 
-    protected override void Awake()
-    {
-        base.Awake();
-
-        CacheSpawnPoints();
-    }
-
-    private void Start()
-    {
-        Debug.Log("🏝 Loading Turtle Map");
-
-        SpawnPlayer();
-        SpawnEnemies();
-    }
+    private BattleController controller;
 
     // =========================
-    // CACHE SPAWN POINTS
+    // ENTRY
     // =========================
 
-    void CacheSpawnPoints()
+    public void BeginBattle(BattleController bc)
     {
-        if (spawnPlayerContainer != null)
-        {
-            foreach (Transform child in spawnPlayerContainer)
-                playerSpawnPoints.Add(child);
-        }
+        controller = bc;
 
-        if (spawnEnemyContainer != null)
-        {
-            foreach (Transform child in spawnEnemyContainer)
-                enemySpawnPoints.Add(child);
-        }
+        Debug.Log("BattlePvETurtleLv1 Begin");
 
-        Debug.Log($"Player Spawns: {playerSpawnPoints.Count}");
-        Debug.Log($"Enemy Spawns: {enemySpawnPoints.Count}");
+        playerTurnCount = 0;
+        playerWin = false;
+
+        SetupTeams();
+
+        StartBattle(BlueTeam, RedTeam, BattleState3D.RedTeamTurn);
     }
 
     // =========================
-    // SPAWN PLAYER
+    // TEAM SETUP
     // =========================
 
-    void SpawnPlayer()
+    void SetupTeams()
     {
-        if (playerPrefab == null || playerSpawnPoints.Count == 0)
+        BattleTeamData blue = new BattleTeamData("Player");
+        BattleTeamData red = new BattleTeamData("Enemy");
+
+        var participants =
+            FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
+
+        foreach (var p in participants)
         {
-            Debug.LogWarning("Player spawn failed");
-            return;
+            if (p is ITurnParticipant actor)
+            {
+                if (p.CompareTag("Player"))
+                    blue.AddMember(actor);
+
+                else if (p.CompareTag("Enemy"))
+                    red.AddMember(actor);
+            }
         }
 
-        Transform spawn = playerSpawnPoints[0];
+        BlueTeam = blue;
+        RedTeam = red;
 
-        GameObject player = Instantiate(
-            playerPrefab,
-            spawn.position,
-            spawn.rotation
-        );
-
-        player.tag = "Player";
-
-        Debug.Log("🟦 Player Spawned");
+        Debug.Log($"Team Setup → Player:{BlueTeam.Members.Count} Enemy:{RedTeam.Members.Count}");
     }
 
     // =========================
-    // SPAWN ENEMIES
+    // CORE HOOKS
     // =========================
 
-    void SpawnEnemies()
+    protected override IEnumerator OnBattleStartIntro()
     {
-        if (turtleEnemyPrefab == null)
+        Debug.Log("Battle Intro");
+
+        yield return new WaitForSeconds(0.5f);
+    }
+
+    protected override void OnStateEnter(BattleState3D state)
+    {
+        if (phaseRoutine != null)
+            StopCoroutine(phaseRoutine);
+
+        switch (state)
         {
-            Debug.LogWarning("Enemy prefab missing");
-            return;
+            case BattleState3D.RedTeamTurn:
+                phaseRoutine = StartCoroutine(EnemyPhase());
+                break;
+
+            case BattleState3D.BlueTeamTurn:
+                phaseRoutine = StartCoroutine(PlayerPhase());
+                break;
+
+            case BattleState3D.Endbattle:
+                Debug.Log("Battle State -> Endbattle");
+                break;
         }
+    }
 
-        int count = enemySpawnPoints.Count;
+    protected override void OnTick(BattleState3D state)
+    {
+        // optional timer logic
+    }
 
-        for (int i = 0; i < count; i++)
-        {
-            Transform spawn = enemySpawnPoints[i];
-
-            GameObject enemy = Instantiate(
-                turtleEnemyPrefab,
-                spawn.position,
-                spawn.rotation
-            );
-
-            enemy.tag = "Enemy";
-
-            Debug.Log($"🐢 Turtle Enemy Spawned {i}");
-        }
+    protected override void OnBattleFinished()
+    {
+        Debug.Log(playerWin ? "🏆 Victory" : "💀 Defeat");
     }
 
     // =========================
     // ENEMY PHASE
     // =========================
 
-    protected override IEnumerator EnemyPhase()
+    IEnumerator EnemyPhase()
     {
-        Debug.Log("🐢 Turtle Battle Phase");
+        Debug.Log("=== Enemy Turn ===");
 
-        yield return base.EnemyPhase();
+        foreach (var enemy in RedTeam.Members.Where(e => e != null && e.IsAlive))
+        {
+            enemy.TakeTurn();
+
+            yield return new WaitForSeconds(2f);
+        }
+
+        if (CheckBattleEnd())
+            yield break;
+
+        yield return new WaitForSeconds(phaseDelay);
+
+        SetState(BattleState3D.BlueTeamTurn);
+    }
+
+    // =========================
+    // PLAYER PHASE
+    // =========================
+
+    IEnumerator PlayerPhase()
+    {
+        playerTurnCount++;
+
+        Debug.Log($"=== Player Turn {playerTurnCount}/{maxPlayerTurn} ===");
+
+        if (playerTurnCount > maxPlayerTurn)
+        {
+            playerWin = false;
+            EndBattle();
+            yield break;
+        }
+
+        playerController.EnableControl(true);
+
+        while (!isActionDone)
+            yield return null;
+
+        playerController.EnableControl(false);
+
+        if (CheckBattleEnd())
+            yield break;
+
+        yield return new WaitForSeconds(phaseDelay);
+
+        SetState(BattleState3D.RedTeamTurn);
+    }
+
+    // =========================
+    // END CONDITIONS
+    // =========================
+
+    bool CheckBattleEnd()
+    {
+        if (RedTeam.IsDefeated)
+        {
+            playerWin = true;
+            EndBattle();
+            return true;
+        }
+
+        if (BlueTeam.IsDefeated)
+        {
+            playerWin = false;
+            EndBattle();
+            return true;
+        }
+
+        return false;
     }
 }

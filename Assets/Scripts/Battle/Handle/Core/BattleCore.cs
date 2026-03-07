@@ -12,111 +12,232 @@ public enum BattleState3D
 
 /// <summary>
 /// BattleCore (Abstract Parent)
-/// - Owns: 5-state game flow + shared runtime fields + timer helper
-/// - Does NOT: setup data, spawn units, decide mode rules, handle audio or cameras
-/// - Child (PVE/1v1/2v2/Boss...) implements OnTick + optional hooks
+/// --------------------------------------------------
+/// RESPONSIBILITY
+/// - Owns the core 5-state battle flow
+/// - Holds shared runtime data (teams, timer, flags)
+/// - Provides helper utilities for children
+///
+/// DOES NOT
+/// - Spawn units
+/// - Decide battle rules
+/// - Control camera / UI
+/// - Handle player input
+///
+/// CHILD CLASSES (PvE / PvP / Boss...)
+/// - Setup teams
+/// - Control phase logic
+/// - Implement OnTick()
 /// </summary>
 public abstract class BattleCore : MonoBehaviour
 {
+    // =========================
+    // STATE
+    // =========================
+
     [Header("STATE")]
     [SerializeField] protected BattleState3D currentState = BattleState3D.Start;
+
     protected bool isBattleActive;
     protected bool isActionDone;
+
     protected float turnTimer;
 
+    // =========================
+    // TEAM DATA (Runtime)
+    // =========================
+
     [Header("TEAM DATA (Runtime)")]
+
     public BattleTeamData BlueTeam { get; protected set; }
     public BattleTeamData RedTeam { get; protected set; }
+
+    // =========================
+    // SETTINGS
+    // =========================
 
     [Header("SETTINGS")]
     [SerializeField] protected float timePerTurn = 20f;
 
-    // ===========================
+    // =========================
+    // EVENTS
+    // =========================
+
+    public System.Action OnBattleEnded;
+
+    // =========================
     // LIFECYCLE
-    // ===========================
-    protected virtual void Awake() => OnCoreAwake();
+    // =========================
+
+    protected virtual void Awake()
+    {
+        OnCoreAwake();
+    }
 
     protected virtual void Update()
     {
-        if (!isBattleActive) return;
+        if (!isBattleActive)
+            return;
 
-        // timer is optional: child may ignore it
+        // countdown timer
         turnTimer -= Time.deltaTime;
 
         OnTick(currentState);
     }
 
-    // ===========================
+    // =========================
     // CORE API (for children)
-    // ===========================
+    // =========================
 
     /// <summary>
-    /// Child calls this after it sets up teams/spawns/ui.
-    /// You can choose who starts via firstState (e.g. RedTeamTurn).
+    /// Call this AFTER teams are setup
     /// </summary>
-    protected void StartBattle(BattleTeamData blue, BattleTeamData red, BattleState3D firstState)
+    protected void StartBattle(
+        BattleTeamData blue,
+        BattleTeamData red,
+        BattleState3D firstState)
     {
         BlueTeam = blue;
         RedTeam = red;
 
         isBattleActive = true;
+
         ResetTurnTimer();
 
         SetState(BattleState3D.Start);
+
         StartCoroutine(BeginRoutine(firstState));
     }
 
     /// <summary>
-    /// Child/controllers call this when an action (unit/team phase) is completed.
+    /// Called when unit / phase action is completed
     /// </summary>
-    public void MarkActionDone() => isActionDone = true;
+    public void MarkActionDone()
+    {
+        isActionDone = true;
+    }
 
+    /// <summary>
+    /// Change battle state
+    /// </summary>
     protected void SetState(BattleState3D next)
     {
         currentState = next;
+
         OnStateEnter(next);
     }
 
+    /// <summary>
+    /// Reset turn timer + action flag
+    /// </summary>
     protected void ResetTurnTimer()
     {
         turnTimer = timePerTurn;
         isActionDone = false;
     }
 
+    /// <summary>
+    /// Force end battle
+    /// </summary>
     protected void EndBattle()
     {
+        if (!isBattleActive)
+            return;
+
         isBattleActive = false;
+
         SetState(BattleState3D.Endbattle);
+
         OnBattleFinished();
+
+        OnBattleEnded?.Invoke();
     }
 
-    // ===========================
-    // CORE FLOW (Minimal)
-    // ===========================
+    // =========================
+    // CORE FLOW
+    // =========================
 
     private IEnumerator BeginRoutine(BattleState3D firstState)
     {
-        yield return OnBattleStartIntro(); // child can yield break
+        yield return OnBattleStartIntro();
+
         SetState(firstState);
+
         ResetTurnTimer();
     }
 
-    // ===========================
+    // =========================
     // CHILD HOOKS
-    // ===========================
+    // =========================
 
+    /// <summary>
+    /// Called during Awake
+    /// </summary>
     protected virtual void OnCoreAwake() { }
-    protected virtual IEnumerator OnBattleStartIntro() { yield break; }
+
+    /// <summary>
+    /// Optional intro animation / delay
+    /// </summary>
+    protected virtual IEnumerator OnBattleStartIntro()
+    {
+        yield break;
+    }
+
+    /// <summary>
+    /// Called when state changes
+    /// </summary>
     protected virtual void OnStateEnter(BattleState3D state) { }
+
+    /// <summary>
+    /// Called every frame while battle active
+    /// </summary>
     protected abstract void OnTick(BattleState3D state);
+
+    /// <summary>
+    /// Called when battle ends
+    /// </summary>
     protected virtual void OnBattleFinished() { }
 
-    // ===========================
-    // HELPER: Check if any team is defeated
-    // ===========================
+    // =========================
+    // HELPERS
+    // =========================
+
     protected bool IsAnyTeamDefeated()
     {
-        if (BlueTeam == null || RedTeam == null) return false;
+        if (BlueTeam == null || RedTeam == null)
+            return false;
+
         return BlueTeam.IsDefeated || RedTeam.IsDefeated;
+    }
+
+    protected bool IsBlueTeamDefeated()
+    {
+        if (BlueTeam == null)
+            return false;
+
+        return BlueTeam.IsDefeated;
+    }
+
+    protected bool IsRedTeamDefeated()
+    {
+        if (RedTeam == null)
+            return false;
+
+        return RedTeam.IsDefeated;
+    }
+
+    protected bool IsTimerExpired()
+    {
+        return turnTimer <= 0f;
+    }
+
+    public BattleState3D GetCurrentState()
+    {
+        return currentState;
+    }
+
+    public bool IsBattleRunning()
+    {
+        return isBattleActive;
     }
 }

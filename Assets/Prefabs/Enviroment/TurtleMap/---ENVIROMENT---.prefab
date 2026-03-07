@@ -107,7 +107,7 @@ GameObject:
   - component: {fileID: 1193712639835399773}
   m_Layer: 0
   m_Name: SpawnEnemyContainer
-  m_TagString: Untagged
+  m_TagString: EnemySpawn
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -460,7 +460,7 @@ GameObject:
   - component: {fileID: 2790519345772759965}
   m_Layer: 0
   m_Name: SpawnPlayerContainer
-  m_TagString: Untagged
+  m_TagString: PlayerSpawn
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

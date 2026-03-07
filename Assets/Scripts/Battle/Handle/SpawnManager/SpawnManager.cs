@@ -4,18 +4,52 @@ public class SpawnManager : MonoBehaviour
 {
     public static SpawnManager Instance;
 
-
-    private void Awake()
+    void Awake()
     {
         Instance = this;
     }
 
-    public void InitializeBattle()
+    // =========================
+    // GENERIC SPAWN
+    // =========================
+
+    public GameObject SpawnUnit(
+        GameObject prefab,
+        Transform spawnPoint)
     {
-        Debug.Log("⚙ Spawn System Start");
+        GameObject unit = Instantiate(
+            prefab,
+            spawnPoint.position,
+            spawnPoint.rotation
+        );
 
-        
+        return unit;
+    }
 
-        Debug.Log("⚙ Spawn System Finished");
+    // =========================
+    // SPAWN TURTLE FROM DATA
+    // =========================
+
+    public TurtleEnemyAction SpawnTurtle(
+        TurtleData data,
+        Transform spawnPoint)
+    {
+        GameObject unit = Instantiate(
+            data.turtlePrefab,
+            spawnPoint.position,
+            spawnPoint.rotation
+        );
+
+        TurtleEnemyAction turtle =
+            unit.GetComponent<TurtleEnemyAction>();
+
+        if (turtle != null)
+        {
+            turtle.enemyData = data;
+
+            TurtlePvEManager.Instance.RegisterTurtle(turtle);
+        }
+
+        return turtle;
     }
 }

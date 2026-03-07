@@ -1,94 +1,69 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
 public class BattleController : MonoBehaviour
 {
-    [Header("References")]
-    public BattleHandlerPvE battleHandler;
+    [Header("Battle Handler")]
+    public BattlePvETurtleLv1 battleHandler;
 
-    [Header("Scene Loading")]
-    public string mapSceneName;   // Nhập tên scene map
-    public bool loadMapAdditive = true;
+    [Header("Scene")]
+    public string mapSceneName;
 
-    [Header("Settings")]
-    public bool enemyGoesFirst = true;
+    [Header("UI")]
+    public LoadingUI loadingUI;
 
-    private bool hasBattleStarted = false;
+    private bool hasStarted = false;
 
     private void Update()
     {
-        if (!hasBattleStarted && Input.GetKeyDown(KeyCode.Return))
+        if (!hasStarted && Input.GetKeyDown(KeyCode.Return))
         {
-            StartCoroutine(StartGame());
+            StartCoroutine(BattleSequence());
         }
     }
 
-    private IEnumerator StartGame()
+    IEnumerator BattleSequence()
     {
-        hasBattleStarted = true;
+        hasStarted = true;
 
-        Debug.Log("🏁 [BattleController] Starting Battle Sequence...");
+        Debug.Log("BattleController: Start Battle");
 
-        // 1️⃣ Load Map Scene (Additive)
-        if (loadMapAdditive && !string.IsNullOrEmpty(mapSceneName))
+        // 1️⃣ show loading
+        loadingUI.Show();
+
+        // 2️⃣ load map
+        AsyncOperation loadOp =
+            SceneManager.LoadSceneAsync(mapSceneName, LoadSceneMode.Additive);
+
+        while (!loadOp.isDone)
         {
-            Scene mapScene = SceneManager.GetSceneByName(mapSceneName);
-
-            // Check nếu scene đã tồn tại
-            if (mapScene.isLoaded)
-            {
-                Debug.Log($"[BattleController] Map scene already loaded: {mapSceneName}");
-            }
-            else
-            {
-                Debug.Log($"[BattleController] Loading Map Scene: {mapSceneName}");
-
-                AsyncOperation loadOp = SceneManager.LoadSceneAsync(mapSceneName, LoadSceneMode.Additive);
-
-                while (!loadOp.isDone)
-                {
-                    yield return null;
-                }
-
-                Debug.Log($"[BattleController] Map Loaded Successfully: {mapSceneName}");
-            }
+            yield return null;
         }
 
-        // 2️⃣ Setup Teams
-        BattleTeamData playerTeam = new BattleTeamData("Blue Team");
-        BattleTeamData enemyTeam = new BattleTeamData("Red Team");
+        Debug.Log("Map Loaded");
 
-        var allParticipants = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
+        // 3️⃣ fake loading
+        yield return StartCoroutine(loadingUI.FakeLoading());
 
-        foreach (var p in allParticipants)
-        {
-            if (p is ITurnParticipant participant)
-            {
-                if (p.CompareTag("Player"))
-                {
-                    playerTeam.AddMember(participant);
-                }
-                else if (p.CompareTag("Enemy"))
-                {
-                    enemyTeam.AddMember(participant);
-                }
-            }
-        }
+        // 4️⃣ hide loading
+        loadingUI.Hide();
 
-        Debug.Log($"[BattleController] Participants Found -> Player: {playerTeam.Members.Count}, Enemy: {enemyTeam.Members.Count}");
-
-        // 3️⃣ Start Battle
+        // 5️⃣ start battle
         if (battleHandler != null)
         {
-            battleHandler.StartBattlePVE(playerTeam, enemyTeam);
+            battleHandler.OnBattleEnded += OnBattleFinished;
+            battleHandler.BeginBattle(this);
+        }
+    }
 
-            Debug.Log($"⚔️ Battle Started! Blue: {playerTeam.Members.Count}, Red: {enemyTeam.Members.Count}");
-        }
-        else
-        {
-            Debug.LogError("[BattleController] BattleHandler is missing!");
-        }
+    // được gọi khi battle kết thúc
+    public void OnBattleFinished()
+    {
+        Debug.Log("Battle Finished");
+
+        loadingUI.Show();
+
+        Debug.Log("room load");
     }
 }

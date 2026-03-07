@@ -8,42 +8,69 @@ public class EnemyAIController : MonoBehaviour
     public Transform firePoint;
     public GameObject projectilePrefab;
 
+    [Header("Animation")]
+    public Animator animator;
+
+    [Tooltip("Animation State Name")]
+    public string moveAnim = "Move";
+    public string attackAnim = "Attack";
+    public string skillAnim = "Skill";
+
+    [Header("Turn Settings")]
+    public float turnDuration = 5f;
+
     private Transform currentTarget;
+    private bool hasAttacked = false;
+
+    // =========================================================
+    // MAIN TURN LOGIC
+    // =========================================================
 
     public IEnumerator ExecuteTurn(System.Action onTurnFinished)
     {
-        Debug.Log(" Enemy AI Turn");
+        Debug.Log("Enemy AI Turn Start");
 
-        // 1. Find target
+        hasAttacked = false;
+
         FindNearestTarget();
 
         if (currentTarget == null)
         {
-            Debug.LogWarning("No target found");
             onTurnFinished?.Invoke();
             yield break;
         }
 
-        // 2. Face target
         FaceTarget();
 
-        yield return new WaitForSeconds(0.3f);
+        float timer = 0f;
 
-        // 3. Move to attack range
-        yield return MoveToAttackRange();
+        while (timer < turnDuration)
+        {
+            float dist = Vector3.Distance(transform.position, currentTarget.position);
 
-        yield return new WaitForSeconds(0.4f);
+            if (dist <= enemyData.attackRange)
+            {
+                yield return AttackRoutine();
+                hasAttacked = true;
+                break;
+            }
 
-        // 4. Attack
-        Attack();
+            MoveTowardsTarget();
 
-        yield return new WaitForSeconds(0.5f);
+            timer += Time.deltaTime;
+
+            yield return null;
+        }
+
+        StopMoveAnimation();
+
+        Debug.Log("Enemy turn finished");
 
         onTurnFinished?.Invoke();
     }
 
     // =========================================================
-    // FIND TARGET
+    // TARGETING
     // =========================================================
 
     void FindNearestTarget()
@@ -65,7 +92,7 @@ public class EnemyAIController : MonoBehaviour
     }
 
     // =========================================================
-    // FACE TARGET
+    // ROTATION
     // =========================================================
 
     void FaceTarget()
@@ -73,39 +100,63 @@ public class EnemyAIController : MonoBehaviour
         Vector3 dir = (currentTarget.position - transform.position).normalized;
         dir.y = 0;
 
-        transform.rotation = Quaternion.LookRotation(dir);
+        if (dir != Vector3.zero)
+        {
+            transform.rotation = Quaternion.LookRotation(dir);
+        }
     }
 
     // =========================================================
-    // MOVE
+    // MOVEMENT
     // =========================================================
 
-    IEnumerator MoveToAttackRange()
+    void MoveTowardsTarget()
     {
-        float dist = Vector3.Distance(transform.position, currentTarget.position);
+        PlayMoveAnimation();
 
-        while (dist > enemyData.attackRange)
+        Vector3 dir = (currentTarget.position - transform.position).normalized;
+        dir.y = 0;
+
+        transform.position += dir * enemyData.moveSpeed * Time.deltaTime;
+
+        FaceTarget();
+    }
+
+    void PlayMoveAnimation()
+    {
+        if (animator != null && !string.IsNullOrEmpty(moveAnim))
         {
-            Vector3 dir = (currentTarget.position - transform.position).normalized;
-            dir.y = 0;
-
-            transform.position += dir * enemyData.moveSpeed * Time.deltaTime;
-
-            FaceTarget();
-
-            dist = Vector3.Distance(transform.position, currentTarget.position);
-
-            yield return null;
+            animator.Play(moveAnim);
         }
+    }
 
-        Debug.Log("Enemy reached attack range");
+    void StopMoveAnimation()
+    {
+        if (animator != null)
+        {
+            animator.Play("Idle");
+        }
     }
 
     // =========================================================
     // ATTACK
     // =========================================================
 
-    void Attack()
+    IEnumerator AttackRoutine()
+    {
+        if (animator != null && !string.IsNullOrEmpty(attackAnim))
+        {
+            animator.Play(attackAnim);
+        }
+
+        yield return new WaitForSeconds(0.35f);
+
+        SpawnProjectile();
+
+        yield return new WaitForSeconds(0.4f);
+    }
+
+    void SpawnProjectile()
     {
         if (projectilePrefab == null || firePoint == null) return;
 
@@ -114,7 +165,6 @@ public class EnemyAIController : MonoBehaviour
         Vector3 dir = targetPos - firePoint.position;
 
         float angle = enemyData.projectileArcHeight;
-
         float rad = angle * Mathf.Deg2Rad;
 
         Vector3 velocity = new Vector3(
@@ -133,5 +183,21 @@ public class EnemyAIController : MonoBehaviour
         }
 
         Debug.Log("Enemy attacked");
+    }
+
+    // =========================================================
+    // SKILL (for future)
+    // =========================================================
+
+    public IEnumerator SkillRoutine()
+    {
+        if (animator != null && !string.IsNullOrEmpty(skillAnim))
+        {
+            animator.Play(skillAnim);
+        }
+
+        yield return new WaitForSeconds(1f);
+
+        Debug.Log("Enemy used skill");
     }
 }

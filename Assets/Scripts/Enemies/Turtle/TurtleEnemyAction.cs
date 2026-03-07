@@ -12,31 +12,61 @@ public class TurtleEnemyAction : MonoBehaviour, ITurnParticipant
 
     private EnemyAIController ai;
 
-    private void Start()
+    void Awake()
     {
-        HP = enemyData.baseHealth;
         ai = GetComponent<EnemyAIController>();
     }
 
+    void Start()
+    {
+        HP = enemyData.baseHealth;
+
+        //TurtlePvEManager.Instance.RegisterTurtle(this);
+    }
+
+    // =========================
+    // DAMAGE
+    // =========================
+
     public void TakeDamage(float damage)
     {
+        if (!IsAlive) return;
+
         HP -= damage;
+
+        Debug.Log($"{Name} took {damage} damage. HP: {HP}");
 
         if (HP <= 0)
         {
-            gameObject.SetActive(false);
+            Die();
         }
     }
 
+    void Die()
+    {
+        Debug.Log($"{Name} died");
+        gameObject.SetActive(false);
+    }
+
+    // =========================
+    // TURN
+    // =========================
+
     public void TakeTurn()
     {
+        if (!IsAlive)
+        {
+            TurtlePvEManager.Instance.NotifyTurnFinished();
+            return;
+        }
+
         StartCoroutine(ai.ExecuteTurn(OnTurnFinished));
     }
 
     void OnTurnFinished()
     {
-        Debug.Log("🐢 Enemy finished turn");
+        Debug.Log($"🐢 {Name} finished turn");
 
-        //BattleHandlerPvE.Instance.EndTurn();
+        TurtlePvEManager.Instance.NotifyTurnFinished();
     }
 }
