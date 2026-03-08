@@ -352,6 +352,8 @@ MonoBehaviour:
   playerController: {fileID: 1940374644}
   maxPlayerTurn: 20
   phaseDelay: 1
+  blueTeamRoot: {fileID: 0}
+  redTeamRoot: {fileID: 0}
 --- !u!1 &795998659
 GameObject:
   m_ObjectHideFlags: 0
@@ -536,6 +538,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1276210835}
+  - component: {fileID: 1276210836}
   m_Layer: 0
   m_Name: TeamRoot
   m_TagString: Untagged
@@ -560,6 +563,18 @@ Transform:
   - {fileID: 242615198}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1276210836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1276210834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 472d1223f1f09174891af086b0d9749e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TeamRoot
 --- !u!1 &1602246598
 GameObject:
   m_ObjectHideFlags: 0
