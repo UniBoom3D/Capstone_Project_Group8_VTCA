@@ -12,17 +12,17 @@ EditorBuildSettings:
     path: Assets/Scenes/CharacterScene.unity
     guid: 4d4d3697f15e7a7438dca69f9e1224c5
   - enabled: 1
-    path: Assets/Scenes/BattleTurtleScene.unity
+    path: Assets/Scenes/TurtleRoomScene.unity
+    guid: 9ac18e8a52028054bb408b03580424fb
+  - enabled: 1
+    path: Assets/Scenes/TurtleLoadingScene.unity
+    guid: cc33def4627e5114795445460625c437
+  - enabled: 1
+    path: Assets/Scenes/TurtleBattleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
     path: Assets/Scenes/TurtleMap.unity
     guid: 94ec95611e2dd284db1df03dffade4ef
-  - enabled: 0
-    path: Assets/Scenes/RoomTurtleScene.unity
-    guid: 9ac18e8a52028054bb408b03580424fb
-  - enabled: 0
-    path: Assets/Scenes/LoadingTurtleScene.unity
-    guid: cc33def4627e5114795445460625c437
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

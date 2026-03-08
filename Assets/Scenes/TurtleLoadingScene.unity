@@ -542,8 +542,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1630098716}
+  - component: {fileID: 1630098717}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: TurtleLoadingManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -564,6 +565,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1630098717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1630098715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd6f946130843404aa8a4b39e6f568ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurtleLoadingManager
+  mapScene: TurtleMap
+  battleScene: TurtleBattleScene
 --- !u!224 &1904045031 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3085793056500462562, guid: 4c3260a64bc819f45b1b8cf3b90ad6ed, type: 3}
