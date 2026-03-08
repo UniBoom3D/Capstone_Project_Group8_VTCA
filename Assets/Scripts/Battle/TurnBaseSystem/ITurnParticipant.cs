@@ -8,7 +8,6 @@ public interface ITurnParticipant
     //Transform transform { get; set; } 
 
     void TakeTurn(); // hành động trong lượt
-
-    //void TakeDamage(int dmg);
+  
     void TakeDamage(float damage);
 }

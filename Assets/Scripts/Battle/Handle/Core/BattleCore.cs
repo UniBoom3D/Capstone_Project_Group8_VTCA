@@ -3,11 +3,11 @@ using UnityEngine;
 
 public enum BattleState3D
 {
-    Start,
+    StartBattle,
     BlueTeamTurn,
     RedTeamTurn,
     AnimationPlay,
-    Endbattle
+    EndBattle
 }
 
 /// <summary>
@@ -36,7 +36,7 @@ public abstract class BattleCore : MonoBehaviour
     // =========================
 
     [Header("STATE")]
-    [SerializeField] protected BattleState3D currentState = BattleState3D.Start;
+    [SerializeField] protected BattleState3D currentState = BattleState3D.StartBattle;
 
     protected bool isBattleActive;
     protected bool isActionDone;
@@ -104,7 +104,7 @@ public abstract class BattleCore : MonoBehaviour
 
         ResetTurnTimer();
 
-        SetState(BattleState3D.Start);
+        SetState(BattleState3D.StartBattle);
 
         StartCoroutine(BeginRoutine(firstState));
     }
@@ -146,7 +146,7 @@ public abstract class BattleCore : MonoBehaviour
 
         isBattleActive = false;
 
-        SetState(BattleState3D.Endbattle);
+        SetState(BattleState3D.EndBattle);
 
         OnBattleFinished();
 
@@ -208,6 +208,17 @@ public abstract class BattleCore : MonoBehaviour
             return false;
 
         return BlueTeam.IsDefeated || RedTeam.IsDefeated;
+    }
+
+    protected BattleTeamData GetWinnerTeam()
+    {
+        if (BlueTeam.IsDefeated)
+            return RedTeam;
+
+        if (RedTeam.IsDefeated)
+            return BlueTeam;
+
+        return null;
     }
 
     protected bool IsBlueTeamDefeated()

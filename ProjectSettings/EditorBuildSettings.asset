@@ -18,10 +18,10 @@ EditorBuildSettings:
     path: Assets/Scenes/TurtleMap.unity
     guid: 94ec95611e2dd284db1df03dffade4ef
   - enabled: 0
-    path: Assets/Scenes/RoomScene.unity
+    path: Assets/Scenes/RoomTurtleScene.unity
     guid: 9ac18e8a52028054bb408b03580424fb
   - enabled: 0
-    path: Assets/Scenes/EnviromentScene.unity
+    path: Assets/Scenes/LoadingTurtleScene.unity
     guid: cc33def4627e5114795445460625c437
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}

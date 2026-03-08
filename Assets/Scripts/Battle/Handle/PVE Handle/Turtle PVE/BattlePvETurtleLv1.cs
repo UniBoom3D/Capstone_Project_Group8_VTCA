@@ -92,7 +92,7 @@ public class BattlePvETurtleLv1 : BattleCore
                 phaseRoutine = StartCoroutine(PlayerPhase());
                 break;
 
-            case BattleState3D.Endbattle:
+            case BattleState3D.EndBattle:
                 Debug.Log("Battle State -> Endbattle");
                 break;
         }

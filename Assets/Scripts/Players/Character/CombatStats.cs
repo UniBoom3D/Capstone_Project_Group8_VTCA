@@ -51,8 +51,8 @@ public class CombatStats : MonoBehaviour
         Debug.Log($"{gameObject.name} took {finalDamage} dmg. HP: {currentHealth}");
     }
 
-    internal void TakeDamage(float damage)
-    {
-        throw new NotImplementedException();
-    }
+    //internal void TakeDamage(float damage)
+    //{
+    //    throw new NotImplementedException();
+    //}
 }
