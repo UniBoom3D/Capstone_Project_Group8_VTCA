@@ -8,8 +8,8 @@ public class BattleHandlerPvE : BattleManagerCore
     [SerializeField] private PlayerBattleController playerBattlerController;
 
     [Header("RULES")]
-    [SerializeField] private int limitedTurnForPlayer = 20;
-    [SerializeField] private float phaseDelay = 1f;
+    [SerializeField] private int limitedTurnForPlayer = 20;   // Player tối đa 20 lượt (phase xanh)
+    [SerializeField] private float phaseDelay = 1f;           // ~1s giữa các phase
 
     [Header("PLAYER TURN")]
     [SerializeField] private float endTurnAfterShootDelay = 0.1f;
@@ -38,18 +38,23 @@ public class BattleHandlerPvE : BattleManagerCore
         if (playerBattlerController == null)
             playerBattlerController = FindFirstObjectByType<PlayerBattleController>();
 
-        // Start Battle
+        // Enemy starts first by default in PVE loop
         StartBattle(blueTeam, redTeam, BattleState3D.RedTeamTurn);
     }
 
     // =========================
-    // Core hooks
+    // Core hooks (minimal)
     // =========================
     protected override IEnumerator OnBattleStartIntro()
     {
         currentTeamName = "Start";
+
+        // TODO: SpawnPlayerBlueTeam();
+        // TODO: Cinemachine intro sequence
+
         SetPlayerControl(false);
         HookPlayerShootEvent(false);
+
         yield return new WaitForSeconds(0.2f);
     }
 
@@ -73,7 +78,11 @@ public class BattleHandlerPvE : BattleManagerCore
         }
     }
 
-    protected override void OnTick(BattleState3D state) { }
+    protected override void OnTick(BattleState3D state)
+    {
+        // PvE chung: không xử lý logic cụ thể tại đây (để ChallengeTurtle làm).
+        // Chỉ giữ core running.
+    }
 
     protected override void OnBattleFinished()
     {
@@ -82,7 +91,7 @@ public class BattleHandlerPvE : BattleManagerCore
     }
 
     // =========================
-    // 🟢 UPDATED ENEMY PHASE
+    // Phases
     // =========================
     private IEnumerator EnemyPhase()
     {
@@ -91,36 +100,25 @@ public class BattleHandlerPvE : BattleManagerCore
         currentTeamName = RedTeam.TeamName;
         Debug.Log("=== Enemy turn ===");
 
-        // 1. Loop through all enemies in the Red Team
-        foreach (var enemy in RedTeam.Members)
-        {
-            // Only process if enemy exists and is alive
-            if (enemy != null && enemy.IsAlive)
-            {
-                // A. Focus Camera on this specific enemy so we see them move
-                if (enemy is MonoBehaviour monoEnemy)
-                {
-                    FocusCamera(monoEnemy.transform);
-                }
+        // Focus camera: enemy gần nhất so với player mục tiêu
+        var playerTarget = GetFirstAliveTransform(BlueTeam);
+        var enemyFocus = GetNearestEnemyToTarget(playerTarget);
+        FocusCamera(enemyFocus);
 
-                // B. Tell the enemy to ACT
-                // This calls the 'TakeTurn' function in your Turtle script
-                enemy.TakeTurn();
+        // TODO: EnemyTeamAction_AllAtOnce()
+        // - Spawn enemy (nếu cần)
+        // - Move
+        // - Attack
+        // (all in one phase)
+        // Debug/log trong ChallengeTurtle
 
-                // C. WAIT for the enemy to finish!
-                // Since the Turtle takes 1.5s to move + aim time, we wait 3 seconds per enemy.
-                // Without this wait, the loop finishes instantly and skips the animation.
-                yield return new WaitForSeconds(3.0f);
-            }
-        }
+        yield return null;
 
         // Win check
         if (RedTeam.IsDefeated) { playerWinResult = true; EndBattle(); yield break; }
         if (BlueTeam.IsDefeated) { playerWinResult = false; EndBattle(); yield break; }
 
-        // Delay before giving control back to player
         if (phaseDelay > 0f) yield return new WaitForSeconds(phaseDelay);
-
         SetState(BattleState3D.BlueTeamTurn);
     }
 
@@ -133,6 +131,7 @@ public class BattleHandlerPvE : BattleManagerCore
 
         Debug.Log($"=== Player turn {playerTurnCount}/{limitedTurnForPlayer} ===");
 
+        // Turn limit rule
         if (playerTurnCount > limitedTurnForPlayer && !RedTeam.IsDefeated)
         {
             playerWinResult = false;
@@ -145,13 +144,14 @@ public class BattleHandlerPvE : BattleManagerCore
             if (!isBattleActive) yield break;
 
             CurrentActor = actor;
+
             Debug.Log($"👉 It is now {actor.Name}'s Turn!");
 
             FocusCamera(GetPlayerCameraFollow(actor));
 
             isActionDone = false;
             awaitingPlayerAction = true;
-            bool cheatUsed = false;
+            bool cheatUsed = false; // Prevents pressing O multiple times
 
             HookPlayerShootEvent(true);
             SetPlayerControl(true);
@@ -159,22 +159,30 @@ public class BattleHandlerPvE : BattleManagerCore
             // --- WAITING LOOP ---
             while (!isActionDone && isBattleActive)
             {
+                // 🛠️ CHEAT: Press 'O' to skip turn in 5 seconds
                 if (!cheatUsed && Input.GetKeyDown(KeyCode.O))
                 {
                     cheatUsed = true;
                     Debug.Log("⏳ Cheat Activated: Ending turn in 5 seconds...");
+
+                    // 1. Lock controls immediately so you can't shoot/move
                     SetPlayerControl(false);
                     HookPlayerShootEvent(false);
                     awaitingPlayerAction = false;
+
+                    // 2. Start the 5-second countdown to force end the turn
                     StartCoroutine(EndUnitTurnAfterDelay(5f));
                 }
+
                 yield return null;
             }
             // -------------------
 
+            // Cleanup (safe to call even if cheat handled it already)
             SetPlayerControl(false);
             HookPlayerShootEvent(false);
             awaitingPlayerAction = false;
+
             CurrentActor = null;
 
             if (RedTeam.IsDefeated) { playerWinResult = true; EndBattle(); yield break; }
@@ -184,9 +192,8 @@ public class BattleHandlerPvE : BattleManagerCore
         if (phaseDelay > 0f) yield return new WaitForSeconds(phaseDelay);
         SetState(BattleState3D.RedTeamTurn);
     }
-
     // =========================
-    // Shoot hook
+    // Shoot hook -> end unit turn
     // =========================
     private void HookPlayerShootEvent(bool hook)
     {
@@ -199,6 +206,7 @@ public class BattleHandlerPvE : BattleManagerCore
     private void OnPlayerShoot(Projectile projectile)
     {
         if (!awaitingPlayerAction) return;
+
         awaitingPlayerAction = false;
         StartCoroutine(EndUnitTurnAfterDelay(endTurnAfterShootDelay));
     }
@@ -206,22 +214,25 @@ public class BattleHandlerPvE : BattleManagerCore
     private IEnumerator EndUnitTurnAfterDelay(float delay)
     {
         if (delay > 0f) yield return new WaitForSeconds(delay);
-        MarkActionDone();
+        MarkActionDone(); // core API
     }
 
     // =========================
-    // Helpers
+    // Camera helpers
     // =========================
     private void FocusCamera(Transform follow)
     {
         if (mainCamera == null || follow == null) return;
-        mainCamera.transform.position = follow.position - (follow.forward * 5f) + (Vector3.up * 3f); // Simple offset
+
+        // TODO: chuyển sang Cinemachine follow/lookAt khi bạn setup xong
+        mainCamera.transform.position = follow.position;
         mainCamera.transform.LookAt(follow);
     }
 
     private Transform GetPlayerCameraFollow(ITurnParticipant actor)
     {
         if (actor is not MonoBehaviour mono) return null;
+
         var t = mono.transform.Find("CameraFollowPlayer");
         return t != null ? t : mono.transform;
     }
@@ -229,6 +240,7 @@ public class BattleHandlerPvE : BattleManagerCore
     private Transform GetFirstAliveTransform(BattleTeamData team)
     {
         if (team?.Members == null) return null;
+
         var alive = team.Members.FirstOrDefault(m => m != null && m.IsAlive);
         return alive is MonoBehaviour mb ? mb.transform : null;
     }
@@ -236,6 +248,8 @@ public class BattleHandlerPvE : BattleManagerCore
     private Transform GetNearestEnemyToTarget(Transform target)
     {
         if (RedTeam?.Members == null) return null;
+
+        // fallback: enemy sống đầu tiên
         if (target == null)
         {
             var first = RedTeam.Members.FirstOrDefault(m => m != null && m.IsAlive);
@@ -248,6 +262,7 @@ public class BattleHandlerPvE : BattleManagerCore
         foreach (var e in RedTeam.Members.Where(m => m != null && m.IsAlive))
         {
             if (e is not MonoBehaviour mono) continue;
+
             float d = Vector3.Distance(mono.transform.position, target.position);
             if (d < best)
             {
@@ -255,6 +270,7 @@ public class BattleHandlerPvE : BattleManagerCore
                 bestTf = mono.transform;
             }
         }
+
         return bestTf;
     }
 
