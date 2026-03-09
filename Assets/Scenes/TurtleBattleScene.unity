@@ -176,6 +176,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 00f9778cf1353e24c9befcd1838e3158, type: 3}
+--- !u!1 &242615197
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 242615198}
+  m_Layer: 0
+  m_Name: RedTeamRoot
+  m_TagString: RedTeam
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &242615198
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 242615197}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1276210835}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &586851377
 GameObject:
   m_ObjectHideFlags: 0
@@ -223,11 +254,6 @@ MonoBehaviour:
   mainCamera: {fileID: 675951144}
   enemyOffset: {x: 0, y: 3, z: -5}
   playerOffset: {x: 0, y: 4, z: -6}
---- !u!1 &619145810 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7683339683519814972, guid: cf159beb7e812514cbbf19c0889b5f55, type: 3}
-  m_PrefabInstance: {fileID: 901343003}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &623254885
 GameObject:
   m_ObjectHideFlags: 0
@@ -323,17 +349,42 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattlePvETurtleLv1
   currentState: 0
   timePerTurn: 20
-  playerBattlerController: {fileID: 0}
-  limitedTurnForPlayer: 20
+  playerController: {fileID: 1940374644}
+  maxPlayerTurn: 20
   phaseDelay: 1
-  endTurnAfterShootDelay: 0.1
-  currentTeamName: 
-  mapPrefab: {fileID: 0}
-  spawnPlayerContainer: {fileID: 0}
-  spawnEnemyContainer: {fileID: 0}
-  playerPrefab: {fileID: 619145810}
-  turtleEnemyPrefab: {fileID: 5581053950119468367, guid: 854c76743bf9dd749ba40639c0fa4a87, type: 3}
-  turtleData: {fileID: 11400000, guid: a640a68aedfaaf149b711153e6151d92, type: 2}
+  blueTeamRoot: {fileID: 0}
+  redTeamRoot: {fileID: 0}
+--- !u!1 &795998659
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 795998660}
+  m_Layer: 0
+  m_Name: BlueTeamRoot
+  m_TagString: BlueTeam
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &795998660
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 795998659}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1276210835}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &901343003
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -478,7 +529,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 358fa1f8dab621448853f78cf371d087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurtlePvEManager
---- !u!1 &1573021638
+--- !u!1 &1276210834
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -486,46 +537,44 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1573021639}
-  - component: {fileID: 1573021640}
+  - component: {fileID: 1276210835}
+  - component: {fileID: 1276210836}
   m_Layer: 0
-  m_Name: BattleController
+  m_Name: TeamRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1573021639
+--- !u!4 &1276210835
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1573021638}
+  m_GameObject: {fileID: 1276210834}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2044554295}
+  m_Children:
+  - {fileID: 795998660}
+  - {fileID: 242615198}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1573021640
+--- !u!114 &1276210836
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1573021638}
+  m_GameObject: {fileID: 1276210834}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88cf5d9d6b8d9ce408c1c272b0fd8567, type: 3}
+  m_Script: {fileID: 11500000, guid: 472d1223f1f09174891af086b0d9749e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BattleController
-  battleHandler: {fileID: 735492294}
-  mapSceneName: TurtleMap
-  loadMapAdditive: 1
-  enemyGoesFirst: 1
+  m_EditorClassIdentifier: Assembly-CSharp::TeamRoot
 --- !u!1 &1602246598
 GameObject:
   m_ObjectHideFlags: 0
@@ -636,6 +685,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1940374644 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5171079258834562487, guid: cf159beb7e812514cbbf19c0889b5f55, type: 3}
+  m_PrefabInstance: {fileID: 901343003}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36a1345802f527645b88953ad280bc83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerBattleController
 --- !u!1 &2044554294
 GameObject:
   m_ObjectHideFlags: 0
@@ -665,7 +725,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1573021639}
   - {fileID: 735492293}
   - {fileID: 1011675535}
   - {fileID: 623254886}
@@ -682,3 +741,4 @@ SceneRoots:
   - {fileID: 2044554295}
   - {fileID: 1827172694}
   - {fileID: 901343003}
+  - {fileID: 1276210835}

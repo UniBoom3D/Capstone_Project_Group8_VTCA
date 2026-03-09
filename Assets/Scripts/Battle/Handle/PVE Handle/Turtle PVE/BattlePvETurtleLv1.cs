@@ -18,6 +18,9 @@ public class BattlePvETurtleLv1 : BattleCore
 
     private BattleController controller;
 
+    public TeamRoot blueTeamRoot;
+    public TeamRoot redTeamRoot;
+
     // =========================
     // ENTRY
     // =========================
@@ -45,20 +48,11 @@ public class BattlePvETurtleLv1 : BattleCore
         BattleTeamData blue = new BattleTeamData("Player");
         BattleTeamData red = new BattleTeamData("Enemy");
 
-        var participants =
-            FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
+        foreach (var m in blueTeamRoot.members)
+            blue.AddMember(m);
 
-        foreach (var p in participants)
-        {
-            if (p is ITurnParticipant actor)
-            {
-                if (p.CompareTag("Player"))
-                    blue.AddMember(actor);
-
-                else if (p.CompareTag("Enemy"))
-                    red.AddMember(actor);
-            }
-        }
+        foreach (var m in redTeamRoot.members)
+            red.AddMember(m);
 
         BlueTeam = blue;
         RedTeam = red;
@@ -92,7 +86,7 @@ public class BattlePvETurtleLv1 : BattleCore
                 phaseRoutine = StartCoroutine(PlayerPhase());
                 break;
 
-            case BattleState3D.Endbattle:
+            case BattleState3D.EndBattle:
                 Debug.Log("Battle State -> Endbattle");
                 break;
         }

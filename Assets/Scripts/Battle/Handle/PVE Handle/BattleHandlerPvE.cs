@@ -74,7 +74,7 @@ public class BattleHandlerPvE : BattleCore
                 phaseRoutine = StartCoroutine(PlayerPhase());
                 break;
 
-            case BattleState3D.Endbattle:
+            case BattleState3D.EndBattle:
                 Cleanup();
                 break;
         }

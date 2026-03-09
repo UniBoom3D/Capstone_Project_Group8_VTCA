@@ -8,13 +8,13 @@ public class CombatStats : MonoBehaviour
     public float moveStaminaCost = 10f;
 
     [Header("Base Stats (Max)")]
-    public int maxHealth = 100;
+    public float maxHealth = 100;
     public float maxStamina = 100f;
-    public int attackDamage = 20;
-    public int armor = 5;
+    public float attackDamage = 20;
+    public float armor = 5;
 
     [Header("Runtime Values (Read Only)")]
-    public int currentHealth;
+    public float currentHealth;
     public float currentStamina;
 
     private void Awake()
@@ -44,15 +44,15 @@ public class CombatStats : MonoBehaviour
         Debug.Log($"⚡ Stamina: {currentStamina:F1} / {maxStamina}");
     }
 
-    public void TakeDamage(int dmg)
+    public void TakeDamage(float dmg)
     {
-        int finalDamage = Mathf.Max(1, dmg - armor);
+        float finalDamage = Mathf.Max(1, dmg - armor);
         currentHealth -= finalDamage;
         Debug.Log($"{gameObject.name} took {finalDamage} dmg. HP: {currentHealth}");
     }
 
-    internal void TakeDamage(float damage)
-    {
-        throw new NotImplementedException();
-    }
+    //internal void TakeDamage(float damage)
+    //{
+    //    throw new NotImplementedException();
+    //}
 }
