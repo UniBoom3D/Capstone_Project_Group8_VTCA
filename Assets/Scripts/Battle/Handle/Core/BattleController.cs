@@ -1,75 +1,57 @@
 ﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class BattleController : MonoBehaviour
 {
-    [Header("Battle Handler")]
-    public BattlePvETurtleLv1 battleHandler;
+    [Header("References")]
+    public BattleHandlerPvE battleHandler;
 
-    [Header("Scene")]
-    public string mapSceneName;
+    [Header("Settings")]
+    public bool enemyGoesFirst = true;
 
-    [Header("UI")]
-    public Canvas loadingCanvas;
-
-    private bool hasStarted = false;
+    private bool hasBattleStarted = false; // Prevents starting twice
 
     private void Update()
     {
-        if (!hasStarted && Input.GetKeyDown(KeyCode.Return))
+        // Only start if we haven't started yet AND player presses Enter
+        if (!hasBattleStarted && Input.GetKeyDown(KeyCode.Return))
         {
-            StartCoroutine(BattleSequence());
+            StartGame();
         }
     }
 
-    IEnumerator BattleSequence()
+    private void StartGame()
     {
-        hasStarted = true;
+        hasBattleStarted = true;
+        Debug.Log("🏁 Starting Battle Sequence...");
 
-        Debug.Log("BattleController: Start Battle");
+        // 1. Setup the Teams
+        BattleTeamData playerTeam = new BattleTeamData("Blue Team");
+        BattleTeamData enemyTeam = new BattleTeamData("Red Team");
 
-        // 1️⃣ show loading
-        if (loadingCanvas != null)
-            loadingCanvas.gameObject.SetActive(true);
+        // 2. Find everyone in the scene automatically
+        var allParticipants = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
 
-        // 2️⃣ load map
-        AsyncOperation loadOp =
-            SceneManager.LoadSceneAsync(mapSceneName, LoadSceneMode.Additive);
-
-        if (loadOp == null)
+        foreach (var p in allParticipants)
         {
-            Debug.LogError("Scene load failed. Scene not found in Build Settings.");
-            yield break;
+            if (p is ITurnParticipant participant)
+            {
+                if (p.CompareTag("Player"))
+                {
+                    playerTeam.AddMember(participant);
+                }
+                else if (p.CompareTag("Enemy"))
+                {
+                    enemyTeam.AddMember(participant);
+                }
+            }
         }
 
-        while (!loadOp.isDone)
-        {
-            yield return null;
-        }
-
-        Debug.Log("Map Loaded");
-
-        // 3️⃣ hide loading
-        if (loadingCanvas != null)
-            loadingCanvas.gameObject.SetActive(false);
-
-        // 4️⃣ start battle
+        // 3. Start the Battle!
         if (battleHandler != null)
         {
-            battleHandler.OnBattleEnded += OnBattleFinished;
-            battleHandler.BeginBattle(this);
+            battleHandler.StartBattlePVE(playerTeam, enemyTeam);
+            Debug.Log($"Battle Started! Blue: {playerTeam.Members.Count}, Red: {enemyTeam.Members.Count}");
         }
-    }
-
-    // được gọi khi battle kết thúc
-    public void OnBattleFinished()
-    {
-        Debug.Log("Battle Finished");
-
-        if (loadingCanvas != null)
-            loadingCanvas.gameObject.SetActive(true);
-
-        Debug.Log("room load");
     }
 }
