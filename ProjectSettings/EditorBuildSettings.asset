@@ -14,12 +14,21 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Battle-test.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/BattleTurtleScene.unity
+    guid: c4d467eb1554ad0499187fd75f9b183a
+  - enabled: 1
+    path: Assets/Scenes/MapScenes/Edit_MapScene.unity
+    guid: 282fc2329c292dc41814d9d217c6f9ae
   - enabled: 0
     path: Assets/Scenes/RoomScene.unity
     guid: 9ac18e8a52028054bb408b03580424fb
   - enabled: 0
     path: Assets/Scenes/EnviromentScene.unity
     guid: cc33def4627e5114795445460625c437
+  - enabled: 0
+    path: Assets/Scenes/Thuong_UIUXControll.unity
+    guid: 4c644280f7828bb41be56eeb577e542c
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
