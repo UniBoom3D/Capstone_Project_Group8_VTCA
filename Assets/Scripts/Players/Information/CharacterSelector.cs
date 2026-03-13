@@ -57,7 +57,7 @@ public class CharacterSelector : MonoBehaviour
         result =>
         {
             Debug.Log("✔ Selected character: " + characterId);
-            SceneManager.LoadScene("Battle-test");
+            SceneManager.LoadScene("RoomPVEScene");
         },
         error =>
         {

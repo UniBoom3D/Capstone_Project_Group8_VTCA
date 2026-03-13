@@ -119,151 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!21 &13481382
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Custom/CompassSoftMask
-  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _ColorMask: 15
-    - _Stencil: 1
-    - _StencilComp: 3
-    - _StencilOp: 0
-    - _StencilReadMask: 1
-    - _StencilWriteMask: 0
-    - _UseUIAlphaClip: 0
-    - _istext: 1
-    - _sizex: 28.948587
-    - _sizey: 3.314917
-    - _x: 0.828648
-    - _y: 0.34916666
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
---- !u!21 &48433474
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Shapes2D Material
-  m_Shader: {fileID: 4800000, guid: 44f74e30da9814584b2fdcdbe799e51a, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
-  - FILL_SOLID_COLOR
-  - SIMPLE_ELLIPSE
-  m_InvalidKeywords:
-  - _EMISSION
-  m_LightmapFlags: 1
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _BumpMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailAlbedoMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailMask:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailNormalMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _EmissionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MetallicGlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _OcclusionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ParallaxMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _BumpScale: 1
-    - _ColorMask: 15
-    - _Cutoff: 0.5
-    - _DetailNormalMapScale: 1
-    - _DstBlend: 0
-    - _GlossMapScale: 1
-    - _Glossiness: 0.5
-    - _GlossyReflections: 1
-    - _Metallic: 0
-    - _Mode: 0
-    - _OcclusionStrength: 1
-    - _Parallax: 0.02
-    - _Shapes2D_DstAlpha: 1
-    - _Shapes2D_DstBlend: 10
-    - _Shapes2D_SrcAlpha: 1
-    - _Shapes2D_SrcBlend: 1
-    - _SmoothnessTextureChannel: 0
-    - _SpecularHighlights: 1
-    - _SrcBlend: 1
-    - _Stencil: 1
-    - _StencilComp: 8
-    - _StencilOp: 2
-    - _StencilReadMask: 255
-    - _StencilWriteMask: 255
-    - _UVSec: 0
-    - _ZWrite: 1
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
---- !u!21 &78094650
+--- !u!21 &80786597
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -317,7 +173,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5438440122993702936, guid: b1261e11dbf849d4187982597fc71aa4, type: 3}
   m_PrefabInstance: {fileID: 573948248}
   m_PrefabAsset: {fileID: 0}
---- !u!21 &176563787
+--- !u!21 &116258465
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -360,13 +216,13 @@ Material:
     - _istext: 1
     - _sizex: 28.948587
     - _sizey: 3.314917
-    - _x: 0.442248
+    - _x: 0.88384795
     - _y: 0.34916666
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!21 &183871780
+--- !u!21 &162268174
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -409,7 +265,154 @@ Material:
     - _istext: 1
     - _sizex: 28.948587
     - _sizey: 3.314917
-    - _x: 0.0006480194
+    - _x: 0.66304797
+    - _y: 0.34916666
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!21 &164263152
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/CompassSoftMask
+  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 1
+    - _StencilComp: 3
+    - _StencilOp: 0
+    - _StencilReadMask: 1
+    - _StencilWriteMask: 0
+    - _UseUIAlphaClip: 0
+    - _istext: 1
+    - _sizex: 28.948587
+    - _sizey: 3.314917
+    - _x: 0.718248
+    - _y: 0.34916666
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!21 &169641265
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/CompassSoftMask
+  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 1
+    - _StencilComp: 3
+    - _StencilOp: 0
+    - _StencilReadMask: 1
+    - _StencilWriteMask: 0
+    - _UseUIAlphaClip: 0
+    - _istext: 1
+    - _sizex: 28.948587
+    - _sizey: 3.314917
+    - _x: 0.331848
+    - _y: 0.34916666
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!21 &199785803
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/CompassSoftMask
+  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 1
+    - _StencilComp: 3
+    - _StencilOp: 0
+    - _StencilReadMask: 1
+    - _StencilWriteMask: 0
+    - _UseUIAlphaClip: 0
+    - _istext: 1
+    - _sizex: 28.948587
+    - _sizey: 3.314917
+    - _x: 0.27664798
     - _y: 0.34916666
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
@@ -464,7 +467,7 @@ MonoBehaviour:
   blendDistance: 0
   weight: 1
   sharedProfile: {fileID: 11400000, guid: 10fc4df2da32a41aaa32d77bc913491c, type: 2}
---- !u!21 &245036135
+--- !u!21 &242253642
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -507,7 +510,56 @@ Material:
     - _istext: 1
     - _sizex: 28.948587
     - _sizey: 3.314917
-    - _x: 0.331848
+    - _x: 0.88384795
+    - _y: 0.34916666
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!21 &242273450
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/CompassSoftMask
+  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 1
+    - _StencilComp: 3
+    - _StencilOp: 0
+    - _StencilReadMask: 1
+    - _StencilWriteMask: 0
+    - _UseUIAlphaClip: 0
+    - _istext: 1
+    - _sizex: 28.948587
+    - _sizey: 3.314917
+    - _x: 0.99424803
     - _y: 0.34916666
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
@@ -688,202 +740,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 313234491}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!21 &342062089
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Custom/CompassSoftMask
-  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _ColorMask: 15
-    - _Stencil: 1
-    - _StencilComp: 3
-    - _StencilOp: 0
-    - _StencilReadMask: 1
-    - _StencilWriteMask: 0
-    - _UseUIAlphaClip: 0
-    - _istext: 1
-    - _sizex: 28.948587
-    - _sizey: 3.314917
-    - _x: 0.607848
-    - _y: 0.34916666
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
---- !u!21 &374877844
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Custom/CompassSoftMask
-  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _ColorMask: 15
-    - _Stencil: 1
-    - _StencilComp: 3
-    - _StencilOp: 0
-    - _StencilReadMask: 1
-    - _StencilWriteMask: 0
-    - _UseUIAlphaClip: 0
-    - _istext: 1
-    - _sizex: 28.948587
-    - _sizey: 3.314917
-    - _x: 0.442248
-    - _y: 0.34916666
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
---- !u!21 &432091126
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Custom/CompassSoftMask
-  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _ColorMask: 15
-    - _Stencil: 1
-    - _StencilComp: 3
-    - _StencilOp: 0
-    - _StencilReadMask: 1
-    - _StencilWriteMask: 0
-    - _UseUIAlphaClip: 0
-    - _istext: 1
-    - _sizex: 28.948587
-    - _sizey: 3.314917
-    - _x: 0.166248
-    - _y: 0.34916666
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
---- !u!21 &453972191
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Custom/CompassSoftMask
-  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _ColorMask: 15
-    - _Stencil: 1
-    - _StencilComp: 3
-    - _StencilOp: 0
-    - _StencilReadMask: 1
-    - _StencilWriteMask: 0
-    - _UseUIAlphaClip: 0
-    - _istext: 1
-    - _sizex: 28.948587
-    - _sizey: 3.314917
-    - _x: 0.66304797
-    - _y: 0.34916666
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
 --- !u!1 &477155588
 GameObject:
   m_ObjectHideFlags: 0
@@ -915,7 +771,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1242666272}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!21 &494942284
+--- !u!21 &483285061
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -958,7 +814,7 @@ Material:
     - _istext: 1
     - _sizex: 28.948587
     - _sizey: 3.314917
-    - _x: 0.552648
+    - _x: 0.05584802
     - _y: 0.34916666
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
@@ -996,7 +852,7 @@ Transform:
   - {fileID: 1349752233}
   m_Father: {fileID: 2056055172}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!21 &545194798
+--- !u!21 &541030282
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -1039,56 +895,7 @@ Material:
     - _istext: 1
     - _sizex: 28.948587
     - _sizey: 3.314917
-    - _x: -0.054551978
-    - _y: 0.34916666
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
---- !u!21 &566249735
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Custom/CompassSoftMask
-  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _ColorMask: 15
-    - _Stencil: 1
-    - _StencilComp: 3
-    - _StencilOp: 0
-    - _StencilReadMask: 1
-    - _StencilWriteMask: 0
-    - _UseUIAlphaClip: 0
-    - _istext: 1
-    - _sizex: 28.948587
-    - _sizey: 3.314917
-    - _x: 0.27664798
+    - _x: -0.10975198
     - _y: 0.34916666
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1145,7 +952,7 @@ PrefabInstance:
     - target: {fileID: 3293554103089535416, guid: b1261e11dbf849d4187982597fc71aa4, type: 3}
       propertyPath: powerSlider
       value: 
-      objectReference: {fileID: 1392998931}
+      objectReference: {fileID: 1418943226}
     - target: {fileID: 6769894630349997783, guid: b1261e11dbf849d4187982597fc71aa4, type: 3}
       propertyPath: _compass
       value: 
@@ -1196,7 +1003,7 @@ Transform:
   - {fileID: 1227019926}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!21 &671076943
+--- !u!21 &624808620
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -1239,13 +1046,13 @@ Material:
     - _istext: 1
     - _sizex: 28.948587
     - _sizey: 3.314917
-    - _x: 0.88384795
+    - _x: 0.552648
     - _y: 0.34916666
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!21 &698842024
+--- !u!21 &633222088
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -1294,7 +1101,56 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!21 &736604632
+--- !u!21 &658008406
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/CompassSoftMask
+  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 1
+    - _StencilComp: 3
+    - _StencilOp: 0
+    - _StencilReadMask: 1
+    - _StencilWriteMask: 0
+    - _UseUIAlphaClip: 0
+    - _istext: 1
+    - _sizex: 28.948587
+    - _sizey: 3.314917
+    - _x: 0.442248
+    - _y: 0.34916666
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!21 &666162735
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -1343,7 +1199,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!21 &746111856
+--- !u!21 &674857498
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -1386,13 +1242,13 @@ Material:
     - _istext: 1
     - _sizex: 28.948587
     - _sizey: 3.314917
-    - _x: 0.66304797
+    - _x: 0.773448
     - _y: 0.34916666
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!21 &778094073
+--- !u!21 &706670694
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -1435,7 +1291,56 @@ Material:
     - _istext: 1
     - _sizex: 28.948587
     - _sizey: 3.314917
-    - _x: 0.607848
+    - _x: 0.442248
+    - _y: 0.34916666
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!21 &749758728
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/CompassSoftMask
+  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 1
+    - _StencilComp: 3
+    - _StencilOp: 0
+    - _StencilReadMask: 1
+    - _StencilWriteMask: 0
+    - _UseUIAlphaClip: 0
+    - _istext: 1
+    - _sizex: 28.948587
+    - _sizey: 3.314917
+    - _x: 0.93904805
     - _y: 0.34916666
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1524,6 +1429,55 @@ MonoBehaviour:
   endTurnAfterShootDelay: 0.1
   mainCamera: {fileID: 2027766477}
   currentTeamName: 
+--- !u!21 &868908954
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/CompassSoftMask
+  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 1
+    - _StencilComp: 3
+    - _StencilOp: 0
+    - _StencilReadMask: 1
+    - _StencilWriteMask: 0
+    - _UseUIAlphaClip: 0
+    - _istext: 1
+    - _sizex: 28.948587
+    - _sizey: 3.314917
+    - _x: 0.387048
+    - _y: 0.34916666
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1001 &874731078
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1533,181 +1487,181 @@ PrefabInstance:
     m_TransformParent: {fileID: 940968115}
     m_Modifications:
     - target: {fileID: 1916165378766127886, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1916165378766127886, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3067536224192889583, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 1678150823}
+      objectReference: {fileID: 242273450}
     - target: {fileID: 3067536224257276715, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 2120894134}
+      objectReference: {fileID: 624808620}
     - target: {fileID: 3067536224273084457, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 1409078475}
+      objectReference: {fileID: 164263152}
     - target: {fileID: 3067536224278132045, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 1651414695}
+      objectReference: {fileID: 868908954}
     - target: {fileID: 3067536224292215599, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 1475316993}
+      objectReference: {fileID: 1027897029}
     - target: {fileID: 3067536224315332489, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 432091126}
+      objectReference: {fileID: 1624994647}
     - target: {fileID: 3067536224374606024, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 176563787}
+      objectReference: {fileID: 706670694}
     - target: {fileID: 3067536224382503763, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 904358152}
+      objectReference: {fileID: 1135458737}
     - target: {fileID: 3067536224391822884, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 453972191}
+      objectReference: {fileID: 162268174}
     - target: {fileID: 3067536224439169156, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 1049658673}
+      objectReference: {fileID: 966076019}
     - target: {fileID: 3067536224448367504, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 988463581}
+      objectReference: {fileID: 2094106419}
     - target: {fileID: 3067536224459811704, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 1010636484}
+      objectReference: {fileID: 1637449170}
     - target: {fileID: 3067536224511195265, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 494942284}
+      objectReference: {fileID: 1280847473}
     - target: {fileID: 3067536224511545733, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 1371276854}
+      objectReference: {fileID: 1047054115}
     - target: {fileID: 3067536224558378858, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 698842024}
+      objectReference: {fileID: 633222088}
     - target: {fileID: 3067536224780798048, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 1693336957}
+      objectReference: {fileID: 882620110}
     - target: {fileID: 3067536224782517878, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 932002559}
+      objectReference: {fileID: 199785803}
     - target: {fileID: 3067536224804935392, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 1880339023}
+      objectReference: {fileID: 1284475910}
     - target: {fileID: 3067536224815795259, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 2001469859}
+      objectReference: {fileID: 242253642}
     - target: {fileID: 3067536224822774494, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 746111856}
+      objectReference: {fileID: 1843487482}
     - target: {fileID: 3067536224854066160, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 1886691921}
+      objectReference: {fileID: 1733360280}
     - target: {fileID: 3067536224892337585, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 890579184}
+      objectReference: {fileID: 1474085484}
     - target: {fileID: 3067536224894108746, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 13481382}
+      objectReference: {fileID: 1675120988}
     - target: {fileID: 3067536224988070840, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 914361687}
+      objectReference: {fileID: 1386393921}
     - target: {fileID: 3067536225034012620, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 566249735}
+      objectReference: {fileID: 1799283971}
     - target: {fileID: 3067536225078557905, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 671076943}
+      objectReference: {fileID: 116258465}
     - target: {fileID: 3067536225171753412, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 994674125}
+      objectReference: {fileID: 483285061}
     - target: {fileID: 3067536225365045278, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 1939894729}
+      objectReference: {fileID: 749758728}
     - target: {fileID: 3067536225386432110, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 1206875345}
+      objectReference: {fileID: 1462512614}
     - target: {fileID: 3067536225439799849, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 342062089}
+      objectReference: {fileID: 1127059073}
     - target: {fileID: 3067536225440954404, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 736604632}
+      objectReference: {fileID: 666162735}
     - target: {fileID: 3067536225547911400, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 374877844}
+      objectReference: {fileID: 658008406}
     - target: {fileID: 3067536225580918875, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 984318081}
+      objectReference: {fileID: 1817935555}
     - target: {fileID: 3067536225593426697, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 778094073}
+      objectReference: {fileID: 1402702911}
     - target: {fileID: 3067536225732475407, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 1032759143}
+      objectReference: {fileID: 1522570666}
     - target: {fileID: 3067536225751797166, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 545194798}
+      objectReference: {fileID: 1395003540}
     - target: {fileID: 3067536225979770552, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 245036135}
+      objectReference: {fileID: 169641265}
     - target: {fileID: 3067536225999362549, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 1177084861}
+      objectReference: {fileID: 541030282}
     - target: {fileID: 3067536226055666233, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 78094650}
+      objectReference: {fileID: 80786597}
     - target: {fileID: 3067536226129462121, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 1047606822}
+      objectReference: {fileID: 674857498}
     - target: {fileID: 3067536226188399587, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 183871780}
+      objectReference: {fileID: 1692914976}
     - target: {fileID: 3067536226259282573, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 1762909360}
-    - target: {fileID: 3282033596299597492, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1846569634}
     - target: {fileID: 4876841320377148744, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1795,10 +1749,9 @@ PrefabInstance:
     - target: {fileID: 8927560623893154692, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 48433474}
+      objectReference: {fileID: 1954991236}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 1903584275087703920, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
@@ -1807,463 +1760,7 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4876841320377148744, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
   m_PrefabInstance: {fileID: 874731078}
   m_PrefabAsset: {fileID: 0}
---- !u!21 &890579184
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Custom/CompassSoftMask
-  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _ColorMask: 15
-    - _Stencil: 1
-    - _StencilComp: 3
-    - _StencilOp: 0
-    - _StencilReadMask: 1
-    - _StencilWriteMask: 0
-    - _UseUIAlphaClip: 0
-    - _istext: 1
-    - _sizex: 28.948587
-    - _sizey: 3.314917
-    - _x: 0.331848
-    - _y: 0.34916666
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
---- !u!21 &904358152
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Custom/CompassSoftMask
-  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _ColorMask: 15
-    - _Stencil: 1
-    - _StencilComp: 3
-    - _StencilOp: 0
-    - _StencilReadMask: 1
-    - _StencilWriteMask: 0
-    - _UseUIAlphaClip: 0
-    - _istext: 1
-    - _sizex: 28.948587
-    - _sizey: 3.314917
-    - _x: 0.497448
-    - _y: 0.34916666
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
---- !u!1 &909625071
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 909625072}
-  m_Layer: 0
-  m_Name: BattleHandler2vs2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &909625072
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 909625071}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1533635446}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!21 &914361687
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Custom/CompassSoftMask
-  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _ColorMask: 15
-    - _Stencil: 1
-    - _StencilComp: 3
-    - _StencilOp: 0
-    - _StencilReadMask: 1
-    - _StencilWriteMask: 0
-    - _UseUIAlphaClip: 0
-    - _istext: 1
-    - _sizex: 28.948587
-    - _sizey: 3.314917
-    - _x: 0.0006480194
-    - _y: 0.34916666
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
---- !u!21 &932002559
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Custom/CompassSoftMask
-  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _ColorMask: 15
-    - _Stencil: 1
-    - _StencilComp: 3
-    - _StencilOp: 0
-    - _StencilReadMask: 1
-    - _StencilWriteMask: 0
-    - _UseUIAlphaClip: 0
-    - _istext: 1
-    - _sizex: 28.948587
-    - _sizey: 3.314917
-    - _x: 0.27664798
-    - _y: 0.34916666
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
---- !u!1 &940968114
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 940968115}
-  m_Layer: 0
-  m_Name: ___PLAYER___
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &940968115
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 940968114}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 573948249}
-  - {fileID: 874731079}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!21 &984318081
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Custom/CompassSoftMask
-  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _ColorMask: 15
-    - _Stencil: 1
-    - _StencilComp: 3
-    - _StencilOp: 0
-    - _StencilReadMask: 1
-    - _StencilWriteMask: 0
-    - _UseUIAlphaClip: 0
-    - _istext: 1
-    - _sizex: 28.948587
-    - _sizey: 3.314917
-    - _x: 0.497448
-    - _y: 0.34916666
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
---- !u!21 &988463581
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Custom/CompassSoftMask
-  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _ColorMask: 15
-    - _Stencil: 1
-    - _StencilComp: 3
-    - _StencilOp: 0
-    - _StencilReadMask: 1
-    - _StencilWriteMask: 0
-    - _UseUIAlphaClip: 0
-    - _istext: 1
-    - _sizex: 28.948587
-    - _sizey: 3.314917
-    - _x: 0.166248
-    - _y: 0.34916666
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
---- !u!21 &994674125
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Custom/CompassSoftMask
-  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _ColorMask: 15
-    - _Stencil: 1
-    - _StencilComp: 3
-    - _StencilOp: 0
-    - _StencilReadMask: 1
-    - _StencilWriteMask: 0
-    - _UseUIAlphaClip: 0
-    - _istext: 1
-    - _sizex: 28.948587
-    - _sizey: 3.314917
-    - _x: 0.05584802
-    - _y: 0.34916666
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
---- !u!21 &1010636484
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Custom/CompassSoftMask
-  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _ColorMask: 15
-    - _Stencil: 1
-    - _StencilComp: 3
-    - _StencilOp: 0
-    - _StencilReadMask: 1
-    - _StencilWriteMask: 0
-    - _UseUIAlphaClip: 0
-    - _istext: 1
-    - _sizex: 28.948587
-    - _sizey: 3.314917
-    - _x: 0.99424803
-    - _y: 0.34916666
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
---- !u!21 &1032759143
+--- !u!21 &882620110
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -2312,56 +1809,71 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!21 &1047606822
-Material:
-  serializedVersion: 8
+--- !u!1 &909625071
+GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Custom/CompassSoftMask
-  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _ColorMask: 15
-    - _Stencil: 1
-    - _StencilComp: 3
-    - _StencilOp: 0
-    - _StencilReadMask: 1
-    - _StencilWriteMask: 0
-    - _UseUIAlphaClip: 0
-    - _istext: 1
-    - _sizex: 28.948587
-    - _sizey: 3.314917
-    - _x: 0.773448
-    - _y: 0.34916666
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
---- !u!21 &1049658673
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 909625072}
+  m_Layer: 0
+  m_Name: BattleHandler2vs2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &909625072
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 909625071}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1533635446}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &940968114
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 940968115}
+  m_Layer: 0
+  m_Name: ___PLAYER___
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &940968115
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 940968114}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 573948249}
+  - {fileID: 874731079}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!21 &966076019
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -2410,7 +1922,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!21 &1177084861
+--- !u!21 &1027897029
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -2453,13 +1965,13 @@ Material:
     - _istext: 1
     - _sizex: 28.948587
     - _sizey: 3.314917
-    - _x: -0.10975198
+    - _x: -0.054551978
     - _y: 0.34916666
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!21 &1206875345
+--- !u!21 &1047054115
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -2503,6 +2015,104 @@ Material:
     - _sizex: 28.948587
     - _sizey: 3.314917
     - _x: 0.111048
+    - _y: 0.34916666
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!21 &1127059073
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/CompassSoftMask
+  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 1
+    - _StencilComp: 3
+    - _StencilOp: 0
+    - _StencilReadMask: 1
+    - _StencilWriteMask: 0
+    - _UseUIAlphaClip: 0
+    - _istext: 1
+    - _sizex: 28.948587
+    - _sizey: 3.314917
+    - _x: 0.607848
+    - _y: 0.34916666
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!21 &1135458737
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/CompassSoftMask
+  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 1
+    - _StencilComp: 3
+    - _StencilOp: 0
+    - _StencilReadMask: 1
+    - _StencilWriteMask: 0
+    - _UseUIAlphaClip: 0
+    - _istext: 1
+    - _sizex: 28.948587
+    - _sizey: 3.314917
+    - _x: 0.497448
     - _y: 0.34916666
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
@@ -2615,6 +2225,104 @@ Transform:
   - {fileID: 237597053}
   m_Father: {fileID: 2056055172}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!21 &1280847473
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/CompassSoftMask
+  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 1
+    - _StencilComp: 3
+    - _StencilOp: 0
+    - _StencilReadMask: 1
+    - _StencilWriteMask: 0
+    - _UseUIAlphaClip: 0
+    - _istext: 1
+    - _sizex: 28.948587
+    - _sizey: 3.314917
+    - _x: 0.552648
+    - _y: 0.34916666
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!21 &1284475910
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/CompassSoftMask
+  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 1
+    - _StencilComp: 3
+    - _StencilOp: 0
+    - _StencilReadMask: 1
+    - _StencilWriteMask: 0
+    - _UseUIAlphaClip: 0
+    - _istext: 1
+    - _sizex: 28.948587
+    - _sizey: 3.314917
+    - _x: 0.828648
+    - _y: 0.34916666
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &1313342370
 GameObject:
   m_ObjectHideFlags: 0
@@ -2853,7 +2561,165 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
---- !u!21 &1371276854
+--- !u!21 &1386393921
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/CompassSoftMask
+  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 1
+    - _StencilComp: 3
+    - _StencilOp: 0
+    - _StencilReadMask: 1
+    - _StencilWriteMask: 0
+    - _UseUIAlphaClip: 0
+    - _istext: 1
+    - _sizex: 28.948587
+    - _sizey: 3.314917
+    - _x: 0.0006480194
+    - _y: 0.34916666
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!21 &1395003540
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/CompassSoftMask
+  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 1
+    - _StencilComp: 3
+    - _StencilOp: 0
+    - _StencilReadMask: 1
+    - _StencilWriteMask: 0
+    - _UseUIAlphaClip: 0
+    - _istext: 1
+    - _sizex: 28.948587
+    - _sizey: 3.314917
+    - _x: -0.054551978
+    - _y: 0.34916666
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!21 &1402702911
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/CompassSoftMask
+  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 1
+    - _StencilComp: 3
+    - _StencilOp: 0
+    - _StencilReadMask: 1
+    - _StencilWriteMask: 0
+    - _UseUIAlphaClip: 0
+    - _istext: 1
+    - _sizex: 28.948587
+    - _sizey: 3.314917
+    - _x: 0.607848
+    - _y: 0.34916666
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!114 &1418943226 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4707786787828478847, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
+  m_PrefabInstance: {fileID: 874731078}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Slider
+--- !u!21 &1462512614
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -2902,18 +2768,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!114 &1392998931 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4707786787828478847, guid: 8b8771fde20bf344db1dfac5a5c9785e, type: 3}
-  m_PrefabInstance: {fileID: 874731078}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Slider
---- !u!21 &1409078475
+--- !u!21 &1474085484
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -2956,13 +2811,13 @@ Material:
     - _istext: 1
     - _sizex: 28.948587
     - _sizey: 3.314917
-    - _x: 0.718248
+    - _x: 0.331848
     - _y: 0.34916666
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!21 &1475316993
+--- !u!21 &1522570666
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -3005,7 +2860,7 @@ Material:
     - _istext: 1
     - _sizex: 28.948587
     - _sizey: 3.314917
-    - _x: -0.054551978
+    - _x: 0.221448
     - _y: 0.34916666
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
@@ -3171,40 +3026,7 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4355553939849121326, guid: c3e0f4cb87f1db84280ec41f9dfd19f0, type: 3}
   m_PrefabInstance: {fileID: 1610430201}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1648133046
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1648133047}
-  m_Layer: 0
-  m_Name: Manager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1648133047
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1648133046}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.35107, y: 1.82794, z: -0.33223}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1533635446}
-  - {fileID: 783193229}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!21 &1651414695
+--- !u!21 &1624994647
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -3247,13 +3069,13 @@ Material:
     - _istext: 1
     - _sizex: 28.948587
     - _sizey: 3.314917
-    - _x: 0.387048
+    - _x: 0.166248
     - _y: 0.34916666
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!21 &1678150823
+--- !u!21 &1637449170
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -3302,105 +3124,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!21 &1693336957
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Custom/CompassSoftMask
-  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _ColorMask: 15
-    - _Stencil: 1
-    - _StencilComp: 3
-    - _StencilOp: 0
-    - _StencilReadMask: 1
-    - _StencilWriteMask: 0
-    - _UseUIAlphaClip: 0
-    - _istext: 1
-    - _sizex: 28.948587
-    - _sizey: 3.314917
-    - _x: 0.221448
-    - _y: 0.34916666
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
---- !u!21 &1762909360
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Custom/CompassSoftMask
-  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _ColorMask: 15
-    - _Stencil: 1
-    - _StencilComp: 3
-    - _StencilOp: 0
-    - _StencilReadMask: 1
-    - _StencilWriteMask: 0
-    - _UseUIAlphaClip: 0
-    - _istext: 1
-    - _sizex: 28.948587
-    - _sizey: 3.314917
-    - _x: 0.93904805
-    - _y: 0.34916666
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
---- !u!1 &1827094097
+--- !u!1 &1648133046
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3408,30 +3132,32 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1827094098}
+  - component: {fileID: 1648133047}
   m_Layer: 0
-  m_Name: BattleHandler1vs1
+  m_Name: Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1827094098
+--- !u!4 &1648133047
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1827094097}
+  m_GameObject: {fileID: 1648133046}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.35107, y: 1.82794, z: -0.33223}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1533635446}
+  m_Children:
+  - {fileID: 1533635446}
+  - {fileID: 783193229}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!21 &1880339023
+--- !u!21 &1675120988
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -3480,7 +3206,56 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!21 &1886691921
+--- !u!21 &1692914976
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/CompassSoftMask
+  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 1
+    - _StencilComp: 3
+    - _StencilOp: 0
+    - _StencilReadMask: 1
+    - _StencilWriteMask: 0
+    - _UseUIAlphaClip: 0
+    - _istext: 1
+    - _sizex: 28.948587
+    - _sizey: 3.314917
+    - _x: 0.0006480194
+    - _y: 0.34916666
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!21 &1733360280
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -3529,7 +3304,185 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!21 &1939894729
+--- !u!21 &1799283971
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/CompassSoftMask
+  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 1
+    - _StencilComp: 3
+    - _StencilOp: 0
+    - _StencilReadMask: 1
+    - _StencilWriteMask: 0
+    - _UseUIAlphaClip: 0
+    - _istext: 1
+    - _sizex: 28.948587
+    - _sizey: 3.314917
+    - _x: 0.27664798
+    - _y: 0.34916666
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!21 &1817935555
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/CompassSoftMask
+  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 1
+    - _StencilComp: 3
+    - _StencilOp: 0
+    - _StencilReadMask: 1
+    - _StencilWriteMask: 0
+    - _UseUIAlphaClip: 0
+    - _istext: 1
+    - _sizex: 28.948587
+    - _sizey: 3.314917
+    - _x: 0.497448
+    - _y: 0.34916666
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!1 &1827094097
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1827094098}
+  m_Layer: 0
+  m_Name: BattleHandler1vs1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1827094098
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1827094097}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1533635446}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!21 &1843487482
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom/CompassSoftMask
+  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 1
+    - _StencilComp: 3
+    - _StencilOp: 0
+    - _StencilReadMask: 1
+    - _StencilWriteMask: 0
+    - _UseUIAlphaClip: 0
+    - _istext: 1
+    - _sizex: 28.948587
+    - _sizey: 3.314917
+    - _x: 0.66304797
+    - _y: 0.34916666
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!21 &1846569634
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -3578,53 +3531,99 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!21 &2001469859
+--- !u!21 &1954991236
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Custom/CompassSoftMask
-  m_Shader: {fileID: 4800000, guid: 78dfe7dfa09fccd4086b9b36af7b0972, type: 3}
+  m_Name: Shapes2D Material
+  m_Shader: {fileID: 4800000, guid: 44f74e30da9814584b2fdcdbe799e51a, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
+  m_ValidKeywords:
+  - FILL_SOLID_COLOR
+  - SIMPLE_ELLIPSE
+  m_InvalidKeywords:
+  - _EMISSION
+  m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: 37ca013f6ae2ea5468c5c0a061c27bfe, type: 3}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _BumpScale: 1
     - _ColorMask: 15
+    - _Cutoff: 0.5
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _Metallic: 0
+    - _Mode: 0
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _Shapes2D_DstAlpha: 1
+    - _Shapes2D_DstBlend: 10
+    - _Shapes2D_SrcAlpha: 1
+    - _Shapes2D_SrcBlend: 1
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
     - _Stencil: 1
-    - _StencilComp: 3
-    - _StencilOp: 0
-    - _StencilReadMask: 1
-    - _StencilWriteMask: 0
-    - _UseUIAlphaClip: 0
-    - _istext: 1
-    - _sizex: 28.948587
-    - _sizey: 3.314917
-    - _x: 0.88384795
-    - _y: 0.34916666
+    - _StencilComp: 8
+    - _StencilOp: 2
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
+    - _UVSec: 0
+    - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!1 &2027766471
@@ -3862,7 +3861,7 @@ Transform:
   - {fileID: 1242666272}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!21 &2120894134
+--- !u!21 &2094106419
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -3905,7 +3904,7 @@ Material:
     - _istext: 1
     - _sizex: 28.948587
     - _sizey: 3.314917
-    - _x: 0.552648
+    - _x: 0.166248
     - _y: 0.34916666
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
