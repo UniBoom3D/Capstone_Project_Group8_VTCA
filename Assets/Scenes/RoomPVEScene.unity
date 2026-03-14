@@ -531,9 +531,21 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4212307314168132001, guid: b1261e11dbf849d4187982597fc71aa4, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4978392707890839433, guid: b1261e11dbf849d4187982597fc71aa4, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5438440122993534056, guid: b1261e11dbf849d4187982597fc71aa4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5509442335876136826, guid: b1261e11dbf849d4187982597fc71aa4, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5759784659536917986, guid: b1261e11dbf849d4187982597fc71aa4, type: 3}
       propertyPath: m_Enabled
@@ -546,6 +558,10 @@ PrefabInstance:
     - target: {fileID: 7754071438243478972, guid: b1261e11dbf849d4187982597fc71aa4, type: 3}
       propertyPath: m_Name
       value: --PLAYER CONTROLLER--
+      objectReference: {fileID: 0}
+    - target: {fileID: 8491960748185785363, guid: b1261e11dbf849d4187982597fc71aa4, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
