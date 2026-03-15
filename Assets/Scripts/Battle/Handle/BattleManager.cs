@@ -25,7 +25,7 @@ public class BattleManager : MonoBehaviour
         hasBattleStarted = true;
         Debug.Log("🏁 Starting Battle Sequence...");
 
-        // 1. Setup the Teams
+        // 1. Setup the Base Teams
         BattleTeamData playerTeam = new BattleTeamData("Blue Team");
         BattleTeamData enemyTeam = new BattleTeamData("Red Team");
 
@@ -36,10 +36,12 @@ public class BattleManager : MonoBehaviour
         {
             if (p is ITurnParticipant participant)
             {
+                // Put players in the Blue Team
                 if (p.CompareTag("Player"))
                 {
                     playerTeam.AddMember(participant);
                 }
+                // Put enemies in the Red Team
                 else if (p.CompareTag("Enemy"))
                 {
                     enemyTeam.AddMember(participant);
@@ -47,11 +49,42 @@ public class BattleManager : MonoBehaviour
             }
         }
 
-        // 3. Start the Battle!
+        // 3. Pack them into a List
+        List<BattleTeamData> teamsInBattle = new List<BattleTeamData>();
+
+        if (enemyGoesFirst)
+        {
+            teamsInBattle.Add(enemyTeam);
+            teamsInBattle.Add(playerTeam);
+        }
+        else
+        {
+            teamsInBattle.Add(playerTeam);
+            teamsInBattle.Add(enemyTeam);
+        }
+
+        // 🟢 NEW: Print detailed Team Information to the Console
+        Debug.Log("====================================");
+        Debug.Log("📋 BATTLE ROSTER:");
+        foreach (var team in teamsInBattle)
+        {
+            Debug.Log($"🛡️ {team.TeamName} (Total Members: {team.Members.Count})");
+            foreach (var member in team.Members)
+            {
+                // We can pull the Name and HP directly from the ITurnParticipant interface!
+                Debug.Log($"   -> {member.Name} | HP: {member.HP}");
+            }
+        }
+        Debug.Log("====================================");
+
+        // 4. Start the Battle with the List!
         if (battleHandler != null)
         {
-            battleHandler.StartBattlePVE(playerTeam, enemyTeam);
-            Debug.Log($"Battle Started! Blue: {playerTeam.Members.Count}, Red: {enemyTeam.Members.Count}");
+            battleHandler.StartBattlePVE(teamsInBattle);
+        }
+        else
+        {
+            Debug.LogError("❌ BattleManager is missing the BattleHandlerPvE reference! Drag it into the Inspector.");
         }
     }
 }
