@@ -122,8 +122,6 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
                 if (isMoving)
                 {
                     // Set giá trị v (Vertical) trực tiếp vào Float của Animator
-                    // v > 0 sẽ kích hoạt RunFWD (Greater 0.2)
-                    // v < 0 sẽ kích hoạt RunBWD (Less -0.2)
                     animator.SetFloat("RunFWD", v);
                     animator.SetFloat("RunBWD", v);
                 }

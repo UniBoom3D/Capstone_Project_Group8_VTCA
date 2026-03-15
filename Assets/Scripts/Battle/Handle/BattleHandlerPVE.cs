@@ -20,8 +20,9 @@ public class BattleHandlerPvE : BattleManagerCore
 
     [Header("PLAYER TURN")]
     [SerializeField] private float endTurnAfterShootDelay = 0.1f;
+
     [Header("UI REFERENCES")]
-    [SerializeField] private Timer turnTimer;
+    [SerializeField] private Timer countdownTimer;
 
     [Header("CAMERA")]
     [SerializeField] private Camera mainCamera;
@@ -164,7 +165,7 @@ public class BattleHandlerPvE : BattleManagerCore
         awaitingPlayerAction = true;
         if (turnTimer != null)
         {
-            turnTimer.StartNewTurn();
+            countdownTimer.StartNewTurn();
         }
 
         bool cheatUsed = false;
@@ -310,14 +311,13 @@ public class BattleHandlerPvE : BattleManagerCore
             SetPlayerControl(false);
             HookPlayerShootEvent(false);
 
-            // 2. Nếu Player đang nhấn giữ Space (đang sạc), hãy reset nó
+
             if (playerBattlerController != null)
             {
-                // Gọi hàm này để ẩn line quỹ đạo và slider
                 playerBattlerController.EnableControl(false);
             }
 
-            // 3. Đánh dấu hành động đã xong (nhưng không bắn) để MasterLoop chạy tiếp
+            // 3. Đánh dấu hành động đã xong
             awaitingPlayerAction = false;
             isActionDone = true;
         }
