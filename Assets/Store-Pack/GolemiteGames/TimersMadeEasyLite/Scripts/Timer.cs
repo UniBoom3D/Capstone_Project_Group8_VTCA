@@ -51,7 +51,7 @@ public class Timer : MonoBehaviour
     
     [Tooltip("Select to count up or down")]
     public CountMethod countMethod;
-
+ 
     [Tooltip("Select the output type")]
     public OutputType outputType;
     public Text standardText;
@@ -62,7 +62,10 @@ public class Timer : MonoBehaviour
     bool timerRunning = false;
     bool timerPaused = false;
     public double timeRemaining;
-    
+
+    [Header("Audio")]
+    public TimeAudio timeAudio;
+
 
     private void Awake()
     {
@@ -86,7 +89,11 @@ public class Timer : MonoBehaviour
         {
             dialSlider = GetComponent<Image>();
         }
-        if(standardSlider)
+        if (timeAudio == null)
+        {
+            timeAudio = GetComponent<TimeAudio>();
+        }
+        if (standardSlider)
         {
             standardSlider.maxValue = ReturnTotalSeconds();
             if(countMethod == CountMethod.CountDown)
@@ -115,6 +122,7 @@ public class Timer : MonoBehaviour
         if(startAtRuntime)
         {
             StartTimer();
+            if (timeAudio != null) timeAudio.StartAudio();
         }
         else
         {
@@ -188,6 +196,7 @@ public class Timer : MonoBehaviour
             //Timer has ended from counting downwards
             timeRemaining = 0;
             timerRunning = false;
+            if (timeAudio != null) timeAudio.PlayTimeoutAudio();
             onTimerEnd.Invoke();
             DisplayInTextObject();
         }
@@ -261,7 +270,7 @@ public class Timer : MonoBehaviour
             }
             else
             {
-                StartTimerCustom(0);
+                StartTimerCustom(0);              
             }
         }
     }
@@ -387,5 +396,26 @@ public class Timer : MonoBehaviour
     private void OnValidate()
     {
         timeRemaining = ConvertToTotalSeconds(hours, minutes, seconds);
+    }
+
+    public void StartNewTurn()
+    {
+        this.gameObject.SetActive(true);
+        ResetTimer();
+        timerRunning = true;
+        if (timeAudio != null) timeAudio.StartAudio();
+    }
+    public void FreezeTimer()
+    {
+        timerRunning = false;
+        if (timeAudio != null) timeAudio.StopAudio();
+    }
+
+    public void ResetAndHide()
+    {
+        timerRunning = false;
+        if (timeAudio != null) timeAudio.StopAudio();
+        ResetTimer();
+        this.gameObject.SetActive(false);
     }
 }

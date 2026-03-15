@@ -27,3 +27,5 @@ MonoBehaviour:
     avatarSprite: {fileID: 21300000, guid: 5c0888136538c5249b0b5c71689710f8, type: 3}
   - avatarID: avatar_bear
     avatarSprite: {fileID: 21300000, guid: dbd5c291b2ac25049bf2a3c37fcdb351, type: 3}
+  - avatarID: avatar_giraffe
+    avatarSprite: {fileID: 21300000, guid: 30f458335382e2e4c9b906945804053f, type: 3}

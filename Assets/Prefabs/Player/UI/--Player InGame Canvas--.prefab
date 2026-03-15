@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7894360985916748633}
   - component: {fileID: 2627527179634918454}
-  - component: {fileID: 7924629719555361187}
-  - component: {fileID: 3429766545149965369}
+  - component: {fileID: 8665023855602638813}
+  - component: {fileID: 3185681372480546732}
   m_Layer: 6
   m_Name: Avatar
   m_TagString: Untagged
@@ -46,7 +46,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 42294809095373149}
   m_CullTransparentMesh: 1
---- !u!114 &7924629719555361187
+--- !u!114 &8665023855602638813
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -76,7 +76,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3429766545149965369
+--- !u!114 &3185681372480546732
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -85,11 +85,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 42294809095373149}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a22ee823f2a352b49a7bfe2cc4f65fdb, type: 3}
+  m_Script: {fileID: 11500000, guid: db8ae8f9fd0b7ae46b47b86eec7173f7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AvatarManager
+  m_EditorClassIdentifier: '::'
   avatarDatabase: {fileID: 11400000, guid: 3e7f440e645161e469a145aac407504a, type: 2}
-  playerAvatarImage: {fileID: 7924629719555361187}
+  displayImage: {fileID: 8665023855602638813}
 --- !u!1 &358488725399046595
 GameObject:
   m_ObjectHideFlags: 0
@@ -669,7 +669,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 350, y: 0}
+  m_AnchoredPosition: {x: 339, y: -102}
   m_SizeDelta: {x: 600, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1762814144247079418
@@ -1456,7 +1456,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
