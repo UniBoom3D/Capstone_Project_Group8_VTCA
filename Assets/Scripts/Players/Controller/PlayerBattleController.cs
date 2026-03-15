@@ -31,6 +31,8 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
 
     [Header("UI Settings")]
     public Slider powerSlider;
+    [Header("Timer Link")]
+    public Timer turnTimer;
 
     [Header("Visuals & Audio")]
     public TrajectoryPredictor trajectory; // 👈 NEW SLOT FOR THE LINE
@@ -124,6 +126,10 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
         {
             isCharging = true;
             chargeTimer = 0f;
+
+            // Đóng băng Timer khi đang căn lực ---
+            if (turnTimer != null) turnTimer.FreezeTimer();
+
             if (powerSlider != null)
             {
                 powerSlider.gameObject.SetActive(true);
@@ -159,8 +165,12 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
             // Hide the line immediately
             if (trajectory != null) trajectory.Hide();
 
+            // --- MỚI: Tắt và ẩn Timer ngay trước khi bắn ---
+            if (turnTimer != null) turnTimer.ResetAndHide();
+            
             Debug.Log($"🚀 Power Locked at: {LastFiredPower}");
             FireProjectile();
+            // Chuyển camera sang projectile
 
             isCharging = false;
             chargeTimer = 0;
