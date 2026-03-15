@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(Animator))]
 public class PlayerBattleController : MonoBehaviour, ITurnParticipant
 {
     [Header("Stats Link")]
@@ -66,11 +67,15 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
     private float chargeTimer = 0f;
     private CharacterController controller;
 
+    private Animator animator;
+
     public event Action<Projectile> OnShoot;
 
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
+        animator = GetComponent<Animator>();
+        if (animator == null) Debug.LogError($"❌ Không tìm thấy component Animator trên {gameObject.name}!"); 
         if (audioSource == null) audioSource = GetComponent<AudioSource>();
         if (powerSlider != null) powerSlider.gameObject.SetActive(false);
         if (myStats == null) myStats = GetComponent<CombatStats>();
@@ -98,10 +103,37 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
 
         if (h != 0) transform.Rotate(Vector3.up * h * rotationSpeed * Time.deltaTime);
 
+        bool isMoving = false;
+
         if (v != 0 && myStats != null && myStats.HasStamina())
         {
             controller.Move(transform.forward * v * moveSpeed * Time.deltaTime);
             myStats.UseStamina(myStats.moveStaminaCost * Time.deltaTime);
+            isMoving = true;
+        }
+        if (animator != null)
+        {
+            // Reset cả 2 về 0 trước khi set giá trị mới để tránh bị "giật" animation
+            animator.SetFloat("RunFWD", 0f);
+            animator.SetFloat("RunBWD", 0f);
+
+            if (animator != null)
+            {
+                if (isMoving)
+                {
+                    // Set giá trị v (Vertical) trực tiếp vào Float của Animator
+                    // v > 0 sẽ kích hoạt RunFWD (Greater 0.2)
+                    // v < 0 sẽ kích hoạt RunBWD (Less -0.2)
+                    animator.SetFloat("RunFWD", v);
+                    animator.SetFloat("RunBWD", v);
+                }
+                else
+                {
+                    // Khi dừng lại, đưa cả 2 về 0 để quay về Idle
+                    animator.SetFloat("RunFWD", 0f);
+                    animator.SetFloat("RunBWD", 0f);
+                }
+            }
         }
     }
 
@@ -165,11 +197,17 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
             // Hide the line immediately
             if (trajectory != null) trajectory.Hide();
 
-            // --- MỚI: Tắt và ẩn Timer ngay trước khi bắn ---
+            // ---Tắt và ẩn Timer ngay trước khi bắn ---
             if (turnTimer != null) turnTimer.ResetAndHide();
-            
+            // --- Bật Animation Bắn ---
+            if (animator != null)
+            {
+                animator.SetBool("Shooting", true);
+            }
             Debug.Log($"🚀 Power Locked at: {LastFiredPower}");
             FireProjectile();
+            StartCoroutine(ResetShootingAnimation());
+            
             // Chuyển camera sang projectile
 
             isCharging = false;
@@ -182,6 +220,14 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
             }
 
             StartCoroutine(ReloadRoutine());
+        }
+    }
+    private IEnumerator ResetShootingAnimation()
+    {
+        yield return new WaitForSeconds(0.5f); // Thời gian giữ animation bắn
+        if (animator != null)
+        {
+            animator.SetBool("Shooting", false);
         }
     }
 
