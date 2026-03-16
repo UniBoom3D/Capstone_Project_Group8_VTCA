@@ -10,7 +10,7 @@ public class TrajectoryPredictor : MonoBehaviour
     public int resolution = 30;
 
     [Tooltip("How many seconds of flight to predict")]
-    public float timeLimit = 4f;
+    public float timeLimit = 1f;
 
     [Tooltip("Layers the line should stop at (Ground, Walls)")]
     public LayerMask collisionMask;

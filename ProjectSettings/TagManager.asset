@@ -6,6 +6,11 @@ TagManager:
   tags:
   - Enemy
   - PlayerCanvas
+  - CompassbarX
+  - PowerBar
+  - CountdownTimer
+  - FocusPointPlayer
+  - FocusPointBulletP
   layers:
   - Default
   - TransparentFX

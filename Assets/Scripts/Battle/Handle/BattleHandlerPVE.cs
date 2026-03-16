@@ -1,27 +1,25 @@
 ﻿using System.Collections;
-using System.Collections.Generic; // REQUIRED for Lists
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class BattleHandlerPvE : BattleManagerCore
 {
     [Header("TEAMS (DYNAMIC)")]
-    [Tooltip("Add as many teams here as you want. They will take turns in order.")]
+    [Tooltip("Managed by BattleManager script.")]
     public List<BattleTeamData> battleTeams = new List<BattleTeamData>();
     private int currentTeamIndex = 0;
 
-    [Header("PLAYER CONTROLLER")]
-    [SerializeField] private PlayerBattleController playerBattlerController;
+    [Header("ACTIVE ACTOR")]
+    private PlayerBattleController _activePlayerInTurn;
 
     [Header("RULES")]
     [SerializeField] private int limitedTurnForPlayer = 20;
     [SerializeField] private float phaseDelay = 1f;
-    [SerializeField] private float aiTurnWaitTime = 3.0f; // Time allocated for AI animations
+    [SerializeField] private float aiTurnWaitTime = 3.0f;
 
-    [Header("PLAYER TURN")]
+    [Header("PLAYER TURN CONFIG")]
     [SerializeField] private float endTurnAfterShootDelay = 0.1f;
-    [Header("UI REFERENCES")]
-    [SerializeField] private Timer turnTimer;
 
     [Header("CAMERA")]
     [SerializeField] private Camera mainCamera;
@@ -37,9 +35,6 @@ public class BattleHandlerPvE : BattleManagerCore
     // =========================
     // Public API
     // =========================
-    /// <summary>
-    /// Call this with ANY number of teams to start a battle!
-    /// </summary>
     public void StartBattlePVE(List<BattleTeamData> teamsInBattle)
     {
         if (isBattleActive) return;
@@ -49,32 +44,32 @@ public class BattleHandlerPvE : BattleManagerCore
         playerWinResult = false;
         currentTeamIndex = 0;
 
-        if (playerBattlerController == null)
-            playerBattlerController = FindFirstObjectByType<PlayerBattleController>();
+        // Tắt toàn bộ UI của tất cả Player trước khi vào trận
+        foreach (var team in battleTeams)
+        {
+            foreach (var member in team.Members)
+            {
+                if (member is PlayerBattleController p && p.turnTimer != null)
+                {
+                    p.turnTimer.gameObject.SetActive(false);
+                }
+            }
+        }
 
-        // Set base variables
         isBattleActive = true;
-
-        // Start the master dynamic loop instead of the hardcoded Red/Blue states
         StartCoroutine(OnBattleStartIntro());
         phaseRoutine = StartCoroutine(MasterBattleLoop());
     }
 
-    // =========================
-    // Core hooks
-    // =========================
     protected override IEnumerator OnBattleStartIntro()
     {
         currentTeamName = "Start";
-        SetPlayerControl(false);
-        HookPlayerShootEvent(false);
         yield return new WaitForSeconds(0.2f);
     }
 
     protected override void OnStateEnter(BattleState3D state)
     {
         if (state == BattleState3D.Endbattle) Cleanup();
-        // We ignore Red/Blue states here because MasterBattleLoop handles everything now.
     }
 
     protected override void OnTick(BattleState3D state) { }
@@ -94,17 +89,13 @@ public class BattleHandlerPvE : BattleManagerCore
 
         while (isBattleActive)
         {
-            // 1. Get the current team
             var currentTeam = battleTeams[currentTeamIndex];
             currentTeamName = currentTeam.TeamName;
 
-            // 2. Turn Limit Check (Only increment if this team contains a player)
             bool isPlayerTeam = currentTeam.Members.Any(m => m is PlayerBattleController);
             if (isPlayerTeam)
             {
                 playerTurnCount++;
-                Debug.Log($"=== Team: {currentTeamName} | Turn {playerTurnCount}/{limitedTurnForPlayer} ===");
-
                 if (playerTurnCount > limitedTurnForPlayer)
                 {
                     playerWinResult = false;
@@ -112,28 +103,20 @@ public class BattleHandlerPvE : BattleManagerCore
                     yield break;
                 }
             }
-            else
-            {
-                Debug.Log($"=== Team: {currentTeamName} (AI) ===");
-            }
 
-            // 3. Loop through all ALIVE members of this team
             foreach (var actor in currentTeam.Members.Where(m => m != null && m.IsAlive))
             {
                 if (!isBattleActive) yield break;
 
                 CurrentActor = actor;
-                Debug.Log($"👉 It is now {actor.Name}'s Turn!");
-
                 if (actor is MonoBehaviour monoActor)
                     FocusCamera(monoActor.transform);
 
-                // 4. Determine if Actor is Player or AI dynamically
+                // Xác định PlayerTarget
                 PlayerBattleController playerTarget = actor as PlayerBattleController;
                 if (playerTarget == null && actor is MonoBehaviour m)
                     playerTarget = m.GetComponent<PlayerBattleController>();
 
-                // Execute the correct turn logic
                 if (playerTarget != null)
                 {
                     yield return StartCoroutine(HandlePlayerTurn(playerTarget));
@@ -143,14 +126,10 @@ public class BattleHandlerPvE : BattleManagerCore
                     yield return StartCoroutine(HandleAITurn(actor));
                 }
 
-                // 5. Check if the battle is over after EVERY move
                 if (CheckBattleEndCondition()) yield break;
             }
 
-            // 6. Delay before next team
             if (phaseDelay > 0f) yield return new WaitForSeconds(phaseDelay);
-
-            // 7. Cycle to the next team in the list
             currentTeamIndex = (currentTeamIndex + 1) % battleTeams.Count;
         }
     }
@@ -162,86 +141,81 @@ public class BattleHandlerPvE : BattleManagerCore
     {
         isActionDone = false;
         awaitingPlayerAction = true;
-        if (turnTimer != null)
+        _activePlayerInTurn = player;
+
+        // Kích hoạt Timer riêng của nhân vật
+        if (_activePlayerInTurn.turnTimer != null)
         {
-            turnTimer.StartNewTurn();
+            _activePlayerInTurn.turnTimer.gameObject.SetActive(true);
+            _activePlayerInTurn.turnTimer.StartNewTurn();
         }
 
-        bool cheatUsed = false;
-
-        // Link our global variable to the current active player
-        playerBattlerController = player;
         HookPlayerShootEvent(true);
-        SetPlayerControl(true);
+        _activePlayerInTurn.EnableControl(true);
 
-        // Wait for shoot or cheat code
         while (!isActionDone && isBattleActive)
         {
-            if (!cheatUsed && Input.GetKeyDown(KeyCode.O))
+            // Logic Cheat phím O
+            if (Input.GetKeyDown(KeyCode.O))
             {
-                cheatUsed = true;
-                Debug.Log("⏳ Cheat Activated: Ending turn in 5 seconds...");
-                SetPlayerControl(false);
+                Debug.Log("⏳ Cheat: Ending turn in 5s...");
+                _activePlayerInTurn.EnableControl(false);
                 HookPlayerShootEvent(false);
                 awaitingPlayerAction = false;
                 StartCoroutine(EndUnitTurnAfterDelay(5f));
+                break;
             }
             yield return null;
         }
 
-        SetPlayerControl(false);
+        // Dọn dẹp sau khi xong lượt
+        if (_activePlayerInTurn != null)
+        {
+            if (_activePlayerInTurn.turnTimer != null)
+            {
+                _activePlayerInTurn.turnTimer.StopTimer();
+                _activePlayerInTurn.turnTimer.gameObject.SetActive(false);
+            }
+            _activePlayerInTurn.EnableControl(false);
+        }
+
         HookPlayerShootEvent(false);
         awaitingPlayerAction = false;
-        CurrentActor = null;
+        _activePlayerInTurn = null;
+    }
+
+    public void ForceEndTurn()
+    {
+        if (awaitingPlayerAction && isBattleActive && _activePlayerInTurn != null)
+        {
+            Debug.Log($"⏰ [TIMEOUT] {_activePlayerInTurn.name} hết giờ!");
+            _activePlayerInTurn.EnableControl(false);
+            if (_activePlayerInTurn.turnTimer != null) _activePlayerInTurn.turnTimer.StopTimer();
+
+            awaitingPlayerAction = false;
+            isActionDone = true;
+        }
     }
 
     private IEnumerator HandleAITurn(ITurnParticipant aiActor)
     {
-        // Tell the AI to do its logic
         aiActor.TakeTurn();
-
-        // Give the AI time to walk and shoot
         yield return new WaitForSeconds(aiTurnWaitTime);
-
         CurrentActor = null;
     }
 
-    // =========================
-    // Win / Loss Condition
-    // =========================
     private bool CheckBattleEndCondition()
     {
-        int activeTeamsCount = 0;
-        BattleTeamData lastActiveTeam = null;
+        int activeTeamsCount = battleTeams.Count(t => !t.IsDefeated);
+        BattleTeamData winnerTeam = battleTeams.FirstOrDefault(t => !t.IsDefeated);
 
-        // Count how many teams still have living members
-        foreach (var team in battleTeams)
-        {
-            if (!team.IsDefeated)
-            {
-                activeTeamsCount++;
-                lastActiveTeam = team;
-            }
-        }
-
-        // If 1 or 0 teams are left, battle is over
         if (activeTeamsCount <= 1)
         {
-            // Did a player-controlled team win?
-            if (lastActiveTeam != null && lastActiveTeam.Members.Any(m => m is PlayerBattleController))
-            {
-                playerWinResult = true;
-            }
-            else
-            {
-                playerWinResult = false; // Enemies won, or a draw
-            }
-
+            playerWinResult = winnerTeam != null && winnerTeam.Members.Any(m => m is PlayerBattleController);
             EndBattle();
-            return true; // Yes, battle ended
+            return true;
         }
-
-        return false; // Battle continues
+        return false;
     }
 
     // =========================
@@ -249,23 +223,43 @@ public class BattleHandlerPvE : BattleManagerCore
     // =========================
     private void HookPlayerShootEvent(bool hook)
     {
-        if (playerBattlerController == null) return;
-
-        playerBattlerController.OnShoot -= OnPlayerShoot;
-        if (hook) playerBattlerController.OnShoot += OnPlayerShoot;
+        if (_activePlayerInTurn == null) return;
+        _activePlayerInTurn.OnShoot -= OnPlayerShoot;
+        if (hook) _activePlayerInTurn.OnShoot += OnPlayerShoot;
     }
 
     private void OnPlayerShoot(Projectile projectile)
     {
         if (!awaitingPlayerAction) return;
+
+        if (_activePlayerInTurn != null && _activePlayerInTurn.turnTimer != null)
+            _activePlayerInTurn.turnTimer.StopTimer();
+
         awaitingPlayerAction = false;
-        StartCoroutine(EndUnitTurnAfterDelay(endTurnAfterShootDelay));
+
+        CameraFollowPlayer camControl = Object.FindFirstObjectByType<CameraFollowPlayer>();
+        if (camControl != null && projectile != null)
+        {
+            camControl.SetProjectileTarget(projectile.transform);
+        }
+        StartCoroutine(WaitUntilProjectileDestroyed(projectile));
     }
 
     private IEnumerator EndUnitTurnAfterDelay(float delay)
     {
         if (delay > 0f) yield return new WaitForSeconds(delay);
-        isActionDone = true; // Signals the MasterLoop to continue
+        isActionDone = true;
+    }
+    private IEnumerator WaitUntilProjectileDestroyed(Projectile projectile)
+    {
+        while (projectile != null)
+        {
+            yield return null;
+        }
+        yield return new WaitForSeconds(1.5f);
+
+        // Xác nhận hành động đã xong để Master Loop chuyển sang Actor tiếp theo
+        isActionDone = true;
     }
 
     // =========================
@@ -273,20 +267,19 @@ public class BattleHandlerPvE : BattleManagerCore
     // =========================
     private void FocusCamera(Transform follow)
     {
-        if (mainCamera == null || follow == null) return;
-        mainCamera.transform.position = follow.position - (follow.forward * 5f) + (Vector3.up * 3f);
-        mainCamera.transform.LookAt(follow);
-    }
-
-    private void SetPlayerControl(bool enable)
-    {
-        if (playerBattlerController == null) return;
-        playerBattlerController.EnableControl(enable);
+        //if (mainCamera == null || follow == null) return;
+        //mainCamera.transform.position = follow.position - (follow.forward * 5f) + (Vector3.up * 3f);
+        //mainCamera.transform.LookAt(follow);
+        CameraFollowPlayer camControl = Object.FindFirstObjectByType<CameraFollowPlayer>();
+        if (camControl != null)
+        {
+            camControl.SetTarget(follow);
+        }
     }
 
     private void Cleanup()
     {
-        SetPlayerControl(false);
+        if (_activePlayerInTurn != null) _activePlayerInTurn.EnableControl(false);
         HookPlayerShootEvent(false);
         awaitingPlayerAction = false;
         CurrentActor = null;
@@ -295,31 +288,6 @@ public class BattleHandlerPvE : BattleManagerCore
         {
             StopCoroutine(phaseRoutine);
             phaseRoutine = null;
-        }
-    }
-
-    // Hàm này sẽ được gọi từ Sự kiện On Timer End của Timer
-    public void OnPlayerTimerTimeout()
-    {
-        // Chỉ xử lý nếu đang thực sự trong lượt của Player và đang chờ hành động
-        if (awaitingPlayerAction && isBattleActive)
-        {
-            Debug.Log("⏰ [TIMEOUT] Hết thời gian suy nghĩ!");
-
-            // 1. Tắt quyền điều khiển của Player ngay lập tức
-            SetPlayerControl(false);
-            HookPlayerShootEvent(false);
-
-            // 2. Nếu Player đang nhấn giữ Space (đang sạc), hãy reset nó
-            if (playerBattlerController != null)
-            {
-                // Gọi hàm này để ẩn line quỹ đạo và slider
-                playerBattlerController.EnableControl(false);
-            }
-
-            // 3. Đánh dấu hành động đã xong (nhưng không bắn) để MasterLoop chạy tiếp
-            awaitingPlayerAction = false;
-            isActionDone = true;
         }
     }
 }
