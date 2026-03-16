@@ -60,11 +60,7 @@ public class CameraFollowPlayer : MonoBehaviour
 
     public float GetCurrentCameraAngle()
     {
-        if (orbitalFollow != null)
-        {
-            return orbitalFollow.VerticalAxis.Value;
-        }
-        return 0f;
+        return orbitalFollow != null ? orbitalFollow.VerticalAxis.Value : 0f;
     }
 
     private void ApplyChange(float amount)
@@ -73,12 +69,44 @@ public class CameraFollowPlayer : MonoBehaviour
         orbitalFollow.VerticalAxis.Value = Mathf.Clamp(currentValue + amount, 0f, 60f);
     }
 
-    public void SetTarget(Transform newTarget)
+    public void SetTarget(Transform newPlayerTransform)
     {
-        if (orbitalFollow != null && orbitalFollow.gameObject.TryGetComponent<CinemachineCamera>(out var vcam))
+        if (orbitalFollow == null) return;
+        if (!orbitalFollow.gameObject.TryGetComponent<CinemachineCamera>(out var vcam)) return;
+
+        // Tìm Focus Point (Lớp 1: Theo tên | Lớp 2: Theo Tag)
+        Transform focusPoint = FindFocusPoint(newPlayerTransform);
+
+        if (focusPoint != null)
         {
-            vcam.Follow = newTarget;
-            vcam.LookAt = newTarget;
+            // Cập nhật cả Tracking Target (Follow) và Look At Target (LookAt) vào Focus Point
+            // Điều này giúp camera xoay quanh và nhìn thẳng vào điểm này
+            vcam.Follow = focusPoint;
+            vcam.LookAt = focusPoint;
+
+            Debug.Log($"<color=green>🎥 Camera Linked: {focusPoint.name} set as Follow & LookAt</color>");
         }
+        else
+        {
+            // Fallback nếu không có Focus Point
+            vcam.Follow = newPlayerTransform;
+            vcam.LookAt = newPlayerTransform;
+            Debug.LogWarning($"⚠️ Fallback: Không tìm thấy Focus Point, gán vào gốc {newPlayerTransform.name}");
+        }
+    }
+
+    private Transform FindFocusPoint(Transform parent)
+    {
+        // Lớp 1: Tìm theo tên chính xác
+        Transform byName = parent.Find("Focus Point");
+        if (byName != null) return byName;
+
+        // Lớp 2: Tìm trong các con theo Tag "FocusPointPlayer"
+        foreach (Transform t in parent.GetComponentsInChildren<Transform>(true))
+        {
+            if (t.CompareTag("FocusPointPlayer")) return t;
+        }
+
+        return null;
     }
 }

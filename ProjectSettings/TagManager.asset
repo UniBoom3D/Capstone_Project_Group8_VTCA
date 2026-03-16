@@ -9,6 +9,7 @@ TagManager:
   - CompassbarX
   - PowerBar
   - CountdownTimer
+  - FocusPointPlayer
   layers:
   - Default
   - TransparentFX
