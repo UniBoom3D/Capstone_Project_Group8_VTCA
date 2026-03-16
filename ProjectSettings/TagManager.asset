@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Enemy
   - PlayerCanvas
+  - CompassbarX
+  - PowerBar
+  - CountdownTimer
   layers:
   - Default
   - TransparentFX
