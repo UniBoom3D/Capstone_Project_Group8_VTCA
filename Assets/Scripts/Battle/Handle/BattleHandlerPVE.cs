@@ -236,12 +236,29 @@ public class BattleHandlerPvE : BattleManagerCore
             _activePlayerInTurn.turnTimer.StopTimer();
 
         awaitingPlayerAction = false;
-        StartCoroutine(EndUnitTurnAfterDelay(endTurnAfterShootDelay));
+
+        CameraFollowPlayer camControl = Object.FindFirstObjectByType<CameraFollowPlayer>();
+        if (camControl != null && projectile != null)
+        {
+            camControl.SetProjectileTarget(projectile.transform);
+        }
+        StartCoroutine(WaitUntilProjectileDestroyed(projectile));
     }
 
     private IEnumerator EndUnitTurnAfterDelay(float delay)
     {
         if (delay > 0f) yield return new WaitForSeconds(delay);
+        isActionDone = true;
+    }
+    private IEnumerator WaitUntilProjectileDestroyed(Projectile projectile)
+    {
+        while (projectile != null)
+        {
+            yield return null;
+        }
+        yield return new WaitForSeconds(1.5f);
+
+        // Xác nhận hành động đã xong để Master Loop chuyển sang Actor tiếp theo
         isActionDone = true;
     }
 

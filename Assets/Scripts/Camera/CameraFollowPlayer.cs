@@ -1,14 +1,22 @@
 ﻿using UnityEngine;
 using Unity.Cinemachine;
+using System.Collections;
+using static Unity.Cinemachine.CinemachineAutoFocus;
 
 public class CameraFollowPlayer : MonoBehaviour
 {
     [Header("Cinemachine Reference")]
     [SerializeField] private CinemachineOrbitalFollow orbitalFollow;
 
+    [Header("Tags Config")]
+    [SerializeField] private string playerFocusTag = "FocusPointPlayer";
+    [SerializeField] private string bulletFocusTag = "FocusPointBulletP";
+
+    private CinemachineCamera _vcam;
+
     [Header("Control Settings")]
-    public float continuousSpeed = 30f; // Tốc độ khi nhấn giữ
-    public float initialDelay = 0.5f;   // Thời gian chờ để xác nhận nhấn giữ
+    public float continuousSpeed = 30f; 
+    public float initialDelay = 0.5f;   
 
     // Biến tạm để xử lý logic nhấn giữ
     private float _keyHoldingTime = 0f;
@@ -16,8 +24,11 @@ public class CameraFollowPlayer : MonoBehaviour
 
     private void Awake()
     {
-        if (orbitalFollow == null)
-            orbitalFollow = GetComponent<CinemachineOrbitalFollow>();
+        
+        if (orbitalFollow == null) orbitalFollow = GetComponent<CinemachineOrbitalFollow>();
+
+        // Lấy CinemachineCamera component
+        _vcam = GetComponent<CinemachineCamera>();
     }
 
     void Update()
@@ -58,55 +69,77 @@ public class CameraFollowPlayer : MonoBehaviour
         }
     }
 
-    public float GetCurrentCameraAngle()
-    {
-        return orbitalFollow != null ? orbitalFollow.VerticalAxis.Value : 0f;
-    }
-
     private void ApplyChange(float amount)
     {
         float currentValue = orbitalFollow.VerticalAxis.Value;
         orbitalFollow.VerticalAxis.Value = Mathf.Clamp(currentValue + amount, 0f, 60f);
     }
-
-    public void SetTarget(Transform newPlayerTransform)
+    public float GetCurrentCameraAngle()
     {
-        if (orbitalFollow == null) return;
-        if (!orbitalFollow.gameObject.TryGetComponent<CinemachineCamera>(out var vcam)) return;
+        return orbitalFollow != null ? orbitalFollow.VerticalAxis.Value : 0f;
+    }
 
-        // Tìm Focus Point (Lớp 1: Theo tên | Lớp 2: Theo Tag)
-        Transform focusPoint = FindFocusPoint(newPlayerTransform);
+    /// <summary>
+    /// Gán camera nhìn vào Focus Point của Player khi bắt đầu lượt mới.
+    /// </summary>
+    public void SetTarget(Transform nextPlayer)
+    {
+        if (_vcam == null) return;
 
-        if (focusPoint != null)
+        StopAllCoroutines();
+
+        Transform focusPoint = FindFocusPoint(nextPlayer, playerFocusTag);
+
+        // Trong v3.x, gán trực tiếp vào Follow và LookAt của CinemachineCamera
+        _vcam.Follow = focusPoint != null ? focusPoint : nextPlayer;
+        _vcam.LookAt = focusPoint != null ? focusPoint : nextPlayer;
+    }
+
+    /// <summary>
+    /// Bám theo viên đạn. Khi đạn nổ, camera sẽ dừng lại tại vị trí đó.
+    /// </summary>
+    public void SetProjectileTarget(Transform projectileTransform)
+    {
+        if (_vcam == null || projectileTransform == null) return;
+
+        // Tìm điểm Focus bên trong viên đạn
+        Transform bulletFocus = FindFocusPoint(projectileTransform, bulletFocusTag);
+        Transform targetToFollow = bulletFocus != null ? bulletFocus : projectileTransform;
+
+        _vcam.Follow = targetToFollow;
+        _vcam.LookAt = targetToFollow;
+
+        StartCoroutine(TrackProjectileUntilExplosion(targetToFollow));
+    }
+
+    private IEnumerator TrackProjectileUntilExplosion(Transform target)
+    {
+        // Khi viên đạn/focus point còn tồn tại
+        while (target != null)
         {
-            // Cập nhật cả Tracking Target (Follow) và Look At Target (LookAt) vào Focus Point
-            // Điều này giúp camera xoay quanh và nhìn thẳng vào điểm này
-            vcam.Follow = focusPoint;
-            vcam.LookAt = focusPoint;
-
-            Debug.Log($"<color=green>🎥 Camera Linked: {focusPoint.name} set as Follow & LookAt</color>");
+            yield return null;
         }
-        else
+
+        // Đạn nổ: Gán null để Camera đứng im tại chỗ
+        if (_vcam != null)
         {
-            // Fallback nếu không có Focus Point
-            vcam.Follow = newPlayerTransform;
-            vcam.LookAt = newPlayerTransform;
-            Debug.LogWarning($"⚠️ Fallback: Không tìm thấy Focus Point, gán vào gốc {newPlayerTransform.name}");
+            _vcam.Follow = null;
+            _vcam.LookAt = null;
         }
     }
 
-    private Transform FindFocusPoint(Transform parent)
+    private Transform FindFocusPoint(Transform parent, string tag)
     {
-        // Lớp 1: Tìm theo tên chính xác
+        // Ưu tiên tìm theo tên "Focus Point"
         Transform byName = parent.Find("Focus Point");
         if (byName != null) return byName;
 
-        // Lớp 2: Tìm trong các con theo Tag "FocusPointPlayer"
+        // Tìm theo Tag (cho Bullet Focus)
         foreach (Transform t in parent.GetComponentsInChildren<Transform>(true))
         {
-            if (t.CompareTag("FocusPointPlayer")) return t;
+            if (t.CompareTag(tag)) return t;
         }
-
         return null;
     }
+   
 }
