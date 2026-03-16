@@ -250,9 +250,14 @@ public class BattleHandlerPvE : BattleManagerCore
     // =========================
     private void FocusCamera(Transform follow)
     {
-        if (mainCamera == null || follow == null) return;
-        mainCamera.transform.position = follow.position - (follow.forward * 5f) + (Vector3.up * 3f);
-        mainCamera.transform.LookAt(follow);
+        //if (mainCamera == null || follow == null) return;
+        //mainCamera.transform.position = follow.position - (follow.forward * 5f) + (Vector3.up * 3f);
+        //mainCamera.transform.LookAt(follow);
+        CameraFollowPlayer camControl = Object.FindFirstObjectByType<CameraFollowPlayer>();
+        if (camControl != null)
+        {
+            camControl.SetTarget(follow);
+        }
     }
 
     private void Cleanup()

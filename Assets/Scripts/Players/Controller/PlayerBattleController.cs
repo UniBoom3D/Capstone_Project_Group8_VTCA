@@ -137,13 +137,15 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
 
     private void HandleAiming()
     {
-        float aimInput = 0f;
-        if (Input.GetKey(KeyCode.I)) aimInput = -1f;
-        if (Input.GetKey(KeyCode.K)) aimInput = 1f;
+        // Tìm script quản lý camera đang chạy trong Scene
+        CameraFollowPlayer camControl = UnityEngine.Object.FindFirstObjectByType<CameraFollowPlayer>();
 
-        if (aimInput != 0 && firePoint != null)
+        if (camControl != null && firePoint != null)
         {
-            firePoint.Rotate(aimInput * 40f * Time.deltaTime, 0, 0);
+            // 1. Lấy góc ngẩng hiện tại từ Camera (0 đến 60)
+            float currentCamAngle = camControl.GetCurrentCameraAngle();
+   
+            firePoint.localRotation = Quaternion.Euler(0f, currentCamAngle, 90f);
         }
     }
 
