@@ -142,7 +142,6 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
 
         if (camControl != null && firePoint != null)
         {
-            // 1. Lấy góc ngẩng hiện tại từ Camera (0 đến 60)
             float currentCamAngle = camControl.GetCurrentCameraAngle();
    
             firePoint.localRotation = Quaternion.Euler(0f, currentCamAngle, 90f);
