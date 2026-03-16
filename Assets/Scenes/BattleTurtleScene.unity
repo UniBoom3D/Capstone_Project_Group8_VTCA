@@ -212,7 +212,7 @@ GameObject:
   m_Component:
   - component: {fileID: 269620546}
   m_Layer: 0
-  m_Name: ---PLAYER---
+  m_Name: ---PLAYER-CONTAINER---
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -630,7 +630,7 @@ GameObject:
   m_Component:
   - component: {fileID: 608392013}
   m_Layer: 7
-  m_Name: ---ENEMIES---
+  m_Name: ---ENEMIES-CONTAINER---
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -728,12 +728,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleHandlerPvE
   currentState: 0
   timePerTurn: 20
-  playerBattlerController: {fileID: 0}
   limitedTurnForPlayer: 20
   phaseDelay: 1
   aiTurnWaitTime: 3
   endTurnAfterShootDelay: 0.1
-  countdownTimer: {fileID: 0}
   mainCamera: {fileID: 2027766477}
   currentTeamName: 
 --- !u!1 &1533635445
@@ -768,8 +766,6 @@ Transform:
   m_Children:
   - {fileID: 806408809}
   - {fileID: 251083210}
-  - {fileID: 1660470205}
-  - {fileID: 1905748583}
   m_Father: {fileID: 1648133047}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1533635447
@@ -853,6 +849,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1660470205}
+  - {fileID: 1905748583}
   - {fileID: 1533635446}
   - {fileID: 783193229}
   m_Father: {fileID: 0}
@@ -883,12 +881,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1660470204}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1533635446}
+  m_Father: {fileID: 1648133047}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1660470206
 MonoBehaviour:
@@ -940,6 +938,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1905748583}
+  - component: {fileID: 1905748584}
   m_Layer: 0
   m_Name: CameraPVEManager
   m_TagString: Untagged
@@ -955,13 +954,25 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1905748582}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1533635446}
+  m_Father: {fileID: 1648133047}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1905748584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1905748582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0886f8ccc8661774f8ac0b0cf7315f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraPVEManager
 --- !u!1 &2027766471
 GameObject:
   m_ObjectHideFlags: 0
@@ -992,7 +1003,7 @@ Transform:
   m_GameObject: {fileID: 2027766471}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 73.63365, y: 25.88212, z: 10}
+  m_LocalPosition: {x: -32.518875, y: 1.222, z: 6.5147133}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1146,7 +1157,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 948.4
-  field of view: 44.5
+  field of view: 30
   orthographic: 0
   orthographic size: 10
   m_Depth: -1

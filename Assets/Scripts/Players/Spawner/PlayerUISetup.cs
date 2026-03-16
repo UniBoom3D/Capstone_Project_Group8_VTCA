@@ -8,45 +8,47 @@ public class PlayerUISetup : MonoBehaviour
     {
         PlayerBattleController controller = player.GetComponent<PlayerBattleController>();
         PlayerHeading heading = player.GetComponent<PlayerHeading>();
+        BattleHandlerPvE pveHandler = Object.FindFirstObjectByType<BattleHandlerPvE>();
 
         if (canvas == null) return;
 
-        // 1. Gán Power Slider theo Tag "PowerBar"
+        // 1. Thiết lập Controller & Timer
         if (controller != null)
         {
+            // Gán Power Slider theo Tag "PowerBar"
             Slider powerBar = FindComponentInChildWithTag<Slider>(canvas, "PowerBar");
             if (powerBar != null) controller.powerSlider = powerBar;
 
-            // Gán Countdown Timer (Tìm theo Component Timer)
+            // Gán Countdown Timer và kết nối với BattleHandler
             Timer uiTimer = canvas.GetComponentInChildren<Timer>();
-            if (uiTimer != null) controller.turnTimer = uiTimer;
+            if (uiTimer != null)
+            {
+                controller.turnTimer = uiTimer;
+
+                // ĐỒNG BỘ HÓA: Khi Timer này hết giờ, gọi hàm ForceEndTurn của Handler
+                if (pveHandler != null)
+                {
+                    uiTimer.onTimerEnd.RemoveAllListeners(); // Xóa sạch để tránh trùng lặp khi hồi sinh/spawn lại
+                    uiTimer.onTimerEnd.AddListener(pveHandler.ForceEndTurn);
+
+                    Debug.Log($"<color=green>🔔 Link Timer của {player.name} tới BattleHandler thành công!</color>");
+                }
+            }
         }
 
-        // 2. Gán Compass (Thước xoay) cho PlayerHeading
+        // 2. Thiết lập Compass (Giữ nguyên logic của bạn)
         if (heading != null)
         {
-            // Tìm Object có Tag CompassbarX
             GameObject compassObj = FindGameObjectInChildWithTag(canvas, "CompassbarX");
             if (compassObj != null)
             {
-                // Lấy Component thực thi Interface ICompassBarPro
                 heading._compass = compassObj.GetComponent<ICompassBarPro>();
                 Debug.Log($"<color=yellow>🧭 Compass đã được gán cho {player.name}</color>");
             }
-            else
-            {
-                Debug.LogWarning($"⚠️ Không tìm thấy Object có Tag 'CompassbarX' trong {canvas.name}");
-            }
-        }
-
-        // 3. Gán đồng hồ cho BattleHandlerPvE (chỉ cho người chơi đầu tiên)
-        if (playerIndex == 1)
-        {
-            BattleHandlerPvE pveHandler = Object.FindFirstObjectByType<BattleHandlerPvE>();
-            Timer uiTimer = canvas.GetComponentInChildren<Timer>();
-            // if (pveHandler != null && uiTimer != null) pveHandler.countdownTimer = uiTimer;
         }
     }
+
+    // --- Helper Methods ---
 
     private T FindComponentInChildWithTag<T>(GameObject parent, string tag) where T : Component
     {
