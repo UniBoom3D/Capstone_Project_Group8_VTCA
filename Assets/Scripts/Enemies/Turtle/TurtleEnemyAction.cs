@@ -4,17 +4,36 @@ using System.Collections;
 public class TurtleEnemyAction : MonoBehaviour, ITurnParticipant
 {
     // =========================================================
-    // 🟢 INTERFACE IMPLEMENTATION
+    // 🟢 INTERFACE & MỚI
     // =========================================================
     public string Name => gameObject.name;
     public int HP { get; private set; } = 50;
     public bool IsAlive => HP > 0;
     Transform ITurnParticipant.transform { get => this.transform; set { } }
 
+    [Header("Type Settings")]
+    public bool IsTurtleCanon = true; // ✅ True: Bắn xa | False: Cận chiến
+
+    [Header("AI Settings")]
+    public float moveSpeed = 5f;
+    public float attackRange = 15f;
+    public float moveDuration = 1.5f;
+
+    [Header("References")]
+    public Transform playerTarget;
+    public GameObject projectilePrefab;
+    public Transform firePoint; // ✅ Rotation X hiện là -45
+
+    private Rigidbody rb;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
     public void TakeDamage(int dmg)
     {
         HP -= dmg;
-        Debug.Log($"💥 {Name} took {dmg} damage! Remaining HP: {HP}");
         if (HP <= 0) gameObject.SetActive(false);
     }
 
@@ -22,96 +41,118 @@ public class TurtleEnemyAction : MonoBehaviour, ITurnParticipant
     {
         StartCoroutine(AI_ExecuteTurn());
     }
+
     // =========================================================
-
-    [Header("AI Settings")]
-    public float moveSpeed = 5f;
-    public float attackRange = 15f; // ✅ Reduced to 15 so it walks first!
-    public float moveDuration = 1.5f;
-
-    [Header("References")]
-    public Transform playerTarget;      // ✅ Manual slot to ensure we find player
-    public GameObject projectilePrefab;
-    public Transform firePoint;
-
+    // 🧠 CHIẾN THUẬT AI (CORE LOGIC)
+    // =========================================================
     private IEnumerator AI_ExecuteTurn()
     {
-        Debug.Log("🐢 Turtle Turn Started...");
+        // 1. Chuẩn bị (Reset trạng thái sau khi bị trúng đạn)
+        PrepareForTurn();
 
-        // 1. Find Player (Auto or Manual)
-        if (playerTarget == null)
-        {
-            GameObject p = GameObject.FindGameObjectWithTag("Player");
-            if (p != null) playerTarget = p.transform;
-        }
+        // 2. Tìm mục tiêu
+        if (playerTarget == null) FindTarget();
+        if (playerTarget == null) yield break;
 
-        transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
-        // triệt tiêu vận tốc cũ để nó không bị trượt
-        Rigidbody rb = GetComponent<Rigidbody>();
-        if (rb != null) { rb.linearVelocity = Vector3.zero; rb.angularVelocity = Vector3.zero; }
+        // 3. Xoay về phía mục tiêu
+        FaceTarget();
+        yield return new WaitForSeconds(0.5f);
 
-        // 2. Face the Player
-        Vector3 directionToPlayer = (playerTarget.position - transform.position).normalized;
-        directionToPlayer.y = 0;
-        if (directionToPlayer != Vector3.zero)
-            transform.rotation = Quaternion.LookRotation(directionToPlayer);
-
-        yield return new WaitForSeconds(0.5f); // Đợi ổn định sau khi xoay
-
+        // 4. Di chuyển nếu cần
         float distance = Vector3.Distance(transform.position, playerTarget.position);
-        Debug.Log($"🐢 Distance to Player: {distance:F1} (Range: {attackRange})");
-
-        // 3. MOVE (Only if far away)
         if (distance > attackRange)
         {
-            Debug.Log("🐢 Moving closer...");
-            float timer = 0f;
-            while (timer < moveDuration)
-            {
-                if (Vector3.Distance(transform.position, playerTarget.position) <= attackRange) break;
-                transform.position += transform.forward * moveSpeed * Time.deltaTime;
-                timer += Time.deltaTime;
-                yield return null;
-            }
+            yield return StartCoroutine(MoveTowardsTarget());
+        }
+
+        // 5. Tấn công dựa trên loại rùa
+        yield return new WaitForSeconds(0.5f);
+        if (IsTurtleCanon)
+        {
+            ExecuteRangedAttack();
         }
         else
         {
-            Debug.Log("🐢 Already in range, skipping movement.");
+            ExecuteMeleeAttack();
         }
 
-        // 4. ATTACK
-        yield return new WaitForSeconds(0.5f); // Take aim
-        AttackPlayer();
-
-        Debug.Log("🐢 Turn Complete.");
+        Debug.Log($"🐢 {Name} Turn Complete.");
     }
 
-    private void AttackPlayer()
+    // =========================================================
+    // 🛠 CÁC HÀM NHIỆM VỤ RIÊNG BIỆT
+    // =========================================================
+
+    private void PrepareForTurn()
     {
-        if (projectilePrefab != null && firePoint != null)
+        // Ép đứng thẳng và triệt tiêu lực văng
+        transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
+        if (rb != null)
         {
-            // 🚀 TÍNH TOÁN HƯỚNG BẮN (Aming)
-            // Tạo một hướng bắn hơi chếch lên trên để đạn bay cầu vồng (tránh chạm đất ngay lập tức)
-            Vector3 lowAngleDir = (playerTarget.position - firePoint.position).normalized;
-            Vector3 highAngleDir = (lowAngleDir + Vector3.up * 0.5f).normalized; // Chếch lên 0.5 đơn vị
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+    }
 
-            GameObject projObj = Instantiate(projectilePrefab, firePoint.position, Quaternion.LookRotation(highAngleDir));
-            ProjectileEnemy projectile = projObj.GetComponent<ProjectileEnemy>();
+    private void FindTarget()
+    {
+        GameObject p = GameObject.FindGameObjectWithTag("Player");
+        if (p != null) playerTarget = p.transform;
+    }
 
-            if (projectile != null)
-            {
-                float distance = Vector3.Distance(transform.position, playerTarget.position);
+    private void FaceTarget()
+    {
+        Vector3 direction = (playerTarget.position - transform.position).normalized;
+        direction.y = 0;
+        if (direction != Vector3.zero)
+            transform.rotation = Quaternion.LookRotation(direction);
+    }
 
-                // 🚀 TÍNH TOÁN LỰC (Power)
-                // Lực tỷ lệ thuận với khoảng cách. 
-                // Nếu khoảng cách là 10m, lực khoảng 35. Nếu 20m, lực khoảng 50.
-                float calculatedPower = (distance * 1.2f) + 25f;
+    private IEnumerator MoveTowardsTarget()
+    {
+        float timer = 0f;
+        while (timer < moveDuration)
+        {
+            if (Vector3.Distance(transform.position, playerTarget.position) <= attackRange) break;
+            transform.position += transform.forward * moveSpeed * Time.deltaTime;
+            timer += Time.deltaTime;
+            yield return null;
+        }
+    }
 
-                // Giới hạn lực để không bắn quá yếu hoặc quá mạnh
-                projectile.Launch(Mathf.Clamp(calculatedPower, 25f, 100f), this);
+    private void ExecuteRangedAttack()
+    {
+        if (projectilePrefab == null || firePoint == null) return;
 
-                Debug.Log($"🔥 AI Fired with Power: {calculatedPower:F1} at distance: {distance:F1}");
-            }
+        // ✅ Dùng Rotation của firePoint (đã là -45 độ) thay vì tính toán hướng thủ công
+        GameObject projObj = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
+        ProjectileEnemy projectile = projObj.GetComponent<ProjectileEnemy>();
+
+        if (projectile != null)
+        {
+            float distance = Vector3.Distance(transform.position, playerTarget.position);
+            // Tính toán lực dựa trên khoảng cách
+            float calculatedPower = (distance * 1.2f) + 25f;
+            projectile.Launch(Mathf.Clamp(calculatedPower, 25f, 100f), this);
+
+            // 🎥 THÊM CAMERA NHÌN THEO (SẼ VIẾT Ở BƯỚC TIẾP THEO)
+            NotifyCameraOfAttack(projObj.transform);
+        }
+    }
+
+    private void ExecuteMeleeAttack()
+    {
+        // Chỗ này để bạn thêm Animation Trigger cho rùa cận chiến sau này
+        Debug.Log("🐢 Melee Bite Attack!");
+    }
+
+    private void NotifyCameraOfAttack(Transform projectileTransform)
+    {
+        CameraFollowPlayer cam = Object.FindFirstObjectByType<CameraFollowPlayer>();
+        if (cam != null)
+        {
+            // Chúng ta sẽ thêm hàm LookAtProjectile cho Enemy trong script Camera
+            // cam.SetEnemyProjectileTarget(projectileTransform);
         }
     }
 }
