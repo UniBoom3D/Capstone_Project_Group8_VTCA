@@ -2,10 +2,11 @@
 using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
-public class Projectile : MonoBehaviour
+public class ProjectileEnemy : MonoBehaviour
 {
     [Header("Settings")]
     public float powerMultiplier = 0.5f;
+    // Layer của môi trường và Player để đạn biết khi nào cần nổ
     public LayerMask collisionLayerMask;
 
     [Header("References")]
@@ -23,13 +24,14 @@ public class Projectile : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        rb.useGravity = false;
+        rb.useGravity = false; // Đợi cho đến khi được bắn
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
     }
 
     private void FixedUpdate()
     {
+
         if (isLaunched && !targetHit && rb.linearVelocity.sqrMagnitude > 0.1f)
         {
             transform.rotation = Quaternion.LookRotation(rb.linearVelocity);
@@ -42,22 +44,15 @@ public class Projectile : MonoBehaviour
         rb.useGravity = true;
         isLaunched = true;
 
+        
         Vector3 launchVelocity = transform.forward * power * powerMultiplier;
         rb.linearVelocity = launchVelocity;
+
 
         if (inFlightAudioSource != null && !inFlightAudioSource.isPlaying)
             inFlightAudioSource.Play();
 
-        // 🎥 LOGIC CAMERA CHỈ CHO PLAYER:
-        if (shooter is MonoBehaviour monoShooter && monoShooter.CompareTag("Player"))
-        {
-            CameraFollowPlayer cam = Object.FindFirstObjectByType<CameraFollowPlayer>();
-            if (cam != null)
-            {
-                cam.SetProjectileTarget(this.transform);
-            }
-        }
-
+        
         Destroy(gameObject, 20f);
     }
 
@@ -68,36 +63,31 @@ public class Projectile : MonoBehaviour
         targetHit = true;
         Explode();
 
-        // Xử lý sát thương
-        ITurnParticipant victim = collision.gameObject.GetComponent<ITurnParticipant>();
-        if (victim != null && victim != myShooter)
+        // 🎯 CHỈ GÂY SÁT THƯƠNG CHO PLAYER
+        if (collision.gameObject.CompareTag("Player"))
         {
-            victim.TakeDamage(25);
+            ITurnParticipant victim = collision.gameObject.GetComponent<ITurnParticipant>();
+            if (victim != null)
+            {
+                victim.TakeDamage(25);
+                Debug.Log("<color=red>🎯 AI hit Player!</color>");
+            }
         }
 
-        // Dọn dẹp visual
         if (projectileMesh != null) projectileMesh.enabled = false;
         if (inFlightAudioSource != null) inFlightAudioSource.Stop();
         if (disableOnHit != null) disableOnHit.Stop();
         foreach (Collider col in GetComponents<Collider>()) col.enabled = false;
 
-        rb.isKinematic = true; // Dừng vật lý ngay khi nổ
+        rb.isKinematic = true;
         Destroy(gameObject, 2f);
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!targetHit && ((1 << other.gameObject.layer) & collisionLayerMask) != 0)
-        {
-            // Gọi hàm ngắt Follow trong Camera script
-            CameraFollowPlayer cam = Object.FindFirstObjectByType<CameraFollowPlayer>();
-            if (cam != null) cam.DetachFollow();
-        }
     }
 
     private void Explode()
     {
         if (rocketExplosion != null)
+        {
             Instantiate(rocketExplosion, transform.position, Quaternion.identity);
+        }
     }
 }

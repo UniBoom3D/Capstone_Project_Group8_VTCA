@@ -244,6 +244,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraFollowPlayer
   orbitalFollow: {fileID: 5810832640482615724}
+  playerFocusTag: FocusPointPlayer
+  bulletFocusTag: FocusPointBulletP
   continuousSpeed: 30
   initialDelay: 0.5
 --- !u!1 &4300975409559366427
@@ -811,7 +813,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrajectoryPredictor
   resolution: 30
-  timeLimit: 4
+  timeLimit: 0.1
   collisionMask:
     serializedVersion: 2
     m_Bits: 0
