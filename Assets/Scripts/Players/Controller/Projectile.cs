@@ -18,6 +18,7 @@ public class Projectile : MonoBehaviour
     private bool targetHit;
     private Rigidbody rb;
     private ITurnParticipant myShooter;
+    private float _damage = 25f;
 
     private void Awake()
     {
@@ -59,7 +60,7 @@ public class Projectile : MonoBehaviour
             // Don't hurt yourself (optional, but good for safety)
             if (victim == myShooter) return;
 
-            victim.TakeDamage(25);
+            victim.TakeDamage(_damage);
             Debug.Log($"🎯 Hit {victim.Name}!");
         }
 
@@ -83,5 +84,9 @@ public class Projectile : MonoBehaviour
         {
             Instantiate(rocketExplosion, transform.position, Quaternion.identity);
         }
+    }
+    public void SetDamage(float newDamage)
+    {
+        _damage = newDamage;
     }
 }

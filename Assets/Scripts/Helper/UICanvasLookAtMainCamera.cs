@@ -6,23 +6,18 @@ public class UICanvasLookAtMainCamera : MonoBehaviour
 
     void Start()
     {
+        // Tìm camera chính (Camera Follow Flayer đọc Main Camera)
         _mainCamera = Camera.main;
     }
 
-    void LateUpdate()
+    void Update()
     {
         if (_mainCamera != null)
         {
-            //Lấy vị trí của chính nó trừ đi vị trí Camera
-            Vector3 lookDirection = transform.position - _mainCamera.transform.position;
-
-            lookDirection.y = 0;
-
-            if (lookDirection != Vector3.zero)
-            {
-                // Tạo góc xoay từ vector
-                transform.rotation = Quaternion.LookRotation(lookDirection);
-            }
+            // Quay canvas về phía camera, nhưng chỉ giữ góc X và Y
+            Vector3 lookDirection = _mainCamera.transform.position - transform.position;
+            lookDirection.y = 0; // Đảm bảo chỉ quay theo chiều ngang (giữ hướng Y ổn định)
+            transform.rotation = Quaternion.LookRotation(lookDirection);
         }
     }
 }
