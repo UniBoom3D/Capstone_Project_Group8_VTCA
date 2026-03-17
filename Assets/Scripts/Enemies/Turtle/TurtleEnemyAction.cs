@@ -45,18 +45,18 @@ public class TurtleEnemyAction : MonoBehaviour, ITurnParticipant
             if (p != null) playerTarget = p.transform;
         }
 
-        // 🚨 ERROR CHECK: If we still have no target, complain loudly!
-        if (playerTarget == null)
-        {
-            Debug.LogError("❌ TURTLE ERROR: Cannot find Player! Make sure Player has tag 'Player' or drag it into the Inspector slot.");
-            yield break;
-        }
+        transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
+        // triệt tiêu vận tốc cũ để nó không bị trượt
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null) { rb.linearVelocity = Vector3.zero; rb.angularVelocity = Vector3.zero; }
 
         // 2. Face the Player
         Vector3 directionToPlayer = (playerTarget.position - transform.position).normalized;
         directionToPlayer.y = 0;
         if (directionToPlayer != Vector3.zero)
             transform.rotation = Quaternion.LookRotation(directionToPlayer);
+
+        yield return new WaitForSeconds(0.5f); // Đợi ổn định sau khi xoay
 
         float distance = Vector3.Distance(transform.position, playerTarget.position);
         Debug.Log($"🐢 Distance to Player: {distance:F1} (Range: {attackRange})");
@@ -90,23 +90,28 @@ public class TurtleEnemyAction : MonoBehaviour, ITurnParticipant
     {
         if (projectilePrefab != null && firePoint != null)
         {
-            Debug.Log("🔥 TURTLE FIRE!");
+            // 🚀 TÍNH TOÁN HƯỚNG BẮN (Aming)
+            // Tạo một hướng bắn hơi chếch lên trên để đạn bay cầu vồng (tránh chạm đất ngay lập tức)
+            Vector3 lowAngleDir = (playerTarget.position - firePoint.position).normalized;
+            Vector3 highAngleDir = (lowAngleDir + Vector3.up * 0.5f).normalized; // Chếch lên 0.5 đơn vị
 
-            // Aim at player + slightly up
-            Vector3 aimDir = (playerTarget.position - firePoint.position).normalized;
-
-            GameObject projObj = Instantiate(projectilePrefab, firePoint.position, Quaternion.LookRotation(aimDir));
-            Projectile projectile = projObj.GetComponent<Projectile>();
+            GameObject projObj = Instantiate(projectilePrefab, firePoint.position, Quaternion.LookRotation(highAngleDir));
+            ProjectileEnemy projectile = projObj.GetComponent<ProjectileEnemy>();
 
             if (projectile != null)
             {
-                float power = Vector3.Distance(transform.position, playerTarget.position) * 1.5f;
-                projectile.Launch(Mathf.Clamp(power, 20f, 80f), this);
+                float distance = Vector3.Distance(transform.position, playerTarget.position);
+
+                // 🚀 TÍNH TOÁN LỰC (Power)
+                // Lực tỷ lệ thuận với khoảng cách. 
+                // Nếu khoảng cách là 10m, lực khoảng 35. Nếu 20m, lực khoảng 50.
+                float calculatedPower = (distance * 1.2f) + 25f;
+
+                // Giới hạn lực để không bắn quá yếu hoặc quá mạnh
+                projectile.Launch(Mathf.Clamp(calculatedPower, 25f, 100f), this);
+
+                Debug.Log($"🔥 AI Fired with Power: {calculatedPower:F1} at distance: {distance:F1}");
             }
-        }
-        else
-        {
-            Debug.LogError("❌ Turtle missing Projectile Prefab or FirePoint!");
         }
     }
 }
