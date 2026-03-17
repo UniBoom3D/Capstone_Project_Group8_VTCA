@@ -16,11 +16,13 @@ public class CameraFollowPlayer : MonoBehaviour
 
     [Header("Control Settings")]
     public float continuousSpeed = 30f; 
-    public float initialDelay = 0.5f;   
+    public float initialDelay = 0.5f;  
 
     // Biến tạm để xử lý logic nhấn giữ
     private float _keyHoldingTime = 0f;
     private bool _isHolding = false;
+
+    private bool _isDetached = false;
 
     private void Awake()
     {
@@ -102,7 +104,7 @@ public class CameraFollowPlayer : MonoBehaviour
     {
         if (_vcam == null || projectileTransform == null) return;
 
-        // Tìm điểm Focus bên trong viên đạn
+        _isDetached = false; // Reset trạng thái cho viên đạn mới
         Transform bulletFocus = FindFocusPoint(projectileTransform, bulletFocusTag);
         Transform targetToFollow = bulletFocus != null ? bulletFocus : projectileTransform;
 
@@ -114,18 +116,21 @@ public class CameraFollowPlayer : MonoBehaviour
 
     private IEnumerator TrackProjectileUntilExplosion(Transform target)
     {
-        // Khi viên đạn/focus point còn tồn tại
+        Quaternion lastValidRotation = _vcam.transform.rotation;
+
+        // Trong khi viên đạn vẫn còn tồn tại
         while (target != null)
         {
+            lastValidRotation = _vcam.transform.rotation;
             yield return null;
         }
 
-        // Đạn nổ: Gán null để Camera đứng im tại chỗ
-        if (_vcam != null)
-        {
-            _vcam.Follow = null;
-            _vcam.LookAt = null;
-        }
+        // Khi đạn đã biến mất hoàn toàn (sau OnCollisionEnter)
+        _vcam.Follow = null;
+        _vcam.LookAt = null;
+        _vcam.transform.rotation = lastValidRotation;
+
+        Debug.Log("<color=cyan>🎥 Bullet Destroyed. Camera locked.</color>");
     }
 
     private Transform FindFocusPoint(Transform parent, string tag)
@@ -141,5 +146,14 @@ public class CameraFollowPlayer : MonoBehaviour
         }
         return null;
     }
-   
+
+    public void DetachFollow()
+    {
+        if (_isDetached) return;
+
+        _isDetached = true;
+        _vcam.Follow = null; // Ngừng di chuyển camera theo đạn
+        Debug.Log("<color=orange>🎥 Camera: Detached Follow. Waiting for explosion...</color>");
+    }
+
 }

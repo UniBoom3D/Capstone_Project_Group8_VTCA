@@ -252,13 +252,15 @@ public class BattleHandlerPvE : BattleManagerCore
     }
     private IEnumerator WaitUntilProjectileDestroyed(Projectile projectile)
     {
+        // 1. Chờ đạn bay
         while (projectile != null)
         {
             yield return null;
         }
+        // 2. Đạn nổ
         yield return new WaitForSeconds(1.5f);
 
-        // Xác nhận hành động đã xong để Master Loop chuyển sang Actor tiếp theo
+        // 3. Kết thúc lượt
         isActionDone = true;
     }
 

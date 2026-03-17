@@ -5,7 +5,7 @@ using System.Collections;
 public class Projectile : MonoBehaviour
 {
     [Header("Settings")]
-    public float speed = 100; // Not used directly for force anymore, but good to keep
+    public float powerMultiplier = 0.5f;
     public LayerMask collisionLayerMask;
 
     [Header("References")]
@@ -18,70 +18,88 @@ public class Projectile : MonoBehaviour
     private bool targetHit;
     private Rigidbody rb;
     private ITurnParticipant myShooter;
+    private bool isLaunched = false;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        rb.useGravity = false; // Disable gravity until fired
-        rb.interpolation = RigidbodyInterpolation.Interpolate; // Smoother movement
+        rb.useGravity = false;
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
+        rb.collisionDetectionMode = CollisionDetectionMode.Continuous; // Giúp đạn bay nhanh không xuyên tường
     }
 
-    /// <summary>
-    /// Fires the projectile with a specific velocity calculated by the controller
-    /// </summary>
+    private void FixedUpdate()
+    {
+        // 🚀 FIX LỖI ĐẠN NẰM NGANG:
+        // Nếu đạn đã bắn và đang bay, xoay đầu đạn nhìn theo hướng vận tốc
+        if (isLaunched && !targetHit && rb.linearVelocity.sqrMagnitude > 0.1f)
+        {
+            transform.rotation = Quaternion.LookRotation(rb.linearVelocity);
+        }
+    }
+
     public void Launch(float power, ITurnParticipant shooter)
     {
         myShooter = shooter;
-        rb.useGravity = true; // Gravity ON
+        rb.useGravity = true;
+        isLaunched = true;
 
-        // 🚀 PHYSICS: Convert Power to Velocity
-        // We multiply by 0.5f to make the charge bar feel responsive without shooting into space
-        Vector3 launchVelocity = transform.forward * power * 0.5f;
-
+        Vector3 launchVelocity = transform.forward * power * powerMultiplier;
         rb.linearVelocity = launchVelocity;
 
-        // Play Audio
         if (inFlightAudioSource != null && !inFlightAudioSource.isPlaying)
             inFlightAudioSource.Play();
 
-        // Safety: Destroy after 8 seconds if it hits nothing
-        Destroy(gameObject, 8f);
+        // 🎥 LOGIC CAMERA CHỈ CHO PLAYER:
+        if (shooter is MonoBehaviour monoShooter && monoShooter.CompareTag("Player"))
+        {
+            CameraFollowPlayer cam = Object.FindFirstObjectByType<CameraFollowPlayer>();
+            if (cam != null)
+            {
+                cam.SetProjectileTarget(this.transform);
+            }
+        }
+
+        Destroy(gameObject, 20f);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (targetHit || !enabled) return;
 
-        // 1. Damage Logic
-        ITurnParticipant victim = collision.gameObject.GetComponent<ITurnParticipant>();
-        if (victim != null)
-        {
-            // Don't hurt yourself (optional, but good for safety)
-            if (victim == myShooter) return;
+        targetHit = true;
+        Explode();
 
+        // Xử lý sát thương
+        ITurnParticipant victim = collision.gameObject.GetComponent<ITurnParticipant>();
+        if (victim != null && victim != myShooter)
+        {
             victim.TakeDamage(25);
-            Debug.Log($"🎯 Hit {victim.Name}!");
         }
 
-        // 2. Visuals
-        Explode();
-        targetHit = true;
-
+        // Dọn dẹp visual
         if (projectileMesh != null) projectileMesh.enabled = false;
         if (inFlightAudioSource != null) inFlightAudioSource.Stop();
         if (disableOnHit != null) disableOnHit.Stop();
-
         foreach (Collider col in GetComponents<Collider>()) col.enabled = false;
 
-        // 3. Destroy to end turn
+        rb.isKinematic = true; // Dừng vật lý ngay khi nổ
         Destroy(gameObject, 2f);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!targetHit && ((1 << other.gameObject.layer) & collisionLayerMask) != 0)
+        {
+            // Gọi hàm ngắt Follow trong Camera script
+            CameraFollowPlayer cam = Object.FindFirstObjectByType<CameraFollowPlayer>();
+            if (cam != null) cam.DetachFollow();
+        }
     }
 
     private void Explode()
     {
         if (rocketExplosion != null)
-        {
             Instantiate(rocketExplosion, transform.position, Quaternion.identity);
-        }
     }
 }
