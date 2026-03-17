@@ -183,6 +183,67 @@ Transform:
   - {fileID: 495308376}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &391002935
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 551734812}
+    m_Modifications:
+    - target: {fileID: 6363972876970291528, guid: 5d275dc1f25373b4f93a55c847582f18, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6363972876970291528, guid: 5d275dc1f25373b4f93a55c847582f18, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6363972876970291528, guid: 5d275dc1f25373b4f93a55c847582f18, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6363972876970291528, guid: 5d275dc1f25373b4f93a55c847582f18, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6363972876970291528, guid: 5d275dc1f25373b4f93a55c847582f18, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6363972876970291528, guid: 5d275dc1f25373b4f93a55c847582f18, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6363972876970291528, guid: 5d275dc1f25373b4f93a55c847582f18, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6363972876970291528, guid: 5d275dc1f25373b4f93a55c847582f18, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6363972876970291528, guid: 5d275dc1f25373b4f93a55c847582f18, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6363972876970291528, guid: 5d275dc1f25373b4f93a55c847582f18, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6363972876970291531, guid: 5d275dc1f25373b4f93a55c847582f18, type: 3}
+      propertyPath: m_Name
+      value: FX_Flipbook004
+      objectReference: {fileID: 0}
+    - target: {fileID: 6363972876970291531, guid: 5d275dc1f25373b4f93a55c847582f18, type: 3}
+      propertyPath: m_TagString
+      value: SpawnRender
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5d275dc1f25373b4f93a55c847582f18, type: 3}
 --- !u!1 &495308375
 GameObject:
   m_ObjectHideFlags: 0
@@ -268,7 +329,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 207300574788137693, guid: 5bc35878ddf44274194b0edb302145eb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1074270462}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5bc35878ddf44274194b0edb302145eb, type: 3}
 --- !u!4 &551734809 stripped
@@ -438,6 +502,11 @@ MonoBehaviour:
   cameraAction: {fileID: 1905748585}
   enemyContainer: {fileID: 608392013}
   currentTeamName: 
+--- !u!4 &1074270462 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6363972876970291528, guid: 5d275dc1f25373b4f93a55c847582f18, type: 3}
+  m_PrefabInstance: {fileID: 391002935}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1307820640
 GameObject:
   m_ObjectHideFlags: 0
@@ -592,7 +661,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a076c17fe76165e4f8ed21498b877bf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineFreeLookModifier
-  Easing: 0
+  Easing: 1
   Modifiers: []
   references:
     version: 2
@@ -634,8 +703,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1307820640}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.06981912, y: 0.93011653, z: -0.24922398, w: -0.2605685}
-  m_LocalPosition: {x: 77.32346, y: 32.45, z: 73.68968}
+  m_LocalRotation: {x: -0.069819115, y: 0.93011653, z: -0.24922399, w: -0.26056847}
+  m_LocalPosition: {x: 73.32346, y: 32.75, z: 28.689686}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -661,11 +730,11 @@ MonoBehaviour:
   m_StreamingVersion: 20241001
   m_LegacyPriority: 0
   Target:
-    TrackingTarget: {fileID: 551734811}
-    LookAtTarget: {fileID: 551734811}
+    TrackingTarget: {fileID: 551734812}
+    LookAtTarget: {fileID: 551734812}
     CustomLookAtTarget: 1
   Lens:
-    FieldOfView: 20.5
+    FieldOfView: 21
     OrthographicSize: 10
     NearClipPlane: 0.01
     FarClipPlane: 948.4
@@ -732,7 +801,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleManager
   battleHandler: {fileID: 806408810}
-  enemyGoesFirst: 1
 --- !u!4 &1643800607 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8577348741784272025, guid: 5bc35878ddf44274194b0edb302145eb, type: 3}
@@ -894,7 +962,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraLookEnemyAction
   vcam: {fileID: 1307820646}
-  orbitalComponent: {fileID: 0}
+  orbitalComponent: {fileID: 1307820641}
   smoothSpeed: 2
 --- !u!1 &2027766471
 GameObject:
@@ -925,8 +993,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2027766471}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.06981912, y: 0.9301166, z: -0.24922398, w: -0.2605685}
-  m_LocalPosition: {x: 77.32346, y: 32.45, z: 73.68968}
+  m_LocalRotation: {x: -0.06981911, y: 0.93011653, z: -0.24922398, w: -0.26056847}
+  m_LocalPosition: {x: 73.32346, y: 32.75, z: 28.689686}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1080,7 +1148,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 948.4
-  field of view: 20.5
+  field of view: 21
   orthographic: 0
   orthographic size: 10
   m_Depth: -1

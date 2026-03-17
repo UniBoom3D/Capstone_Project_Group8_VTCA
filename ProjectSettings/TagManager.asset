@@ -13,6 +13,7 @@ TagManager:
   - FocusPointBulletP
   - SpawnRender
   - CameraFollowPlayer
+  - CameraFollowEnemy
   layers:
   - Default
   - TransparentFX

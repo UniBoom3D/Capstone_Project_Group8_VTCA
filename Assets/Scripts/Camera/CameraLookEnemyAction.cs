@@ -68,4 +68,12 @@ public class CameraLookEnemyAction : MonoBehaviour
             if (orbitalComponent != null) orbitalComponent.VerticalAxis.Value = 30f;
         }
     }
+    public void SetEnemyTarget(ITurnParticipant target)
+    {
+        if (target is MonoBehaviour mono)
+        {
+            vcam.LookAt = mono.transform;
+            vcam.Follow = mono.transform;
+        }
+    }
 }
