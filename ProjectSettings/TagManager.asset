@@ -11,6 +11,8 @@ TagManager:
   - CountdownTimer
   - FocusPointPlayer
   - FocusPointBulletP
+  - SpawnRender
+  - CameraFollowPlayer
   layers:
   - Default
   - TransparentFX
