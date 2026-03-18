@@ -1,30 +1,45 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
-
-using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class NPCBattleTrigger : MonoBehaviour
 {
-    public GameObject dialogueCanvas;
+    [Header("UI Reference (Player's Canvas)")]
+    [Tooltip("Kéo 'ConversationPanel' từ Canvas của Player vào đây")]
+    public GameObject playerConversationPanel;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            // 1. Hiện UI trò chuyện
-            if (dialogueCanvas != null) dialogueCanvas.SetActive(true);
+            // 1. Hiện UI trò chuyện trên Canvas của Player
+            if (playerConversationPanel != null)
+            {
+                playerConversationPanel.SetActive(true);
+            }
 
-            // 2. Gọi Controller để mở khóa chuột
+            // 2. Mở khóa chuột để tương tác với phím OK
             var controller = other.GetComponent<CharacterOverMapController>();
-            if (controller != null) controller.ToggleControl(false);
+            if (controller != null)
+            {
+                controller.ToggleControl(false);
+            }
         }
     }
 
-    public void StartBattle()
+    private void OnTriggerExit(Collider other)
     {
-        // 3. Load scene chiến đấu
-        // Lưu ý: Đảm bảo "BattleTurtleScene" đã add vào Build Settings
-        SceneManager.LoadScene("BattleTurtleScene");
+        if (other.CompareTag("Player"))
+        {
+            // Tắt bảng chat nếu player đi xa khỏi NPC
+            if (playerConversationPanel != null)
+            {
+                playerConversationPanel.SetActive(false);
+            }
+
+            var controller = other.GetComponent<CharacterOverMapController>();
+            if (controller != null)
+            {
+                controller.ToggleControl(true);
+            }
+        }
     }
 }

@@ -54,54 +54,61 @@ public class BattleHandlerPvE : BattleManagerCore
     // =========================
     public void StartBattlePVE(BattleTeamData blue, BattleTeamData red)
     {
+        // BƯỚC QUAN TRỌNG: Nạp dữ liệu vào List của lớp Con trước
+        battleTeams.Clear();
+        battleTeams.Add(blue);
+        battleTeams.Add(red);
+
+        // Sau đó mới gọi StartBattle của lớp Cha
         base.StartBattle(blue, red, BattleState3D.BlueTeamTurn);
     }
-    private IEnumerator InitialBattleSequence()
-    {
-        // --- BƯỚC 1: SPAWN PLAYER & UI SCALE ---
-        currentTeamName = "Summoning Players...";
 
-        // Lấy Camera Player để chuẩn bị lướt
-        CameraFollowPlayer playerCam = Object.FindFirstObjectByType<CameraFollowPlayer>();
-        //if (cameraAction != null && cameraAction.Vcam != null)
-        //{
-        //    cameraAction.Vcam.Priority = 30; // Đẩy cam Intro lên cao nhất
-        //}
+    //private IEnumerator InitialBattleSequence()
+    //{
+    //    // --- BƯỚC 1: SPAWN PLAYER & UI SCALE ---
+    //    currentTeamName = "Summoning Players...";
 
-        foreach (var team in battleTeams)
-        {
-            foreach (var member in team.Members.OfType<PlayerBattleController>())
-            {
-                // Hiệu ứng scale nhân vật
-                StartCoroutine(PerformSpawnEffect(member.gameObject));
-                // Hiệu ứng UI scale 2 -> 1
-                if (member.turnTimer != null)
-                {
-                    member.turnTimer.gameObject.SetActive(true);
-                    StartCoroutine(ScaleCanvasRoutine(member.turnTimer.transform));
-                }
-            }
-        }
-        yield return new WaitForSeconds(1.0f);
+    //    // Lấy Camera Player để chuẩn bị lướt
+    //    CameraFollowPlayer playerCam = Object.FindFirstObjectByType<CameraFollowPlayer>();
+    //    //if (cameraAction != null && cameraAction.Vcam != null)
+    //    //{
+    //    //    cameraAction.Vcam.Priority = 30; // Đẩy cam Intro lên cao nhất
+    //    //}
 
-        // --- BƯỚC 2: CHUYỂN CAMERA SANG ENEMY (MƯỢT MÀ 3 GIÂY) ---
-        // Cinemachine Brain sẽ tự động blend 3s nếu bạn đã chỉnh trong Inspector
-        //if (playerCam != null) playerCam.SetCameraPriority(5);
+    //    foreach (var team in battleTeams)
+    //    {
+    //        foreach (var member in team.Members.OfType<PlayerBattleController>())
+    //        {
+    //            // Hiệu ứng scale nhân vật
+    //            StartCoroutine(PerformSpawnEffect(member.gameObject));
+    //            // Hiệu ứng UI scale 2 -> 1
+    //            if (member.turnTimer != null)
+    //            {
+    //                member.turnTimer.gameObject.SetActive(true);
+    //                StartCoroutine(ScaleCanvasRoutine(member.turnTimer.transform));
+    //            }
+    //        }
+    //    }
+    //    yield return new WaitForSeconds(1.0f);
 
-        // Kích hoạt Intro (Focus vào Enemy tiêu biểu)
-        yield return StartCoroutine(OnBattleStartIntro());
+    //    // --- BƯỚC 2: CHUYỂN CAMERA SANG ENEMY (MƯỢT MÀ 3 GIÂY) ---
+    //    // Cinemachine Brain sẽ tự động blend 3s nếu bạn đã chỉnh trong Inspector
+    //    //if (playerCam != null) playerCam.SetCameraPriority(5);
 
-        // --- BƯỚC 3: SPAWN ENEMY (HIỆN RA SAU KHI CAM ĐÃ NHÌN TỚI) ---
-        var enemies = battleTeams.SelectMany(t => t.Members).OfType<TurtleEnemyAction>();
-        foreach (var enemy in enemies)
-        {
-            StartCoroutine(PerformSpawnEffect(enemy.gameObject));
-        }
-        yield return new WaitForSeconds(1.0f);
+    //    // Kích hoạt Intro (Focus vào Enemy tiêu biểu)
+    //    yield return StartCoroutine(OnBattleStartIntro());
 
-        // --- BƯỚC 4: VÀO TRẬN ĐÁNH ---
-        phaseRoutine = StartCoroutine(MasterBattleLoop());
-    }
+    //    // --- BƯỚC 3: SPAWN ENEMY (HIỆN RA SAU KHI CAM ĐÃ NHÌN TỚI) ---
+    //    var enemies = battleTeams.SelectMany(t => t.Members).OfType<TurtleEnemyAction>();
+    //    foreach (var enemy in enemies)
+    //    {
+    //        StartCoroutine(PerformSpawnEffect(enemy.gameObject));
+    //    }
+    //    yield return new WaitForSeconds(1.0f);
+
+    //    // --- BƯỚC 4: VÀO TRẬN ĐÁNH ---
+    //    phaseRoutine = StartCoroutine(MasterBattleLoop());
+    //}
 
     private IEnumerator ScaleCanvasRoutine(Transform uiTf)
     {
@@ -135,44 +142,40 @@ public class BattleHandlerPvE : BattleManagerCore
     protected override IEnumerator OnBattleStartIntro()
     {
         Debug.Log("🎬 State: START - Performing Cinematic Intro...");
-
-        // Đảm bảo ban đầu Player chưa thể điều khiển
         awaitingPlayerAction = false;
+        isBattleActive = false; // Khóa trận đấu trong lúc diễn
 
-        // 1. MƯỢN CAMERA: Lấy FreeLook Camera từ CameraLookEnemyAction
-        // Theo ảnh, FreeLook Camera là con của CamereLookEnemyAction
+        // 1. MƯỢN CAMERA: Lấy FreeLook Camera để diễn
         var introVcam = cameraAction.GetComponentInChildren<Unity.Cinemachine.CinemachineCamera>();
-        if (introVcam != null) introVcam.Priority = 30; // Ưu tiên cao nhất để chiếm sóng
+        if (introVcam != null) introVcam.Priority = 30;
 
-        // 2. DIỄN CHO PLAYER: Focus vào Player1
+        // 2. DIỄN CHO PLAYER: Xuất hiện rùa và scale UI
         var firstPlayer = BlueTeam.Members.FirstOrDefault() as MonoBehaviour;
         if (firstPlayer != null && cameraAction != null)
         {
-            // Sử dụng hàm SetEnemyTarget nhưng truyền Player vào (mượn cam)
             cameraAction.SetEnemyTarget(firstPlayer.GetComponent<ITurnParticipant>() as TurtleEnemyAction);
 
-            // Hiệu ứng xuất hiện cho toàn bộ Player Team
             foreach (var p in BlueTeam.Members.OfType<PlayerBattleController>())
             {
-                p.gameObject.SetActive(true); // Đảm bảo active để diễn
-                p.EnableControl(false);       // Nhưng chưa cho điều khiển
-                if (p.turnTimer != null) p.turnTimer.gameObject.SetActive(false); // Ẩn đồng hồ
+                p.gameObject.SetActive(true);
+                p.EnableControl(false); // Quan trọng: Khóa bắn trong lúc intro
+                if (p.turnTimer != null)
+                {
+                    p.turnTimer.gameObject.SetActive(true);
+                    StartCoroutine(ScaleCanvasRoutine(p.turnTimer.transform));
+                    p.turnTimer.StopTimer(); // Đảm bảo đồng hồ chưa chạy
+                }
                 StartCoroutine(PerformSpawnEffect(p.gameObject));
             }
         }
         yield return new WaitForSeconds(1.5f);
 
-        // 3. LƯỚT MÁY (3 GIÂY): Chuyển mục tiêu sang Enemy
-        Debug.Log("🎬 Panning camera to Enemy...");
+        // 3. LƯỚT MÁY SANG ENEMY (3 GIÂY)
         var firstEnemy = RedTeam.Members.FirstOrDefault() as TurtleEnemyAction;
-        if (firstEnemy != null)
-        {
-            cameraAction.SetEnemyTarget(firstEnemy);
-        }
-        // Cinemachine Brain sẽ tự Blend 3s nếu bạn chỉnh Default Blend
+        if (firstEnemy != null) cameraAction.SetEnemyTarget(firstEnemy);
         yield return new WaitForSeconds(3.0f);
 
-        // 4. DIỄN CHO ENEMY: Xuất hiện sau khi cam đã nhìn tới
+        // 4. DIỄN CHO ENEMY: Spawn rùa địch
         foreach (var e in RedTeam.Members)
         {
             if (e is MonoBehaviour m)
@@ -183,9 +186,10 @@ public class BattleHandlerPvE : BattleManagerCore
         }
         yield return new WaitForSeconds(1.0f);
 
-        // 5. TRẢ LẠI CAMERA: Hạ Priority để trả về cho Camera hệ thống (nếu có)
-        // Hoặc giữ nguyên nếu bạn muốn dùng cam này cho lượt của Enemy luôn
-        Debug.Log("🎬 Intro kết thúc. Chuẩn bị vào trận.");
+        // 5. KẾT THÚC INTRO: Trả máy về cho Player Camera
+        if (introVcam != null) introVcam.Priority = 5;
+        isBattleActive = true; // Mở khóa trận đấu
+        Debug.Log("🎬 Intro xong. Master Loop sẽ tự chạy qua OnStateEnter.");
     }
 
     protected override void OnStateEnter(BattleState3D state)
@@ -218,8 +222,12 @@ public class BattleHandlerPvE : BattleManagerCore
     // =========================
     private IEnumerator MasterBattleLoop()
     {
-        yield return new WaitForSeconds(0.2f);
-
+        yield return new WaitForSeconds(1f);
+        if (battleTeams == null || battleTeams.Count == 0)
+        {
+            Debug.LogError("❌ BattleTeams chưa có dữ liệu!");
+            yield break;
+        }
         while (isBattleActive)
         {
             var currentTeam = battleTeams[currentTeamIndex];
@@ -456,13 +464,11 @@ public class BattleHandlerPvE : BattleManagerCore
     // =========================
     private void FocusCamera(Transform follow)
     {
-        //if (mainCamera == null || follow == null) return;
-        //mainCamera.transform.position = follow.position - (follow.forward * 5f) + (Vector3.up * 3f);
-        //mainCamera.transform.LookAt(follow);
         CameraFollowPlayer camControl = Object.FindFirstObjectByType<CameraFollowPlayer>();
         if (camControl != null)
         {
             camControl.SetTarget(follow);
+            // Nếu dùng Cinemachine, hãy đảm bảo Priority của Camera Player > Camera Intro lúc này
         }
     }
 

@@ -97,4 +97,19 @@ public class CharacterOverMapController : MonoBehaviour
             playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         }
     }
+
+    // Thêm hàm này vào trong class CharacterOverMapController
+    public void ToggleControl(bool enable)
+    {
+        isCursorLocked = enable;
+        UpdateCursorState(enable);
+
+        // Nếu bị vô hiệu hóa (khi đang nói chuyện với NPC)
+        // thì reset input về 0 để nhân vật không tự trượt đi
+        if (!enable)
+        {
+            moveInput = Vector2.zero;
+            lookInput = Vector2.zero;
+        }
+    }
 }
