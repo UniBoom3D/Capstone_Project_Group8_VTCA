@@ -12,6 +12,9 @@ public class BattleHandlerPvE : BattleManagerCore
     public List<BattleTeamData> battleTeams = new List<BattleTeamData>();
     private int currentTeamIndex = 0;
 
+    [Header("UI ANNOUNCEMENT")]
+    [SerializeField] private GameObject turnNotifyText;
+
     [Header("ACTIVE ACTOR")]
     private PlayerBattleController _activePlayerInTurn;
 
@@ -22,6 +25,7 @@ public class BattleHandlerPvE : BattleManagerCore
 
     [Header("PLAYER TURN CONFIG")]
     [SerializeField] private float endTurnAfterShootDelay = 0.1f;
+    
 
     [Header("CAMERA")]
     [SerializeField] private Camera mainCamera;
@@ -141,10 +145,22 @@ public class BattleHandlerPvE : BattleManagerCore
 
     protected override IEnumerator OnBattleStartIntro()
     {
-        Debug.Log("🎬 State: START - Performing Cinematic Intro...");
-        awaitingPlayerAction = false;
-        isBattleActive = false; // Khóa trận đấu trong lúc diễn
+        isBattleActive = false;
 
+        // 1. Tìm tất cả Player đang có trong Scene (kể cả vừa spawn)
+        var allPlayers = UnityEngine.Object.FindObjectsByType<PlayerBattleController>(FindObjectsSortMode.None);
+
+        foreach (var p in allPlayers)
+        {
+            p.EnableControl(false); // Khóa ngay lập tức
+
+            // Tắt các UI không cần thiết trong lúc Intro
+            if (p.powerSlider != null) p.powerSlider.gameObject.SetActive(false);
+            if (p.turnTimer != null) p.turnTimer.gameObject.SetActive(false);
+
+            // Chạy hiệu ứng xuất hiện
+            StartCoroutine(PerformSpawnEffect(p.gameObject));
+        }
         // 1. MƯỢN CAMERA: Lấy FreeLook Camera để diễn
         var introVcam = cameraAction.GetComponentInChildren<Unity.Cinemachine.CinemachineCamera>();
         if (introVcam != null) introVcam.Priority = 30;
@@ -250,8 +266,17 @@ public class BattleHandlerPvE : BattleManagerCore
                 if (!isBattleActive) yield break;
 
                 CurrentActor = actor;
+
+                // Đảm bảo Camera quay về Actor NGAY LẬP TỨC
                 if (actor is MonoBehaviour monoActor)
+                {
                     FocusCamera(monoActor.transform);
+                }
+                //if (actor is MonoBehaviour monoActor)
+                //    FocusCamera(monoActor.transform);
+
+                // Nghỉ một chút để Camera kịp lướt (Blend) về nhân vật trước khi cho phép hành động
+                yield return new WaitForSeconds(1.0f);
 
                 // Xác định PlayerTarget
                 PlayerBattleController playerTarget = actor as PlayerBattleController;
@@ -279,21 +304,43 @@ public class BattleHandlerPvE : BattleManagerCore
     // =========================
     // Turn Logic Handlers
     // =========================
+
+    private IEnumerator PlayerTurnSequence(PlayerBattleController player)
+    {
+        // 1. Hiển thị UI đồng hồ nhưng kim đứng yên
+        if (player.turnTimer != null)
+        {
+            player.turnTimer.PrepareNewTurn();
+            // Bạn có thể chạy thêm Coroutine Scale UI đồng hồ ở đây cho đẹp
+        }
+
+        // 2. Hiện thông báo Text "Lượt của bạn!"
+        if (turnNotifyText != null)
+        {
+            turnNotifyText.SetActive(true);
+            // Đợi 1.5s để người chơi kịp nhìn
+            yield return new WaitForSeconds(1.5f);
+            turnNotifyText.SetActive(false);
+        }
+
+        // 3. KÍCH HOẠT: Lúc này đồng hồ mới bắt đầu chạy và người chơi mới được bắn
+        if (player.turnTimer != null)
+        {
+            player.turnTimer.ResumeTimer();
+        }
+        player.EnableControl(true);
+    }
+
     private IEnumerator HandlePlayerTurn(PlayerBattleController player)
     {
         isActionDone = false;
         awaitingPlayerAction = true;
         _activePlayerInTurn = player;
 
-        // Kích hoạt Timer riêng của nhân vật
-        if (_activePlayerInTurn.turnTimer != null)
-        {
-            _activePlayerInTurn.turnTimer.gameObject.SetActive(true);
-            _activePlayerInTurn.turnTimer.StartNewTurn();
-        }
+        // Thay vì bật timer trực tiếp, hãy chạy sequence thông báo
+        yield return StartCoroutine(PlayerTurnSequence(player));
 
         HookPlayerShootEvent(true);
-        _activePlayerInTurn.EnableControl(true);
 
         while (!isActionDone && isBattleActive)
         {
@@ -339,16 +386,21 @@ public class BattleHandlerPvE : BattleManagerCore
         }
     }
 
+  
     private IEnumerator HandleAITurn(ITurnParticipant aiActor)
     {
-        aiActor.TakeTurn();
-        yield return new WaitForSeconds(aiTurnWaitTime);
-        CurrentActor = null;
-        if (aiActor == CurrentTeamLead()) // Hàm phụ để kiểm tra xem đây có phải con đầu tiên của team ko
-        {
-            yield return StartCoroutine(ExecuteAllEnemyTurns(enemyContainer));
-        }
-    }
+       // Chỉ thực hiện nếu đây là "Lead" của Team để tránh lặp lại nhiều lần
+       if (aiActor == CurrentTeamLead())
+       {
+           yield return StartCoroutine(ExecuteAllEnemyTurns(enemyContainer));
+       }
+       else
+       {
+           // Nếu không phải Lead, chỉ đơn giản là đợi để MasterLoop chuyển sang con tiếp theo
+           yield return null;
+       }
+    
+}
     public IEnumerator ExecuteAllEnemyTurns(Transform container)
     {
         if (container == null) yield break;

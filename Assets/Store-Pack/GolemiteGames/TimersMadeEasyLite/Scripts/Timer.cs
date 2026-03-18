@@ -9,6 +9,7 @@ using UnityEngine.Events;
 
 public class Timer : MonoBehaviour
 {
+    
     public UnityEvent onTimerEnd;
 
     [Range(0, 23)]
@@ -40,7 +41,7 @@ public class Timer : MonoBehaviour
     };
 
     [Tooltip("If checked, runs the timer on play")]
-    public bool startAtRuntime = true;
+    public bool startAtRuntime = false;
 
     [Tooltip("Select what to display")]
     public bool hoursDisplay = false;
@@ -58,6 +59,8 @@ public class Timer : MonoBehaviour
     public TextMeshProUGUI textMeshProText;
     public Slider standardSlider;
     public Image dialSlider;
+
+    
 
     bool timerRunning = false;
     bool timerPaused = false;
@@ -117,69 +120,107 @@ public class Timer : MonoBehaviour
             }
         }
     }
+
+    private bool _canUpdate = false;
     void Start()
     {
-        if(startAtRuntime)
+        // Vô hiệu hóa việc tự chạy khi vừa Start
+        timerRunning = false;
+        _canUpdate = false;
+
+        if (startAtRuntime)
         {
             StartTimer();
-            if (timeAudio != null) timeAudio.StartAudio();
         }
         else
         {
-            if(countMethod == CountMethod.CountDown)
-            {
-                if(standardText)
-                {
-                    standardText.text = DisplayFormattedTime(ReturnTotalSeconds());
-                }
-                if(textMeshProText)
-                {
-                    textMeshProText.text = DisplayFormattedTime(ReturnTotalSeconds());
-                }
-            }
-            else
-            {
-                if (standardText)
-                {
-                    standardText.text = DisplayFormattedTime(0);
-                }
-                if (textMeshProText)
-                {
-                    textMeshProText.text = DisplayFormattedTime(0);
-                }
-            }
+            ResetTimer();
         }
     }
+    //void Start()
+    //{
+    //    if(startAtRuntime)
+    //    {
+    //        StartTimer();
+    //        if (timeAudio != null) timeAudio.StartAudio();
+    //    }
+    //    else
+    //    {
+    //        if(countMethod == CountMethod.CountDown)
+    //        {
+    //            if(standardText)
+    //            {
+    //                standardText.text = DisplayFormattedTime(ReturnTotalSeconds());
+    //            }
+    //            if(textMeshProText)
+    //            {
+    //                textMeshProText.text = DisplayFormattedTime(ReturnTotalSeconds());
+    //            }
+    //        }
+    //        else
+    //        {
+    //            if (standardText)
+    //            {
+    //                standardText.text = DisplayFormattedTime(0);
+    //            }
+    //            if (textMeshProText)
+    //            {
+    //                textMeshProText.text = DisplayFormattedTime(0);
+    //            }
+    //        }
+    //    }
+    //}
+
     void Update()
     {
-        if(timerRunning)
+
+        // CỰC KỲ QUAN TRỌNG: Thêm _canUpdate vào điều kiện check
+        if (timerRunning && !timerPaused && _canUpdate)
         {
-            if(countMethod == CountMethod.CountDown)
+            if (countMethod == CountMethod.CountDown)
             {
                 CountDown();
-                if(standardSlider)
-                {
-                    StandardSliderDown();
-                }
-                if(dialSlider)
-                {
-                    DialSliderDown();
-                }
+                if (standardSlider) StandardSliderDown();
+                if (dialSlider) DialSliderDown();
             }
             else
             {
                 CountUp();
-                if (standardSlider)
-                {
-                    StandardSliderUp();
-                }
-                if(dialSlider)
-                {
-                    DialSliderUp();
-                }
+                if (standardSlider) StandardSliderUp();
+                if (dialSlider) DialSliderUp();
             }
         }
     }
+    //void Update()
+    //{
+    //    if(timerRunning && !timerPaused)
+    //    {
+    //        if(countMethod == CountMethod.CountDown)
+    //        {
+    //            CountDown();
+    //            if(standardSlider)
+    //            {
+    //                StandardSliderDown();
+    //            }
+    //            if(dialSlider)
+    //            {
+    //                DialSliderDown();
+    //            }
+    //        }
+    //        else
+    //        {
+    //            CountUp();
+    //            if (standardSlider)
+    //            {
+    //                StandardSliderUp();
+    //            }
+    //            if(dialSlider)
+    //            {
+    //                DialSliderUp();
+    //            }
+    //        }
+    //    }
+    //}
 
     private void CountDown()
     {
@@ -284,8 +325,9 @@ public class Timer : MonoBehaviour
     }
     public void StopTimer()
     {
+        _canUpdate = false;              // KHÓA LUỒNG UPDATE
         timerRunning = false;
-        ResetTimer();
+        if (timeAudio != null) timeAudio.StopAudio();
     }
 
     private void ResetTimer()
@@ -397,6 +439,41 @@ public class Timer : MonoBehaviour
     {
         timeRemaining = ConvertToTotalSeconds(hours, minutes, seconds);
     }
+
+    /// <summary>
+    /// Chuẩn bị đồng hồ nhưng CHƯA CHO CHẠY (Dùng khi hiện Text báo lượt)
+    /// </summary>
+    /// <summary>
+    /// Chuẩn bị đồng hồ nhưng CHƯA CHO CHẠY (Dùng khi hiện Text báo lượt)
+    /// </summary>
+    public void PrepareNewTurn()
+    {
+        this.gameObject.SetActive(true); // Bật UI lên
+        _canUpdate = false;              // Nhưng CHƯA cho phép trừ thời gian
+        timerRunning = false;
+        ResetTimer();                    // Reset về số giây ban đầu (ví dụ 20s)
+        if (timeAudio != null) timeAudio.StopAudio();
+    }
+
+    /// <summary>
+    /// Thực sự bắt đầu đếm giờ (Gọi sau khi Text báo lượt biến mất)
+    /// </summary>
+    public void ResumeTimer()
+    {
+        _canUpdate = true;               // MỞ KHÓA LUỒNG UPDATE
+        timerRunning = true;
+        timerPaused = false;
+        if (timeAudio != null) timeAudio.StartAudio();
+    }
+
+    /// <summary>
+    /// Dừng hẳn đồng hồ (Dùng khi Intro hoặc khi nhân vật chết)
+    /// </summary>
+    //public void StopTimer()
+    //{
+    //    timerRunning = false;
+    //    if (timeAudio != null) timeAudio.StopAudio();
+    //}
 
     public void StartNewTurn()
     {

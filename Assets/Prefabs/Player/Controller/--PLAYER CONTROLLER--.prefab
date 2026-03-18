@@ -372,10 +372,7 @@ MonoBehaviour:
   pivotHeight: 1.5
   smoothSpeed: 5
   rotationSmoothness: 5
-  rotateSpeed: 60
-  minAngle: -60
-  maxAngle: 60
-  currentAngle: 20
+  fixedAngle: 20
 --- !u!1 &5571399389481703432
 GameObject:
   m_ObjectHideFlags: 0
@@ -657,7 +654,7 @@ MonoBehaviour:
   maxChargePower: 100
   minChargePower: 0
   chargeSpeed: 40
-  isControllable: 1
+  isControllable: 0
 --- !u!114 &6769894630349997783
 MonoBehaviour:
   m_ObjectHideFlags: 0

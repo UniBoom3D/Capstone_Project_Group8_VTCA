@@ -10,6 +10,9 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
     [Header("Stats Link")]
     public CombatStats myStats;
 
+    [Header("UI ANNOUNCEMENT")]
+    [SerializeField] private GameObject turnNotifyText;
+
     // =========================================================
     // 🟢 INTERFACE IMPLEMENTATION
     // =========================================================
@@ -32,6 +35,7 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
 
     [Header("UI Settings")]
     public Slider powerSlider;
+    
     [Header("Timer Link")]
     public Timer turnTimer;
 
@@ -83,16 +87,25 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
 
     private void Update()
     {
-        // Gravity
+        // 1. Luôn xử lý trọng lực để nhân vật không bay lơ lửng
         if (controller != null && controller.enabled)
             controller.Move(Physics.gravity * Time.deltaTime);
 
-        if (!isControllable) return;
+        // 2. KHÓA CHẶT TẠI ĐÂY
+        if (!isControllable)
+        {
+            // Đảm bảo các trạng thái liên quan cũng phải reset
+            isCharging = false;
+            if (trajectory != null) trajectory.Hide();
+            return;
+        }
 
         HandleMovement();
         HandleAiming();
         HandleShooting();
     }
+
+
 
     private void HandleMovement()
     {
