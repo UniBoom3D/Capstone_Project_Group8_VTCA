@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 979255545297627153}
   m_Layer: 6
   m_Name: CameraFollowPlayer
-  m_TagString: Untagged
+  m_TagString: CameraFollowPlayer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -881,6 +881,10 @@ PrefabInstance:
     - target: {fileID: 1802767607664207933, guid: f26add0b8561051438426890f3bd0f19, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1802767607664207933, guid: f26add0b8561051438426890f3bd0f19, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2688717235866833224, guid: f26add0b8561051438426890f3bd0f19, type: 3}
       propertyPath: m_Enabled

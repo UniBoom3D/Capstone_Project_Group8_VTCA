@@ -137,13 +137,36 @@ public class TurtleEnemyAction : MonoBehaviour, ITurnParticipant
 
             // 🎥 THÊM CAMERA NHÌN THEO (SẼ VIẾT Ở BƯỚC TIẾP THEO)
             NotifyCameraOfAttack(projObj.transform);
+
+            StartCoroutine(WaitUntilEnemyActionDone(projObj));
         }
     }
 
     private void ExecuteMeleeAttack()
     {
-        // Chỗ này để bạn thêm Animation Trigger cho rùa cận chiến sau này
         Debug.Log("🐢 Melee Bite Attack!");
+        // 1. Chơi Animation cắn (Trigger: "Bite")
+        // 2. Gây sát thương trực tiếp cho Player nếu đang ở gần
+        if (Vector3.Distance(transform.position, playerTarget.position) < 3f)
+        {
+            ITurnParticipant victim = playerTarget.GetComponent<ITurnParticipant>();
+            victim?.TakeDamage(15);
+        }
+    }
+
+    private IEnumerator WaitUntilEnemyActionDone(GameObject projectile)
+    {
+        // Đợi đến khi viên đạn nổ (bị Destroy)
+        while (projectile != null)
+        {
+            yield return null;
+        }
+
+        // Chờ thêm 1 giây để người chơi thấy hiệu ứng nổ trên Camera bao quát
+        yield return new WaitForSeconds(1f);
+
+        // Báo cho BattleHandler chuyển lượt (tùy thuộc vào cách bạn quản lý State)
+        Debug.Log("🐢 Enemy action finished visuals.");
     }
 
     private void NotifyCameraOfAttack(Transform projectileTransform)
@@ -155,4 +178,5 @@ public class TurtleEnemyAction : MonoBehaviour, ITurnParticipant
             // cam.SetEnemyProjectileTarget(projectileTransform);
         }
     }
+
 }
