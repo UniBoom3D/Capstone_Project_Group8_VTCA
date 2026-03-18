@@ -20,7 +20,7 @@ public abstract class BattleManagerCore : MonoBehaviour
 {
     [Header("STATE")]
     [SerializeField] protected BattleState3D currentState = BattleState3D.Start;
-    protected bool isBattleActive;
+    protected bool isBattleActive = false;
     protected bool isActionDone;
     protected float turnTimer;
 
@@ -41,7 +41,7 @@ public abstract class BattleManagerCore : MonoBehaviour
         if (!isBattleActive) return;
 
         // timer is optional: child may ignore it
-        turnTimer -= Time.deltaTime;
+        //turnTimer -= Time.deltaTime;
 
         OnTick(currentState);
     }
@@ -88,6 +88,7 @@ public abstract class BattleManagerCore : MonoBehaviour
         isBattleActive = false;
         SetState(BattleState3D.Endbattle);
         OnBattleFinished();
+        //Gọi phím xác nhận kết thúc để chuyển scene
     }
 
     // ===========================
