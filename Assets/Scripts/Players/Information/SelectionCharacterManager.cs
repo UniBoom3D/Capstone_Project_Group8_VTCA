@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class SelectionCharacterManager : MonoBehaviour
 {
@@ -61,8 +62,10 @@ public class SelectionCharacterManager : MonoBehaviour
     {
         var data = characterListLoader.characters[currentIndex];
 
-        // Truyền CharacterProgressData
-        CharacterSelector.Instance.SelectCharacter(data);
+        //// Truyền CharacterProgressData
+        //CharacterSelector.Instance.SelectCharacter(data);
+        SceneManager.LoadScene("RoomPVEScene");
+
     }
 
 }

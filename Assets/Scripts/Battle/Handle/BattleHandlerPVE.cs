@@ -134,59 +134,75 @@ public class BattleHandlerPvE : BattleManagerCore
 
     protected override IEnumerator OnBattleStartIntro()
     {
-        // BƯỚC 1: MƯỢN CAMERA ACTION ĐỂ NHÌN PLAYER TRƯỚC
-        if (cameraAction != null)
+        Debug.Log("🎬 State: START - Performing Cinematic Intro...");
+
+        // Đảm bảo ban đầu Player chưa thể điều khiển
+        awaitingPlayerAction = false;
+
+        // 1. MƯỢN CAMERA: Lấy FreeLook Camera từ CameraLookEnemyAction
+        // Theo ảnh, FreeLook Camera là con của CamereLookEnemyAction
+        var introVcam = cameraAction.GetComponentInChildren<Unity.Cinemachine.CinemachineCamera>();
+        if (introVcam != null) introVcam.Priority = 30; // Ưu tiên cao nhất để chiếm sóng
+
+        // 2. DIỄN CHO PLAYER: Focus vào Player1
+        var firstPlayer = BlueTeam.Members.FirstOrDefault() as MonoBehaviour;
+        if (firstPlayer != null && cameraAction != null)
         {
-            // Lấy đại diện một Player để nhìn vào
-            var firstPlayer = BlueTeam.Members.FirstOrDefault() as MonoBehaviour;
-            if (firstPlayer != null)
+            // Sử dụng hàm SetEnemyTarget nhưng truyền Player vào (mượn cam)
+            cameraAction.SetEnemyTarget(firstPlayer.GetComponent<ITurnParticipant>() as TurtleEnemyAction);
+
+            // Hiệu ứng xuất hiện cho toàn bộ Player Team
+            foreach (var p in BlueTeam.Members.OfType<PlayerBattleController>())
             {
-                // Ép kiểu mượt mà sang TurtleEnemyAction hoặc sửa hàm SetEnemyTarget để nhận Transform
-                // Ở đây tôi dùng component để cameraAction focus vào
-                cameraAction.SetEnemyTarget(firstPlayer.GetComponent<ITurnParticipant>() as TurtleEnemyAction);
+                p.gameObject.SetActive(true); // Đảm bảo active để diễn
+                p.EnableControl(false);       // Nhưng chưa cho điều khiển
+                if (p.turnTimer != null) p.turnTimer.gameObject.SetActive(false); // Ẩn đồng hồ
+                StartCoroutine(PerformSpawnEffect(p.gameObject));
             }
         }
+        yield return new WaitForSeconds(1.5f);
 
-        // Hiệu ứng Spawn cho Player
-        foreach (var member in BlueTeam.Members.OfType<PlayerBattleController>())
+        // 3. LƯỚT MÁY (3 GIÂY): Chuyển mục tiêu sang Enemy
+        Debug.Log("🎬 Panning camera to Enemy...");
+        var firstEnemy = RedTeam.Members.FirstOrDefault() as TurtleEnemyAction;
+        if (firstEnemy != null)
         {
-            StartCoroutine(PerformSpawnEffect(member.gameObject));
-            if (member.turnTimer != null)
-            {
-                member.turnTimer.gameObject.SetActive(true);
-                StartCoroutine(ScaleCanvasRoutine(member.turnTimer.transform));
-            }
+            cameraAction.SetEnemyTarget(firstEnemy);
         }
-        yield return new WaitForSeconds(1.5f); // Thời gian ngắm Player
-
-        // BƯỚC 2: LƯỚT SANG ENEMY (MẤT 3 GIÂY)
-        currentTeamName = "Identifying Enemies...";
-
-        var firstEnemyActor = RedTeam.Members.FirstOrDefault(m => m.IsAlive);
-        if (firstEnemyActor != null && cameraAction != null)
-        {
-            // Sửa lỗi Argument 1: Ép kiểu sang TurtleEnemyAction
-            // Nếu firstEnemyActor là TurtleEnemyAction thì dùng 'as', nếu không phải sẽ null
-            var enemyComponent = firstEnemyActor as TurtleEnemyAction;
-
-            // Nếu logic của bạn là ITurnParticipant, hãy chắc chắn TurtleEnemyAction kế thừa nó
-            cameraAction.SetEnemyTarget(enemyComponent);
-        }
-
-        // Đợi 3 giây để máy lướt đi (Cinemachine Brain Default Blend)
+        // Cinemachine Brain sẽ tự Blend 3s nếu bạn chỉnh Default Blend
         yield return new WaitForSeconds(3.0f);
 
-        // BƯỚC 3: SPAWN ENEMY
-        foreach (var member in RedTeam.Members)
+        // 4. DIỄN CHO ENEMY: Xuất hiện sau khi cam đã nhìn tới
+        foreach (var e in RedTeam.Members)
         {
-            if (member is MonoBehaviour m) StartCoroutine(PerformSpawnEffect(m.gameObject));
+            if (e is MonoBehaviour m)
+            {
+                m.gameObject.SetActive(true);
+                StartCoroutine(PerformSpawnEffect(m.gameObject));
+            }
         }
         yield return new WaitForSeconds(1.0f);
+
+        // 5. TRẢ LẠI CAMERA: Hạ Priority để trả về cho Camera hệ thống (nếu có)
+        // Hoặc giữ nguyên nếu bạn muốn dùng cam này cho lượt của Enemy luôn
+        Debug.Log("🎬 Intro kết thúc. Chuẩn bị vào trận.");
     }
 
     protected override void OnStateEnter(BattleState3D state)
     {
-        if (state == BattleState3D.Endbattle) Cleanup();
+        if (state == BattleState3D.BlueTeamTurn)
+        {
+            // Khi Intro xong, State chuyển sang BlueTeamTurn, lúc này mới hiện đồng hồ
+            var firstPlayer = BlueTeam.Members.FirstOrDefault() as PlayerBattleController;
+            if (firstPlayer != null && firstPlayer.turnTimer != null)
+            {
+                firstPlayer.turnTimer.gameObject.SetActive(true);
+            }
+
+            if (phaseRoutine == null)
+                phaseRoutine = StartCoroutine(MasterBattleLoop());
+        }
+        //if (state == BattleState3D.Endbattle) Cleanup();
     }
 
     protected override void OnTick(BattleState3D state) { }

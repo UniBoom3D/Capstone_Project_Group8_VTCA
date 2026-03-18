@@ -296,23 +296,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 80281665}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a6613956e6f62c49b1055bce987db18, type: 3}
+  m_Script: {fileID: 11500000, guid: f201f8c9e265cb348aec84c23f031ade, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterSelector
-  selectedCharacterId: 
-  selectedCharacterData:
-    characterId: 
-    characterName: 
-    characterClass: 
-    level: 1
-    exp: 0
-    maxExp: 100
-    health: 0
-    stamina: 0
-    attack: 0
-    magic: 0
-    armor: 0
-    magicResist: 0
+  characterListLoader: {fileID: 1108733224}
+  staticArcherData: {fileID: 11400000, guid: af759a36f487d4544bcbe72b58cd65d9, type: 2}
+  staticMageData: {fileID: 11400000, guid: 47d3de47dcc03484ea10a2b8922d3dc2, type: 2}
+  staticGunnerData: {fileID: 11400000, guid: 659a8c0063d0c564e863f906c96b0960, type: 2}
 --- !u!1 &266849270
 GameObject:
   m_ObjectHideFlags: 0
@@ -1605,6 +1595,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterCreator
   characterListLoader: {fileID: 1108733224}
+  staticArcherData: {fileID: 11400000, guid: af759a36f487d4544bcbe72b58cd65d9, type: 2}
+  staticMageData: {fileID: 11400000, guid: 47d3de47dcc03484ea10a2b8922d3dc2, type: 2}
+  staticGunnerData: {fileID: 11400000, guid: 659a8c0063d0c564e863f906c96b0960, type: 2}
 --- !u!1 &1108733222
 GameObject:
   m_ObjectHideFlags: 0
