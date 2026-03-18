@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 7196386ec61f0924b922f51d7dfe50a6
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 144833
+  packageName: Compass Bar Pro
+  packageVersion: 1.3
+  assetPath: Assets/CompassBarPro/Prefab/Markers/MarkerPosition.prefab
+  uploadId: 334986

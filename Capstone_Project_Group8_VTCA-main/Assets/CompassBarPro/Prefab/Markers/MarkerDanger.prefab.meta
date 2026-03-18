@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: babd69cf2ad53b443a81957f5a93b1d1
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 144833
+  packageName: Compass Bar Pro
+  packageVersion: 1.3
+  assetPath: Assets/CompassBarPro/Prefab/Markers/MarkerDanger.prefab
+  uploadId: 334986

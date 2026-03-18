@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 4da360754fc376a48b9afb89b0db08cb
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 144833
+  packageName: Compass Bar Pro
+  packageVersion: 1.3
+  assetPath: Assets/CompassBarPro/Prefab/CompassBarProLinear.prefab
+  uploadId: 334986

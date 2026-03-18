@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 398a090c8f34aff489811cc3a908c899
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 144833
+  packageName: Compass Bar Pro
+  packageVersion: 1.3
+  assetPath: Assets/CompassBarPro/Prefab/CompassBarProCircular.prefab
+  uploadId: 334986

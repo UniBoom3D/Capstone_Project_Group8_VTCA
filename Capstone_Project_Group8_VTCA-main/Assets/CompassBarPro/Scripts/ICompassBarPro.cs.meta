@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: e2dd5a85865031243a97b8b6bc54427e
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 144833
+  packageName: Compass Bar Pro
+  packageVersion: 1.3
+  assetPath: Assets/CompassBarPro/Scripts/ICompassBarPro.cs
+  uploadId: 334986

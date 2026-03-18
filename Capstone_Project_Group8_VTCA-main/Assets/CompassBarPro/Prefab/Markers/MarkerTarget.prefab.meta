@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: ece5c0ddd91778a4e842adf4d896d1bf
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 144833
+  packageName: Compass Bar Pro
+  packageVersion: 1.3
+  assetPath: Assets/CompassBarPro/Prefab/Markers/MarkerTarget.prefab
+  uploadId: 334986
