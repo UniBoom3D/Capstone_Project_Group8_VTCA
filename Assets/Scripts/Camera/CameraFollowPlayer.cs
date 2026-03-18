@@ -12,6 +12,8 @@ public class CameraFollowPlayer : MonoBehaviour
     [SerializeField] private string playerFocusTag = "FocusPointPlayer";
     [SerializeField] private string bulletFocusTag = "FocusPointBulletP";
 
+  
+
     private CinemachineCamera _vcam;
 
     [Header("Control Settings")]
@@ -90,11 +92,14 @@ public class CameraFollowPlayer : MonoBehaviour
 
         StopAllCoroutines();
 
-        Transform focusPoint = FindFocusPoint(nextPlayer, playerFocusTag);
+        // Đẩy Priority lên cao để chiếm quyền điều khiển từ Intro Cam
+        _vcam.Priority = 100;
 
-        // Trong v3.x, gán trực tiếp vào Follow và LookAt của CinemachineCamera
+        Transform focusPoint = FindFocusPoint(nextPlayer, playerFocusTag);
         _vcam.Follow = focusPoint != null ? focusPoint : nextPlayer;
         _vcam.LookAt = focusPoint != null ? focusPoint : nextPlayer;
+
+        Debug.Log($"🎥 Camera focused on: {nextPlayer.name}");
     }
 
     /// <summary>
