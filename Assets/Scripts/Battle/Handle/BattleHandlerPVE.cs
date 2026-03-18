@@ -273,6 +273,7 @@ public class BattleHandlerPvE : BattleManagerCore
             if (phaseDelay > 0f) yield return new WaitForSeconds(phaseDelay);
             currentTeamIndex = (currentTeamIndex + 1) % battleTeams.Count;
         }
+        yield return null;
     }
 
     // =========================
