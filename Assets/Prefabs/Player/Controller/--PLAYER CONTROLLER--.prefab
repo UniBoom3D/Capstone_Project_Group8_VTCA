@@ -639,6 +639,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerBattleController
   myStats: {fileID: 4978392707890839433}
+  turnNotifyText: {fileID: 0}
   powerSlider: {fileID: 0}
   turnTimer: {fileID: 0}
   trajectory: {fileID: 5759784659536917986}
@@ -1129,7 +1130,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2106585151094639786, guid: 31bdf8eb5c2f2a545956e0763ca4c455, type: 3}
       propertyPath: m_TagString
-      value: Player
+      value: MeshPlayer
       objectReference: {fileID: 0}
     - target: {fileID: 2106585151094639788, guid: 31bdf8eb5c2f2a545956e0763ca4c455, type: 3}
       propertyPath: m_Layer
