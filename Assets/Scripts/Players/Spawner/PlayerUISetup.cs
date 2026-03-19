@@ -15,24 +15,35 @@ public class PlayerUISetup : MonoBehaviour
         // 1. Thiết lập Controller & Timer
         if (controller != null)
         {
-            // Gán Power Slider theo Tag "PowerBar"
-            Slider powerBar = FindComponentInChildWithTag<Slider>(canvas, "PowerBar");
-            if (powerBar != null) controller.powerSlider = powerBar;
+            // 1. Gán YourTurnText (Tìm theo Tag "NotifyTurn")
+            GameObject notifyObj = FindGameObjectInChildWithTag(canvas, "NotifyTurn");
+            if (notifyObj != null)
+            {
+                controller.SetNotifyUI(notifyObj); // Gọi hàm gán bên Controller
+                notifyObj.SetActive(false); // Đảm bảo ẩn lúc mới spawn
+            }
 
-            // Gán Countdown Timer và kết nối với BattleHandler
+            // 2. Gán Timer và ẩn đi
             Timer uiTimer = canvas.GetComponentInChildren<Timer>();
             if (uiTimer != null)
             {
                 controller.turnTimer = uiTimer;
+                uiTimer.gameObject.SetActive(false); // Luôn ẩn khi mới spawn
 
-                // ĐỒNG BỘ HÓA: Khi Timer này hết giờ, gọi hàm ForceEndTurn của Handler
+                // Kết nối Event kết thúc lượt
                 if (pveHandler != null)
                 {
-                    uiTimer.onTimerEnd.RemoveAllListeners(); // Xóa sạch để tránh trùng lặp khi hồi sinh/spawn lại
+                    uiTimer.onTimerEnd.RemoveAllListeners();
                     uiTimer.onTimerEnd.AddListener(pveHandler.ForceEndTurn);
-
-                    Debug.Log($"<color=green>🔔 Link Timer của {player.name} tới BattleHandler thành công!</color>");
                 }
+            }
+
+            // 3. Gán Power Slider và ẩn đi
+            Slider powerBar = FindComponentInChildWithTag<Slider>(canvas, "PowerBar");
+            if (powerBar != null)
+            {
+                controller.powerSlider = powerBar;
+                powerBar.gameObject.SetActive(false);
             }
         }
 

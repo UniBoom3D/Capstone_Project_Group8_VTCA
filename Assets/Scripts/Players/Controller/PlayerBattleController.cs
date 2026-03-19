@@ -277,17 +277,47 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
 
     public void EnableControl(bool enable)
     {
-        isControllable = enable;
-
-        if (enable && myStats != null) myStats.ResetTurnStats();
-
-        if (!enable)
+        // Nếu được mở khóa lượt
+        if (enable)
         {
+            StartCoroutine(ActivateTurnSequence());
+        }
+        else
+        {
+            isControllable = false;
             isCharging = false;
-            if (trajectory != null) trajectory.Hide(); // Ensure line is hidden if turn ends abruptly
-            if (powerSlider != null) { powerSlider.value = 0; powerSlider.gameObject.SetActive(false); }
+            if (trajectory != null) trajectory.Hide();
+            if (powerSlider != null) powerSlider.gameObject.SetActive(false);
+            if (turnTimer != null) turnTimer.gameObject.SetActive(false);
+            if (turnNotifyText != null) turnNotifyText.SetActive(false);
+        }
+    }
+    public void SetNotifyUI(GameObject obj)
+    {
+        turnNotifyText = obj;
+    }
+    private IEnumerator ActivateTurnSequence()
+    {
+        // 1. Hiện thông báo "Your Turn"
+        if (turnNotifyText != null)
+        {
+            turnNotifyText.SetActive(true);
+            yield return new WaitForSeconds(1.0f); // Hiện trong 1 giây
+            turnNotifyText.SetActive(false);
         }
 
-        Debug.Log($"Player control: {(enable ? "ENABLED" : "DISABLED")}");
+        // 2. Hiện và chạy đồng hồ
+        if (turnTimer != null)
+        {
+            turnTimer.gameObject.SetActive(true);
+            turnTimer.PrepareNewTurn();
+            turnTimer.ResumeTimer();
+        }
+
+        // 3. Chính thức cho phép người chơi bấm phím
+        isControllable = true;
+        if (myStats != null) myStats.ResetTurnStats();
+
+        Debug.Log($"<color=cyan>🎮 {gameObject.name} Turn Activated!</color>");
     }
 }

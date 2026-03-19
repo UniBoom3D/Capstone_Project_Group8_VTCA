@@ -52,7 +52,19 @@ public class BattleHandlerPvE : BattleManagerCore
         }
         Instance = this;
     }
+    private void Start()
+    {
+        LevelSpawner spawner = FindFirstObjectByType<LevelSpawner>();
+        IntroBattlePVE intro = FindFirstObjectByType<IntroBattlePVE>();
 
+        if (spawner != null)
+        {
+            spawner.OnSpawningComplete += () => {
+                intro.PlayIntro();
+            };
+        }
+    }
+    
     // =========================
     // Public API
     // =========================
@@ -66,53 +78,7 @@ public class BattleHandlerPvE : BattleManagerCore
         // Sau đó mới gọi StartBattle của lớp Cha
         base.StartBattle(blue, red, BattleState3D.BlueTeamTurn);
     }
-
-    //private IEnumerator InitialBattleSequence()
-    //{
-    //    // --- BƯỚC 1: SPAWN PLAYER & UI SCALE ---
-    //    currentTeamName = "Summoning Players...";
-
-    //    // Lấy Camera Player để chuẩn bị lướt
-    //    CameraFollowPlayer playerCam = Object.FindFirstObjectByType<CameraFollowPlayer>();
-    //    //if (cameraAction != null && cameraAction.Vcam != null)
-    //    //{
-    //    //    cameraAction.Vcam.Priority = 30; // Đẩy cam Intro lên cao nhất
-    //    //}
-
-    //    foreach (var team in battleTeams)
-    //    {
-    //        foreach (var member in team.Members.OfType<PlayerBattleController>())
-    //        {
-    //            // Hiệu ứng scale nhân vật
-    //            StartCoroutine(PerformSpawnEffect(member.gameObject));
-    //            // Hiệu ứng UI scale 2 -> 1
-    //            if (member.turnTimer != null)
-    //            {
-    //                member.turnTimer.gameObject.SetActive(true);
-    //                StartCoroutine(ScaleCanvasRoutine(member.turnTimer.transform));
-    //            }
-    //        }
-    //    }
-    //    yield return new WaitForSeconds(1.0f);
-
-    //    // --- BƯỚC 2: CHUYỂN CAMERA SANG ENEMY (MƯỢT MÀ 3 GIÂY) ---
-    //    // Cinemachine Brain sẽ tự động blend 3s nếu bạn đã chỉnh trong Inspector
-    //    //if (playerCam != null) playerCam.SetCameraPriority(5);
-
-    //    // Kích hoạt Intro (Focus vào Enemy tiêu biểu)
-    //    yield return StartCoroutine(OnBattleStartIntro());
-
-    //    // --- BƯỚC 3: SPAWN ENEMY (HIỆN RA SAU KHI CAM ĐÃ NHÌN TỚI) ---
-    //    var enemies = battleTeams.SelectMany(t => t.Members).OfType<TurtleEnemyAction>();
-    //    foreach (var enemy in enemies)
-    //    {
-    //        StartCoroutine(PerformSpawnEffect(enemy.gameObject));
-    //    }
-    //    yield return new WaitForSeconds(1.0f);
-
-    //    // --- BƯỚC 4: VÀO TRẬN ĐÁNH ---
-    //    phaseRoutine = StartCoroutine(MasterBattleLoop());
-    //}
+   
 
     private IEnumerator ScaleCanvasRoutine(Transform uiTf)
     {
@@ -126,86 +92,26 @@ public class BattleHandlerPvE : BattleManagerCore
         }
         uiTf.localScale = Vector3.one;
     }
-    private IEnumerator PerformSpawnEffect(GameObject playerObj)
-    {
-        // Giả sử vòng tròn ánh sáng là một con của Player hoặc bạn Instantiate nó ra
-        // Ở đây ta làm hiệu ứng Scale đơn giản cho Player:
-        playerObj.transform.localScale = Vector3.zero;
+    //private IEnumerator PerformSpawnEffect(GameObject playerObj)
+    //{
+    //    // Giả sử vòng tròn ánh sáng là một con của Player hoặc bạn Instantiate nó ra
+    //    // Ở đây ta làm hiệu ứng Scale đơn giản cho Player:
+    //    playerObj.transform.localScale = Vector3.zero;
 
-        float timer = 0;
-        float duration = 0.5f;
-        while (timer < duration)
-        {
-            timer += Time.deltaTime;
-            playerObj.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, timer / duration);
-            yield return null;
-        }
-        playerObj.transform.localScale = Vector3.one;
-    }
+    //    float timer = 0;
+    //    float duration = 0.5f;
+    //    while (timer < duration)
+    //    {
+    //        timer += Time.deltaTime;
+    //        playerObj.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, timer / duration);
+    //        yield return null;
+    //    }
+    //    playerObj.transform.localScale = Vector3.one;
+    //}
 
     protected override IEnumerator OnBattleStartIntro()
     {
-        isBattleActive = false;
-
-        // 1. Tìm tất cả Player đang có trong Scene (kể cả vừa spawn)
-        var allPlayers = UnityEngine.Object.FindObjectsByType<PlayerBattleController>(FindObjectsSortMode.None);
-
-        foreach (var p in allPlayers)
-        {
-            p.EnableControl(false); // Khóa ngay lập tức
-
-            // Tắt các UI không cần thiết trong lúc Intro
-            if (p.powerSlider != null) p.powerSlider.gameObject.SetActive(false);
-            if (p.turnTimer != null) p.turnTimer.gameObject.SetActive(false);
-
-            // Chạy hiệu ứng xuất hiện
-            StartCoroutine(PerformSpawnEffect(p.gameObject));
-        }
-        // 1. MƯỢN CAMERA: Lấy FreeLook Camera để diễn
-        var introVcam = cameraAction.GetComponentInChildren<Unity.Cinemachine.CinemachineCamera>();
-        if (introVcam != null) introVcam.Priority = 30;
-
-        // 2. DIỄN CHO PLAYER: Xuất hiện rùa và scale UI
-        var firstPlayer = BlueTeam.Members.FirstOrDefault() as MonoBehaviour;
-        if (firstPlayer != null && cameraAction != null)
-        {
-            cameraAction.SetEnemyTarget(firstPlayer.GetComponent<ITurnParticipant>() as TurtleEnemyAction);
-
-            foreach (var p in BlueTeam.Members.OfType<PlayerBattleController>())
-            {
-                p.gameObject.SetActive(true);
-                p.EnableControl(false); // Quan trọng: Khóa bắn trong lúc intro
-                if (p.turnTimer != null)
-                {
-                    p.turnTimer.gameObject.SetActive(true);
-                    StartCoroutine(ScaleCanvasRoutine(p.turnTimer.transform));
-                    p.turnTimer.StopTimer(); // Đảm bảo đồng hồ chưa chạy
-                }
-                StartCoroutine(PerformSpawnEffect(p.gameObject));
-            }
-        }
-        yield return new WaitForSeconds(1.5f);
-
-        // 3. LƯỚT MÁY SANG ENEMY (3 GIÂY)
-        var firstEnemy = RedTeam.Members.FirstOrDefault() as TurtleEnemyAction;
-        if (firstEnemy != null) cameraAction.SetEnemyTarget(firstEnemy);
-        yield return new WaitForSeconds(3.0f);
-
-        // 4. DIỄN CHO ENEMY: Spawn rùa địch
-        foreach (var e in RedTeam.Members)
-        {
-            if (e is MonoBehaviour m)
-            {
-                m.gameObject.SetActive(true);
-                StartCoroutine(PerformSpawnEffect(m.gameObject));
-            }
-        }
-        yield return new WaitForSeconds(1.0f);
-
-        // 5. KẾT THÚC INTRO: Trả máy về cho Player Camera
-        if (introVcam != null) introVcam.Priority = 5;
-        isBattleActive = true; // Mở khóa trận đấu
-        Debug.Log("🎬 Intro xong. Master Loop sẽ tự chạy qua OnStateEnter.");
+        yield return null;
     }
 
     protected override void OnStateEnter(BattleState3D state)
@@ -389,18 +295,18 @@ public class BattleHandlerPvE : BattleManagerCore
   
     private IEnumerator HandleAITurn(ITurnParticipant aiActor)
     {
-       // Chỉ thực hiện nếu đây là "Lead" của Team để tránh lặp lại nhiều lần
-       if (aiActor == CurrentTeamLead())
-       {
-           yield return StartCoroutine(ExecuteAllEnemyTurns(enemyContainer));
-       }
-       else
-       {
-           // Nếu không phải Lead, chỉ đơn giản là đợi để MasterLoop chuyển sang con tiếp theo
-           yield return null;
-       }
-    
-}
+        // Kiểm tra nếu đây là nhân vật sống sót đầu tiên của Team
+        if (aiActor == CurrentTeamLead())
+        {
+            // Thực hiện lượt cho toàn bộ quái trong Container
+            yield return StartCoroutine(ExecuteAllEnemyTurns(enemyContainer));
+        }
+        else
+        {
+            // Các con quái sau trong cùng team sẽ được Skip vì Lead đã điều khiển rồi
+            yield return null;
+        }
+    }
     public IEnumerator ExecuteAllEnemyTurns(Transform container)
     {
         if (container == null) yield break;
