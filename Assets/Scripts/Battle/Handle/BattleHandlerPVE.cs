@@ -79,35 +79,7 @@ public class BattleHandlerPvE : BattleManagerCore
         base.StartBattle(blue, red, BattleState3D.BlueTeamTurn);
     }
    
-
-    private IEnumerator ScaleCanvasRoutine(Transform uiTf)
-    {
-        uiTf.localScale = Vector3.one * 2f;
-        float t = 0;
-        while (t < 0.5f)
-        {
-            t += Time.deltaTime;
-            uiTf.localScale = Vector3.Lerp(Vector3.one * 2f, Vector3.one, t / 0.5f);
-            yield return null;
-        }
-        uiTf.localScale = Vector3.one;
-    }
-    //private IEnumerator PerformSpawnEffect(GameObject playerObj)
-    //{
-    //    // Giả sử vòng tròn ánh sáng là một con của Player hoặc bạn Instantiate nó ra
-    //    // Ở đây ta làm hiệu ứng Scale đơn giản cho Player:
-    //    playerObj.transform.localScale = Vector3.zero;
-
-    //    float timer = 0;
-    //    float duration = 0.5f;
-    //    while (timer < duration)
-    //    {
-    //        timer += Time.deltaTime;
-    //        playerObj.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, timer / duration);
-    //        yield return null;
-    //    }
-    //    playerObj.transform.localScale = Vector3.one;
-    //}
+  
 
     protected override IEnumerator OnBattleStartIntro()
     {
@@ -127,8 +99,7 @@ public class BattleHandlerPvE : BattleManagerCore
 
             if (phaseRoutine == null)
                 phaseRoutine = StartCoroutine(MasterBattleLoop());
-        }
-        //if (state == BattleState3D.Endbattle) Cleanup();
+        }       
     }
 
     protected override void OnTick(BattleState3D state) { }

@@ -69,16 +69,17 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
     private bool isCharging = false;
     private bool isReloading = false;
     private float chargeTimer = 0f;
+    
     private CharacterController controller;
-
     private Animator animator;
-
     public event Action<Projectile> OnShoot;
+    private EyeScouterGuide eyeScouter;
 
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+        eyeScouter = GetComponentInChildren<EyeScouterGuide>();
         if (animator == null) Debug.LogError($"❌ Không tìm thấy component Animator trên {gameObject.name}!"); 
         if (audioSource == null) audioSource = GetComponent<AudioSource>();
         if (powerSlider != null) powerSlider.gameObject.SetActive(false);
@@ -96,6 +97,7 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
         {
             // Đảm bảo các trạng thái liên quan cũng phải reset
             isCharging = false;
+            if (eyeScouter != null) eyeScouter.SetVisible(false);
             if (trajectory != null) trajectory.Hide();
             return;
         }
@@ -171,6 +173,7 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
             isCharging = true;
             chargeTimer = 0f;
 
+            
             // Đóng băng Timer khi đang căn lực ---
             if (turnTimer != null) turnTimer.FreezeTimer();
 
@@ -211,6 +214,9 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
 
             // ---Tắt và ẩn Timer ngay trước khi bắn ---
             if (turnTimer != null) turnTimer.ResetAndHide();
+
+            // Tắt kính ngắm ngay trước khi bắn
+            if (eyeScouter != null) eyeScouter.SetVisible(false);
             // --- Bật Animation Bắn ---
             if (animator != null)
             {
@@ -302,11 +308,14 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
         if (turnNotifyText != null)
         {
             turnNotifyText.SetActive(true);
+            
             yield return new WaitForSeconds(1.0f); // Hiện trong 1 giây
             turnNotifyText.SetActive(false);
         }
+        // 2. BẬT KÍNH KHI BẮT ĐẦU LƯỢT MỚI
+        if (eyeScouter != null) eyeScouter.SetVisible(true);
 
-        // 2. Hiện và chạy đồng hồ
+        // 3. Hiện và chạy đồng hồ
         if (turnTimer != null)
         {
             turnTimer.gameObject.SetActive(true);
@@ -314,7 +323,7 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
             turnTimer.ResumeTimer();
         }
 
-        // 3. Chính thức cho phép người chơi bấm phím
+        // 4. Chính thức cho phép người chơi bấm phím
         isControllable = true;
         if (myStats != null) myStats.ResetTurnStats();
 
