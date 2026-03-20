@@ -365,7 +365,7 @@ public class BattleHandlerPvE : BattleManagerCore
         CameraFollowPlayer camControl = Object.FindFirstObjectByType<CameraFollowPlayer>();
         if (camControl != null && projectile != null)
         {
-            camControl.SetProjectileTarget(projectile.transform);
+            //camControl.SetProjectileTarget(projectile.transform);
         }
         StartCoroutine(WaitUntilProjectileDestroyed(projectile));
     }
@@ -397,7 +397,7 @@ public class BattleHandlerPvE : BattleManagerCore
         CameraFollowPlayer camControl = Object.FindFirstObjectByType<CameraFollowPlayer>();
         if (camControl != null)
         {
-            camControl.SetTarget(follow);
+            //camControl.SetTarget(follow);
             // Nếu dùng Cinemachine, hãy đảm bảo Priority của Camera Player > Camera Intro lúc này
         }
     }

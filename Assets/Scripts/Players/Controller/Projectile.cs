@@ -19,13 +19,16 @@ public class Projectile : MonoBehaviour
     private Rigidbody rb;
     private ITurnParticipant myShooter;
     private bool isLaunched = false;
+    private CameraFollowProjectile _bulletCam;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        _bulletCam = GetComponentInChildren<CameraFollowProjectile>();
         rb.useGravity = false;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        
     }
 
     private void FixedUpdate()
@@ -48,14 +51,9 @@ public class Projectile : MonoBehaviour
         if (inFlightAudioSource != null && !inFlightAudioSource.isPlaying)
             inFlightAudioSource.Play();
 
-        // 🎥 LOGIC CAMERA CHỈ CHO PLAYER:
-        if (shooter is MonoBehaviour monoShooter && monoShooter.CompareTag("Player"))
+        if (_bulletCam != null)
         {
-            CameraFollowPlayer cam = Object.FindFirstObjectByType<CameraFollowPlayer>();
-            if (cam != null)
-            {
-                cam.SetProjectileTarget(this.transform);
-            }
+            _bulletCam.ActivateCamera(this.transform);
         }
 
         Destroy(gameObject, 20f);
@@ -66,6 +64,11 @@ public class Projectile : MonoBehaviour
         if (targetHit || !enabled) return;
 
         targetHit = true;
+        // THÔNG BÁO CAMERA DỪNG TRACKING
+        if (_bulletCam != null)
+        {
+            _bulletCam.OnProjectileHit();
+        }
         Explode();
 
         // Xử lý sát thương
@@ -82,16 +85,19 @@ public class Projectile : MonoBehaviour
         foreach (Collider col in GetComponents<Collider>()) col.enabled = false;
 
         rb.isKinematic = true; // Dừng vật lý ngay khi nổ
-        Destroy(gameObject, 2f);
+        Destroy(gameObject, 3f);
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        // Kiểm tra xem layer có nằm trong mask không
         if (!targetHit && ((1 << other.gameObject.layer) & collisionLayerMask) != 0)
         {
-            // Gọi hàm ngắt Follow trong Camera script
-            CameraFollowPlayer cam = Object.FindFirstObjectByType<CameraFollowPlayer>();
-            if (cam != null) cam.DetachFollow();
+            if (_bulletCam != null)
+            {
+                // Ngắt Follow để camera đứng yên chuẩn bị xem nổ
+                _bulletCam.DetachFollow();
+            }
         }
     }
 

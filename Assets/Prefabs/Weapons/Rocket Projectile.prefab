@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2910222014153732223}
   - component: {fileID: 8364037346566464787}
   - component: {fileID: 2691943137013481390}
+  - component: {fileID: 6338886514749057440}
   m_Layer: 0
   m_Name: CameraFollowProjectile
   m_TagString: Untagged
@@ -50,7 +51,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineCamera
   Priority:
     Enabled: 0
-    m_Value: 0
+    m_Value: 100
   OutputChannel: 1
   StandbyUpdate: 2
   m_StreamingVersion: 20241001
@@ -58,7 +59,7 @@ MonoBehaviour:
   Target:
     TrackingTarget: {fileID: 323248439922596483}
     LookAtTarget: {fileID: 0}
-    CustomLookAtTarget: 0
+    CustomLookAtTarget: 1
   Lens:
     FieldOfView: 40
     OrthographicSize: 10
@@ -246,6 +247,18 @@ MonoBehaviour:
         DecelTime: 0
   PlayerIndex: -1
   AutoEnableInputs: 0
+--- !u!114 &6338886514749057440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 292166647967400658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf18b5da522ecf94f899f6e63e65b911, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraFollowProjectile
 --- !u!1 &1558915690740613495
 GameObject:
   m_ObjectHideFlags: 0
@@ -480,7 +493,7 @@ GameObject:
   - component: {fileID: 3947435648171464896}
   m_Layer: 9
   m_Name: Rocket Projectile
-  m_TagString: Untagged
+  m_TagString: ProjectilePlayer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

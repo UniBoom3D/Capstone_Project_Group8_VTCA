@@ -30,8 +30,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2333877148527741927}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.012707878, y: -0.07486949, z: -0.0009541882, w: 0.9971119}
-  m_LocalPosition: {x: 0.90500003, y: 1.4487845, z: -1.710437}
+  m_LocalRotation: {x: -0.1907005, y: -0.08561199, z: -0.016697511, w: 0.9777654}
+  m_LocalPosition: {x: 0.90500003, y: 0.8, z: -1.424}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -125,7 +125,7 @@ MonoBehaviour:
       Time: 2
     Restrictions: 0
   VerticalAxis:
-    Value: 57.2
+    Value: 30
     Center: 30
     Range: {x: 0, y: 60}
     Wrap: 0
@@ -245,10 +245,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraFollowPlayer
   orbitalFollow: {fileID: 5810832640482615724}
-  playerFocusTag: FocusPointPlayer
-  bulletFocusTag: FocusPointBulletP
   continuousSpeed: 30
-  initialDelay: 0.5
+  snapAmount: 1
+  playerFocusTag: FocusPointPlayer
 --- !u!1 &4300975409559366427
 GameObject:
   m_ObjectHideFlags: 0
@@ -274,7 +273,7 @@ Transform:
   m_GameObject: {fileID: 4300975409559366427}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.306, y: 0.826, z: 1.157}
+  m_LocalPosition: {x: 0.3, y: 0.826, z: 1.157}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

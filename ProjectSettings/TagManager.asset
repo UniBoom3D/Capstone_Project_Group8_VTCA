@@ -18,6 +18,9 @@ TagManager:
   - MeshPlayer
   - GunModel
   - HeadModel
+  - ProjectilePlayer
+  - ProjectileEnemy
+  - FocusPointEnemy
   layers:
   - Default
   - TransparentFX
