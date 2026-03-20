@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(Animator))]
 public class PlayerBattleController : MonoBehaviour, ITurnParticipant
 {
     [Header("Stats Link")]
@@ -31,6 +32,8 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
 
     [Header("UI Settings")]
     public Slider powerSlider;
+    [Header("Timer Link")]
+    public Timer turnTimer;
 
     [Header("Visuals & Audio")]
     public TrajectoryPredictor trajectory; // 👈 NEW SLOT FOR THE LINE
@@ -64,11 +67,15 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
     private float chargeTimer = 0f;
     private CharacterController controller;
 
+    private Animator animator;
+
     public event Action<Projectile> OnShoot;
 
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
+        animator = GetComponent<Animator>();
+        if (animator == null) Debug.LogError($"❌ Không tìm thấy component Animator trên {gameObject.name}!"); 
         if (audioSource == null) audioSource = GetComponent<AudioSource>();
         if (powerSlider != null) powerSlider.gameObject.SetActive(false);
         if (myStats == null) myStats = GetComponent<CombatStats>();
@@ -96,22 +103,48 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
 
         if (h != 0) transform.Rotate(Vector3.up * h * rotationSpeed * Time.deltaTime);
 
+        bool isMoving = false;
+
         if (v != 0 && myStats != null && myStats.HasStamina())
         {
             controller.Move(transform.forward * v * moveSpeed * Time.deltaTime);
             myStats.UseStamina(myStats.moveStaminaCost * Time.deltaTime);
+            isMoving = true;
+        }
+        if (animator != null)
+        {
+            // Reset cả 2 về 0 trước khi set giá trị mới để tránh bị "giật" animation
+            animator.SetFloat("RunFWD", 0f);
+            animator.SetFloat("RunBWD", 0f);
+
+            if (animator != null)
+            {
+                if (isMoving)
+                {
+                    // Set giá trị v (Vertical) trực tiếp vào Float của Animator
+                    animator.SetFloat("RunFWD", v);
+                    animator.SetFloat("RunBWD", v);
+                }
+                else
+                {
+                    // Khi dừng lại, đưa cả 2 về 0 để quay về Idle
+                    animator.SetFloat("RunFWD", 0f);
+                    animator.SetFloat("RunBWD", 0f);
+                }
+            }
         }
     }
 
     private void HandleAiming()
     {
-        float aimInput = 0f;
-        if (Input.GetKey(KeyCode.I)) aimInput = -1f;
-        if (Input.GetKey(KeyCode.K)) aimInput = 1f;
+        // Tìm script quản lý camera đang chạy trong Scene
+        CameraFollowPlayer camControl = UnityEngine.Object.FindFirstObjectByType<CameraFollowPlayer>();
 
-        if (aimInput != 0 && firePoint != null)
+        if (camControl != null && firePoint != null)
         {
-            firePoint.Rotate(aimInput * 40f * Time.deltaTime, 0, 0);
+            float currentCamAngle = camControl.GetCurrentCameraAngle();
+   
+            firePoint.localRotation = Quaternion.Euler(0f, currentCamAngle, 90f);
         }
     }
 
@@ -124,6 +157,10 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
         {
             isCharging = true;
             chargeTimer = 0f;
+
+            // Đóng băng Timer khi đang căn lực ---
+            if (turnTimer != null) turnTimer.FreezeTimer();
+
             if (powerSlider != null)
             {
                 powerSlider.gameObject.SetActive(true);
@@ -159,8 +196,18 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
             // Hide the line immediately
             if (trajectory != null) trajectory.Hide();
 
+            // ---Tắt và ẩn Timer ngay trước khi bắn ---
+            if (turnTimer != null) turnTimer.ResetAndHide();
+            // --- Bật Animation Bắn ---
+            if (animator != null)
+            {
+                animator.SetBool("Shooting", true);
+            }
             Debug.Log($"🚀 Power Locked at: {LastFiredPower}");
             FireProjectile();
+            StartCoroutine(ResetShootingAnimation());
+            
+            // Chuyển camera sang projectile
 
             isCharging = false;
             chargeTimer = 0;
@@ -172,6 +219,14 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
             }
 
             StartCoroutine(ReloadRoutine());
+        }
+    }
+    private IEnumerator ResetShootingAnimation()
+    {
+        yield return new WaitForSeconds(0.5f); // Thời gian giữ animation bắn
+        if (animator != null)
+        {
+            animator.SetBool("Shooting", false);
         }
     }
 

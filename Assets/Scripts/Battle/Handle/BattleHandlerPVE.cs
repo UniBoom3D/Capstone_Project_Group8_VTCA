@@ -1,21 +1,35 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class BattleHandlerPvE : BattleManagerCore
 {
-    [Header("PLAYER CONTROLLER")]
-    [SerializeField] private PlayerBattleController playerBattlerController;
+    public static BattleHandlerPvE Instance { get; private set; }
+
+    [Header("TEAMS (DYNAMIC)")]
+    [Tooltip("Managed by BattleManager script.")]
+    public List<BattleTeamData> battleTeams = new List<BattleTeamData>();
+    private int currentTeamIndex = 0;
+
+    [Header("ACTIVE ACTOR")]
+    private PlayerBattleController _activePlayerInTurn;
 
     [Header("RULES")]
     [SerializeField] private int limitedTurnForPlayer = 20;
     [SerializeField] private float phaseDelay = 1f;
+    [SerializeField] private float aiTurnWaitTime = 3.0f;
 
-    [Header("PLAYER TURN")]
+    [Header("PLAYER TURN CONFIG")]
     [SerializeField] private float endTurnAfterShootDelay = 0.1f;
 
     [Header("CAMERA")]
     [SerializeField] private Camera mainCamera;
+
+    [Header("AI CONFIG")]
+    [SerializeField] private CameraLookEnemyAction cameraAction;
+    [SerializeField] private Transform enemyContainer;
+
 
     public ITurnParticipant CurrentActor { get; private set; }
     public string currentTeamName;
@@ -25,164 +39,354 @@ public class BattleHandlerPvE : BattleManagerCore
     private bool playerWinResult;
     private Coroutine phaseRoutine;
 
-    // =========================
-    // Public API
-    // =========================
-    public void StartBattlePVE(BattleTeamData blueTeam, BattleTeamData redTeam)
+    private void Awake()
     {
-        if (isBattleActive) return;
-
-        playerTurnCount = 0;
-        playerWinResult = false;
-
-        if (playerBattlerController == null)
-            playerBattlerController = FindFirstObjectByType<PlayerBattleController>();
-
-        // Start Battle
-        StartBattle(blueTeam, redTeam, BattleState3D.RedTeamTurn);
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
     }
 
     // =========================
-    // Core hooks
+    // Public API
     // =========================
+    public void StartBattlePVE(BattleTeamData blue, BattleTeamData red)
+    {
+        base.StartBattle(blue, red, BattleState3D.BlueTeamTurn);
+    }
+    private IEnumerator InitialBattleSequence()
+    {
+        // --- BƯỚC 1: SPAWN PLAYER & UI SCALE ---
+        currentTeamName = "Summoning Players...";
+
+        // Lấy Camera Player để chuẩn bị lướt
+        CameraFollowPlayer playerCam = Object.FindFirstObjectByType<CameraFollowPlayer>();
+        //if (cameraAction != null && cameraAction.Vcam != null)
+        //{
+        //    cameraAction.Vcam.Priority = 30; // Đẩy cam Intro lên cao nhất
+        //}
+
+        foreach (var team in battleTeams)
+        {
+            foreach (var member in team.Members.OfType<PlayerBattleController>())
+            {
+                // Hiệu ứng scale nhân vật
+                StartCoroutine(PerformSpawnEffect(member.gameObject));
+                // Hiệu ứng UI scale 2 -> 1
+                if (member.turnTimer != null)
+                {
+                    member.turnTimer.gameObject.SetActive(true);
+                    StartCoroutine(ScaleCanvasRoutine(member.turnTimer.transform));
+                }
+            }
+        }
+        yield return new WaitForSeconds(1.0f);
+
+        // --- BƯỚC 2: CHUYỂN CAMERA SANG ENEMY (MƯỢT MÀ 3 GIÂY) ---
+        // Cinemachine Brain sẽ tự động blend 3s nếu bạn đã chỉnh trong Inspector
+        //if (playerCam != null) playerCam.SetCameraPriority(5);
+
+        // Kích hoạt Intro (Focus vào Enemy tiêu biểu)
+        yield return StartCoroutine(OnBattleStartIntro());
+
+        // --- BƯỚC 3: SPAWN ENEMY (HIỆN RA SAU KHI CAM ĐÃ NHÌN TỚI) ---
+        var enemies = battleTeams.SelectMany(t => t.Members).OfType<TurtleEnemyAction>();
+        foreach (var enemy in enemies)
+        {
+            StartCoroutine(PerformSpawnEffect(enemy.gameObject));
+        }
+        yield return new WaitForSeconds(1.0f);
+
+        // --- BƯỚC 4: VÀO TRẬN ĐÁNH ---
+        phaseRoutine = StartCoroutine(MasterBattleLoop());
+    }
+
+    private IEnumerator ScaleCanvasRoutine(Transform uiTf)
+    {
+        uiTf.localScale = Vector3.one * 2f;
+        float t = 0;
+        while (t < 0.5f)
+        {
+            t += Time.deltaTime;
+            uiTf.localScale = Vector3.Lerp(Vector3.one * 2f, Vector3.one, t / 0.5f);
+            yield return null;
+        }
+        uiTf.localScale = Vector3.one;
+    }
+    private IEnumerator PerformSpawnEffect(GameObject playerObj)
+    {
+        // Giả sử vòng tròn ánh sáng là một con của Player hoặc bạn Instantiate nó ra
+        // Ở đây ta làm hiệu ứng Scale đơn giản cho Player:
+        playerObj.transform.localScale = Vector3.zero;
+
+        float timer = 0;
+        float duration = 0.5f;
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+            playerObj.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, timer / duration);
+            yield return null;
+        }
+        playerObj.transform.localScale = Vector3.one;
+    }
+
     protected override IEnumerator OnBattleStartIntro()
     {
-        currentTeamName = "Start";
-        SetPlayerControl(false);
-        HookPlayerShootEvent(false);
-        yield return new WaitForSeconds(0.2f);
+        // BƯỚC 1: MƯỢN CAMERA ACTION ĐỂ NHÌN PLAYER TRƯỚC
+        if (cameraAction != null)
+        {
+            // Lấy đại diện một Player để nhìn vào
+            var firstPlayer = BlueTeam.Members.FirstOrDefault() as MonoBehaviour;
+            if (firstPlayer != null)
+            {
+                // Ép kiểu mượt mà sang TurtleEnemyAction hoặc sửa hàm SetEnemyTarget để nhận Transform
+                // Ở đây tôi dùng component để cameraAction focus vào
+                cameraAction.SetEnemyTarget(firstPlayer.GetComponent<ITurnParticipant>() as TurtleEnemyAction);
+            }
+        }
+
+        // Hiệu ứng Spawn cho Player
+        foreach (var member in BlueTeam.Members.OfType<PlayerBattleController>())
+        {
+            StartCoroutine(PerformSpawnEffect(member.gameObject));
+            if (member.turnTimer != null)
+            {
+                member.turnTimer.gameObject.SetActive(true);
+                StartCoroutine(ScaleCanvasRoutine(member.turnTimer.transform));
+            }
+        }
+        yield return new WaitForSeconds(1.5f); // Thời gian ngắm Player
+
+        // BƯỚC 2: LƯỚT SANG ENEMY (MẤT 3 GIÂY)
+        currentTeamName = "Identifying Enemies...";
+
+        var firstEnemyActor = RedTeam.Members.FirstOrDefault(m => m.IsAlive);
+        if (firstEnemyActor != null && cameraAction != null)
+        {
+            // Sửa lỗi Argument 1: Ép kiểu sang TurtleEnemyAction
+            // Nếu firstEnemyActor là TurtleEnemyAction thì dùng 'as', nếu không phải sẽ null
+            var enemyComponent = firstEnemyActor as TurtleEnemyAction;
+
+            // Nếu logic của bạn là ITurnParticipant, hãy chắc chắn TurtleEnemyAction kế thừa nó
+            cameraAction.SetEnemyTarget(enemyComponent);
+        }
+
+        // Đợi 3 giây để máy lướt đi (Cinemachine Brain Default Blend)
+        yield return new WaitForSeconds(3.0f);
+
+        // BƯỚC 3: SPAWN ENEMY
+        foreach (var member in RedTeam.Members)
+        {
+            if (member is MonoBehaviour m) StartCoroutine(PerformSpawnEffect(m.gameObject));
+        }
+        yield return new WaitForSeconds(1.0f);
     }
 
     protected override void OnStateEnter(BattleState3D state)
     {
-        if (phaseRoutine != null) StopCoroutine(phaseRoutine);
-
-        switch (state)
-        {
-            case BattleState3D.RedTeamTurn:
-                phaseRoutine = StartCoroutine(EnemyPhase());
-                break;
-
-            case BattleState3D.BlueTeamTurn:
-                phaseRoutine = StartCoroutine(PlayerPhase());
-                break;
-
-            case BattleState3D.Endbattle:
-                Cleanup();
-                break;
-        }
+        if (state == BattleState3D.Endbattle) Cleanup();
     }
 
     protected override void OnTick(BattleState3D state) { }
 
     protected override void OnBattleFinished()
     {
-        Debug.Log(playerWinResult ? "[BATTLE] Victory (Blue)" : "[BATTLE] Defeat (Red)");
+        Debug.Log(playerWinResult ? "[BATTLE] Victory (Player Team)" : "[BATTLE] Defeat");
         Cleanup();
     }
 
     // =========================
-    // 🟢 UPDATED ENEMY PHASE
+    // 🟢 DYNAMIC MASTER LOOP
     // =========================
-    private IEnumerator EnemyPhase()
+    private IEnumerator MasterBattleLoop()
     {
-        if (!isBattleActive) yield break;
+        yield return new WaitForSeconds(0.2f);
 
-        currentTeamName = RedTeam.TeamName;
-        Debug.Log("=== Enemy turn ===");
-
-        // 1. Loop through all enemies in the Red Team
-        foreach (var enemy in RedTeam.Members)
+        while (isBattleActive)
         {
-            // Only process if enemy exists and is alive
-            if (enemy != null && enemy.IsAlive)
+            var currentTeam = battleTeams[currentTeamIndex];
+            currentTeamName = currentTeam.TeamName;
+
+            bool isPlayerTeam = currentTeam.Members.Any(m => m is PlayerBattleController);
+            if (isPlayerTeam)
             {
-                // A. Focus Camera on this specific enemy so we see them move
-                if (enemy is MonoBehaviour monoEnemy)
+                playerTurnCount++;
+                if (playerTurnCount > limitedTurnForPlayer)
                 {
-                    FocusCamera(monoEnemy.transform);
+                    playerWinResult = false;
+                    EndBattle();
+                    yield break;
+                }
+            }
+
+            foreach (var actor in currentTeam.Members.Where(m => m != null && m.IsAlive))
+            {
+                if (!isBattleActive) yield break;
+
+                CurrentActor = actor;
+                if (actor is MonoBehaviour monoActor)
+                    FocusCamera(monoActor.transform);
+
+                // Xác định PlayerTarget
+                PlayerBattleController playerTarget = actor as PlayerBattleController;
+                if (playerTarget == null && actor is MonoBehaviour m)
+                    playerTarget = m.GetComponent<PlayerBattleController>();
+
+                if (playerTarget != null)
+                {
+                    yield return StartCoroutine(HandlePlayerTurn(playerTarget));
+                }
+                else
+                {
+                    yield return StartCoroutine(HandleAITurn(actor));
                 }
 
-                // B. Tell the enemy to ACT
-                // This calls the 'TakeTurn' function in your Turtle script
-                enemy.TakeTurn();
-
-                // C. WAIT for the enemy to finish!
-                // Since the Turtle takes 1.5s to move + aim time, we wait 3 seconds per enemy.
-                // Without this wait, the loop finishes instantly and skips the animation.
-                yield return new WaitForSeconds(3.0f);
+                if (CheckBattleEndCondition()) yield break;
             }
+
+            if (phaseDelay > 0f) yield return new WaitForSeconds(phaseDelay);
+            currentTeamIndex = (currentTeamIndex + 1) % battleTeams.Count;
         }
-
-        // Win check
-        if (RedTeam.IsDefeated) { playerWinResult = true; EndBattle(); yield break; }
-        if (BlueTeam.IsDefeated) { playerWinResult = false; EndBattle(); yield break; }
-
-        // Delay before giving control back to player
-        if (phaseDelay > 0f) yield return new WaitForSeconds(phaseDelay);
-
-        SetState(BattleState3D.BlueTeamTurn);
     }
 
-    private IEnumerator PlayerPhase()
+    // =========================
+    // Turn Logic Handlers
+    // =========================
+    private IEnumerator HandlePlayerTurn(PlayerBattleController player)
     {
-        if (!isBattleActive) yield break;
+        isActionDone = false;
+        awaitingPlayerAction = true;
+        _activePlayerInTurn = player;
 
-        currentTeamName = BlueTeam.TeamName;
-        playerTurnCount++;
-
-        Debug.Log($"=== Player turn {playerTurnCount}/{limitedTurnForPlayer} ===");
-
-        if (playerTurnCount > limitedTurnForPlayer && !RedTeam.IsDefeated)
+        // Kích hoạt Timer riêng của nhân vật
+        if (_activePlayerInTurn.turnTimer != null)
         {
-            playerWinResult = false;
-            EndBattle();
-            yield break;
+            _activePlayerInTurn.turnTimer.gameObject.SetActive(true);
+            _activePlayerInTurn.turnTimer.StartNewTurn();
         }
 
-        foreach (var actor in BlueTeam.Members.Where(m => m != null && m.IsAlive))
+        HookPlayerShootEvent(true);
+        _activePlayerInTurn.EnableControl(true);
+
+        while (!isActionDone && isBattleActive)
         {
-            if (!isBattleActive) yield break;
-
-            CurrentActor = actor;
-            Debug.Log($"👉 It is now {actor.Name}'s Turn!");
-
-            FocusCamera(GetPlayerCameraFollow(actor));
-
-            isActionDone = false;
-            awaitingPlayerAction = true;
-            bool cheatUsed = false;
-
-            HookPlayerShootEvent(true);
-            SetPlayerControl(true);
-
-            // --- WAITING LOOP ---
-            while (!isActionDone && isBattleActive)
+            // Logic Cheat phím O
+            if (Input.GetKeyDown(KeyCode.O))
             {
-                if (!cheatUsed && Input.GetKeyDown(KeyCode.O))
-                {
-                    cheatUsed = true;
-                    Debug.Log("⏳ Cheat Activated: Ending turn in 5 seconds...");
-                    SetPlayerControl(false);
-                    HookPlayerShootEvent(false);
-                    awaitingPlayerAction = false;
-                    StartCoroutine(EndUnitTurnAfterDelay(5f));
-                }
+                Debug.Log("⏳ Cheat: Ending turn in 5s...");
+                _activePlayerInTurn.EnableControl(false);
+                HookPlayerShootEvent(false);
+                awaitingPlayerAction = false;
+                StartCoroutine(EndUnitTurnAfterDelay(5f));
+                break;
+            }
+            yield return null;
+        }
+
+        // Dọn dẹp sau khi xong lượt
+        if (_activePlayerInTurn != null)
+        {
+            if (_activePlayerInTurn.turnTimer != null)
+            {
+                _activePlayerInTurn.turnTimer.StopTimer();
+                _activePlayerInTurn.turnTimer.gameObject.SetActive(false);
+            }
+            _activePlayerInTurn.EnableControl(false);
+        }
+
+        HookPlayerShootEvent(false);
+        awaitingPlayerAction = false;
+        _activePlayerInTurn = null;
+    }
+
+    public void ForceEndTurn()
+    {
+        if (awaitingPlayerAction && isBattleActive && _activePlayerInTurn != null)
+        {
+            Debug.Log($"⏰ [TIMEOUT] {_activePlayerInTurn.name} hết giờ!");
+            _activePlayerInTurn.EnableControl(false);
+            if (_activePlayerInTurn.turnTimer != null) _activePlayerInTurn.turnTimer.StopTimer();
+
+            awaitingPlayerAction = false;
+            isActionDone = true;
+        }
+    }
+
+    private IEnumerator HandleAITurn(ITurnParticipant aiActor)
+    {
+        aiActor.TakeTurn();
+        yield return new WaitForSeconds(aiTurnWaitTime);
+        CurrentActor = null;
+        if (aiActor == CurrentTeamLead()) // Hàm phụ để kiểm tra xem đây có phải con đầu tiên của team ko
+        {
+            yield return StartCoroutine(ExecuteAllEnemyTurns(enemyContainer));
+        }
+    }
+    public IEnumerator ExecuteAllEnemyTurns(Transform container)
+    {
+        if (container == null) yield break;
+        var allEnemies = container.GetComponentsInChildren<TurtleEnemyAction>();
+
+        // 1. Ưu tiên rùa cận chiến (Warrior)
+        foreach (var enemy in allEnemies.Where(e => !e.IsTurtleCanon && e.IsAlive))
+        {
+            if (cameraAction != null) cameraAction.SetEnemyTarget(enemy);
+            yield return StartCoroutine(RunEnemyTurn(enemy));
+        }
+
+        // 2. Sau đó đến rùa pháo thủ (Canon)
+        foreach (var enemy in allEnemies.Where(e => e.IsTurtleCanon && e.IsAlive))
+        {
+            if (cameraAction != null) cameraAction.SetEnemyTarget(enemy);
+            yield return StartCoroutine(RunEnemyTurn(enemy));
+        }
+    }
+
+    private ITurnParticipant CurrentTeamLead()
+    {
+        return battleTeams[currentTeamIndex].Members.FirstOrDefault(m => m.IsAlive);
+    }
+    private IEnumerator RunEnemyTurn(TurtleEnemyAction enemy)
+    {
+        // 1. Kích hoạt AI
+        enemy.TakeTurn();
+
+        // 2. Chờ hành động hoàn tất
+        // Nếu là rùa bắn (Canon), ta cần đợi đến khi đạn nổ
+        if (enemy.IsTurtleCanon)
+        {
+            // Ta cần đợi một chút để đạn được Instantiate
+            yield return new WaitForSeconds(0.5f);
+
+            // Tìm viên đạn vừa bắn ra (đạn của Enemy)
+            GameObject lastProjectile = GameObject.FindObjectOfType<ProjectileEnemy>()?.gameObject;
+            while (lastProjectile != null)
+            {
                 yield return null;
             }
-            // -------------------
-
-            SetPlayerControl(false);
-            HookPlayerShootEvent(false);
-            awaitingPlayerAction = false;
-            CurrentActor = null;
-
-            if (RedTeam.IsDefeated) { playerWinResult = true; EndBattle(); yield break; }
-            if (BlueTeam.IsDefeated) { playerWinResult = false; EndBattle(); yield break; }
+        }
+        else // Nếu là rùa cận chiến
+        {
+            yield return new WaitForSeconds(1.5f); // Đợi animation cắn xong
         }
 
-        if (phaseDelay > 0f) yield return new WaitForSeconds(phaseDelay);
-        SetState(BattleState3D.RedTeamTurn);
+        yield return new WaitForSeconds(0.5f); // Nghỉ ngắn giữa các con rùa
+    }
+
+    private bool CheckBattleEndCondition()
+    {
+        int activeTeamsCount = battleTeams.Count(t => !t.IsDefeated);
+        BattleTeamData winnerTeam = battleTeams.FirstOrDefault(t => !t.IsDefeated);
+
+        if (activeTeamsCount <= 1)
+        {
+            playerWinResult = winnerTeam != null && winnerTeam.Members.Any(m => m is PlayerBattleController);
+            EndBattle();
+            return true;
+        }
+        return false;
     }
 
     // =========================
@@ -190,23 +394,45 @@ public class BattleHandlerPvE : BattleManagerCore
     // =========================
     private void HookPlayerShootEvent(bool hook)
     {
-        if (playerBattlerController == null) return;
-
-        playerBattlerController.OnShoot -= OnPlayerShoot;
-        if (hook) playerBattlerController.OnShoot += OnPlayerShoot;
+        if (_activePlayerInTurn == null) return;
+        _activePlayerInTurn.OnShoot -= OnPlayerShoot;
+        if (hook) _activePlayerInTurn.OnShoot += OnPlayerShoot;
     }
 
     private void OnPlayerShoot(Projectile projectile)
     {
         if (!awaitingPlayerAction) return;
+
+        if (_activePlayerInTurn != null && _activePlayerInTurn.turnTimer != null)
+            _activePlayerInTurn.turnTimer.StopTimer();
+
         awaitingPlayerAction = false;
-        StartCoroutine(EndUnitTurnAfterDelay(endTurnAfterShootDelay));
+
+        CameraFollowPlayer camControl = Object.FindFirstObjectByType<CameraFollowPlayer>();
+        if (camControl != null && projectile != null)
+        {
+            camControl.SetProjectileTarget(projectile.transform);
+        }
+        StartCoroutine(WaitUntilProjectileDestroyed(projectile));
     }
 
     private IEnumerator EndUnitTurnAfterDelay(float delay)
     {
         if (delay > 0f) yield return new WaitForSeconds(delay);
-        MarkActionDone();
+        isActionDone = true;
+    }
+    private IEnumerator WaitUntilProjectileDestroyed(Projectile projectile)
+    {
+        // 1. Chờ đạn bay
+        while (projectile != null)
+        {
+            yield return null;
+        }
+        // 2. Đạn nổ
+        yield return new WaitForSeconds(1.5f);
+
+        // 3. Kết thúc lượt
+        isActionDone = true;
     }
 
     // =========================
@@ -214,59 +440,19 @@ public class BattleHandlerPvE : BattleManagerCore
     // =========================
     private void FocusCamera(Transform follow)
     {
-        if (mainCamera == null || follow == null) return;
-        mainCamera.transform.position = follow.position - (follow.forward * 5f) + (Vector3.up * 3f); // Simple offset
-        mainCamera.transform.LookAt(follow);
-    }
-
-    private Transform GetPlayerCameraFollow(ITurnParticipant actor)
-    {
-        if (actor is not MonoBehaviour mono) return null;
-        var t = mono.transform.Find("CameraFollowPlayer");
-        return t != null ? t : mono.transform;
-    }
-
-    private Transform GetFirstAliveTransform(BattleTeamData team)
-    {
-        if (team?.Members == null) return null;
-        var alive = team.Members.FirstOrDefault(m => m != null && m.IsAlive);
-        return alive is MonoBehaviour mb ? mb.transform : null;
-    }
-
-    private Transform GetNearestEnemyToTarget(Transform target)
-    {
-        if (RedTeam?.Members == null) return null;
-        if (target == null)
+        //if (mainCamera == null || follow == null) return;
+        //mainCamera.transform.position = follow.position - (follow.forward * 5f) + (Vector3.up * 3f);
+        //mainCamera.transform.LookAt(follow);
+        CameraFollowPlayer camControl = Object.FindFirstObjectByType<CameraFollowPlayer>();
+        if (camControl != null)
         {
-            var first = RedTeam.Members.FirstOrDefault(m => m != null && m.IsAlive);
-            return first is MonoBehaviour fb ? fb.transform : null;
+            camControl.SetTarget(follow);
         }
-
-        float best = float.MaxValue;
-        Transform bestTf = null;
-
-        foreach (var e in RedTeam.Members.Where(m => m != null && m.IsAlive))
-        {
-            if (e is not MonoBehaviour mono) continue;
-            float d = Vector3.Distance(mono.transform.position, target.position);
-            if (d < best)
-            {
-                best = d;
-                bestTf = mono.transform;
-            }
-        }
-        return bestTf;
-    }
-
-    private void SetPlayerControl(bool enable)
-    {
-        if (playerBattlerController == null) return;
-        playerBattlerController.EnableControl(enable);
     }
 
     private void Cleanup()
     {
-        SetPlayerControl(false);
+        if (_activePlayerInTurn != null) _activePlayerInTurn.EnableControl(false);
         HookPlayerShootEvent(false);
         awaitingPlayerAction = false;
         CurrentActor = null;
