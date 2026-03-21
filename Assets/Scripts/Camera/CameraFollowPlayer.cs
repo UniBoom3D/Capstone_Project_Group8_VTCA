@@ -12,35 +12,87 @@ public class CameraFollowPlayer : MonoBehaviour
     public float continuousSpeed = 30f;
     public float snapAmount = 1.0f;
     [SerializeField] private string playerFocusTag = "FocusPointPlayer";
+    private bool _isHolding = false;
+    private float _holdTimer = 0f;
+
 
     private void Awake()
     {
         if (orbitalFollow == null) orbitalFollow = GetComponent<CinemachineOrbitalFollow>();
         _vcam = GetComponent<CinemachineCamera>();
-        _vcam.Priority = 0;
+        
+        Debug.Log($"CameraFollowPlayer Awake: {orbitalFollow}, {_vcam}");
+    }
+    private void Start()
+    {
+        if (_vcam != null)
+        {
+            SetCameraPriority(0); // Đảm bảo camera bắt đầu với Priority thấp
+        }
+        
     }
 
-    // Hàm này sẽ được PlayerBattleController gọi mỗi Frame khi nhấn phím
-    public void ManualUpdateCameraAngle(float direction, bool isSnap)
+    private void Update()
     {
-        Debug.Log($"Camera received call: ");
-        if (orbitalFollow == null) return;
+        // Đọc input trực tiếp tại đây để tránh tranh chấp với PlayerBattleController
+        float direction = 0;
+        bool isKeyPressed = false;
 
-        if (isSnap)
+        if (Input.GetKey(KeyCode.I))
         {
-            // Nhảy 1 độ mỗi lần nhấn
-            orbitalFollow.VerticalAxis.Value += direction * 1.0f;
+            direction = 1f;
+            isKeyPressed = true;
+        }
+        else if (Input.GetKey(KeyCode.K))
+        {
+            direction = -1f;
+            isKeyPressed = true;
+        }
+
+        if (isKeyPressed)
+        {
+            // Xử lý Snap khi mới nhấn và Hold khi giữ lâu
+            HandleInputLogic(direction);
         }
         else
         {
-            // Quay mượt 30 độ mỗi giây khi giữ
-            orbitalFollow.VerticalAxis.Value += direction * 30f * Time.deltaTime;
-        }    
-        float speed = isSnap ? 1.0f : 30f * Time.deltaTime;
-        // Giới hạn góc từ 0 đến 60
+            _isHolding = false;
+            _holdTimer = 0f;
+        }
+    }
+    // Hàm này sẽ được PlayerBattleController gọi mỗi Frame khi nhấn phím
+    public void ManualUpdateCameraAngle(float direction, bool isSnap)
+    {
+        if (orbitalFollow == null) return;
+
+        float amount = isSnap ? snapAmount : continuousSpeed * Time.deltaTime;
+
+        // Cộng dồn vào Vertical Axis
+        orbitalFollow.VerticalAxis.Value += direction * amount;
+
+        // Giới hạn góc dựa trên thiết lập Three Ring của bạn (0 đến 60)
         orbitalFollow.VerticalAxis.Value = Mathf.Clamp(orbitalFollow.VerticalAxis.Value, 0f, 60f);
     }
 
+    private void HandleInputLogic(float dir)
+    {
+        if (!_isHolding)
+        {
+            // Lần đầu nhấn (Snap)
+            ManualUpdateCameraAngle(dir, true);
+            _isHolding = true;
+            _holdTimer = 0f;
+        }
+        else
+        {
+            // Giữ phím (Continuous)
+            _holdTimer += Time.deltaTime;
+            if (_holdTimer >= 0.2f)
+            {
+                ManualUpdateCameraAngle(dir, false);
+            }
+        }
+    }
     public void SetCameraPriority(int priority)
     {
         if (_vcam != null) _vcam.Priority = priority;

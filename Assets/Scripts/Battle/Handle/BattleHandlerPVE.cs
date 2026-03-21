@@ -266,68 +266,26 @@ public class BattleHandlerPvE : BattleManagerCore
   
     private IEnumerator HandleAITurn(ITurnParticipant aiActor)
     {
-        // Kiểm tra nếu đây là nhân vật sống sót đầu tiên của Team
-        if (aiActor == CurrentTeamLead())
+        // Xác định Lead của Team địch hiện tại
+        var lead = CurrentTeamLead();
+
+        if (aiActor == lead)
         {
-            // Thực hiện lượt cho toàn bộ quái trong Container
-            yield return StartCoroutine(ExecuteAllEnemyTurns(enemyContainer));
+            // Gọi Manager điều khiển toàn bộ quái
+            yield return StartCoroutine(EnemyActionManager.Instance.ExecuteAllAITurns());
         }
         else
-        {
-            // Các con quái sau trong cùng team sẽ được Skip vì Lead đã điều khiển rồi
-            yield return null;
+        {          
+            yield break;
         }
     }
-    public IEnumerator ExecuteAllEnemyTurns(Transform container)
-    {
-        if (container == null) yield break;
-        var allEnemies = container.GetComponentsInChildren<TurtleEnemyAction>();
-
-        // 1. Ưu tiên rùa cận chiến (Warrior)
-        foreach (var enemy in allEnemies.Where(e => !e.IsTurtleCanon && e.IsAlive))
-        {
-            if (cameraAction != null) cameraAction.SetEnemyTarget(enemy);
-            yield return StartCoroutine(RunEnemyTurn(enemy));
-        }
-
-        // 2. Sau đó đến rùa pháo thủ (Canon)
-        foreach (var enemy in allEnemies.Where(e => e.IsTurtleCanon && e.IsAlive))
-        {
-            if (cameraAction != null) cameraAction.SetEnemyTarget(enemy);
-            yield return StartCoroutine(RunEnemyTurn(enemy));
-        }
-    }
+    
 
     private ITurnParticipant CurrentTeamLead()
     {
         return battleTeams[currentTeamIndex].Members.FirstOrDefault(m => m.IsAlive);
     }
-    private IEnumerator RunEnemyTurn(TurtleEnemyAction enemy)
-    {
-        // 1. Kích hoạt AI
-        enemy.TakeTurn();
-
-        // 2. Chờ hành động hoàn tất
-        // Nếu là rùa bắn (Canon), ta cần đợi đến khi đạn nổ
-        if (enemy.IsTurtleCanon)
-        {
-            // Ta cần đợi một chút để đạn được Instantiate
-            yield return new WaitForSeconds(0.5f);
-
-            // Tìm viên đạn vừa bắn ra (đạn của Enemy)
-            GameObject lastProjectile = GameObject.FindObjectOfType<ProjectileEnemy>()?.gameObject;
-            while (lastProjectile != null)
-            {
-                yield return null;
-            }
-        }
-        else // Nếu là rùa cận chiến
-        {
-            yield return new WaitForSeconds(1.5f); // Đợi animation cắn xong
-        }
-
-        yield return new WaitForSeconds(0.5f); // Nghỉ ngắn giữa các con rùa
-    }
+   
 
     private bool CheckBattleEndCondition()
     {
@@ -362,11 +320,11 @@ public class BattleHandlerPvE : BattleManagerCore
 
         awaitingPlayerAction = false;
 
-        CameraFollowPlayer camControl = Object.FindFirstObjectByType<CameraFollowPlayer>();
-        if (camControl != null && projectile != null)
-        {
-            //camControl.SetProjectileTarget(projectile.transform);
-        }
+        //CameraFollowPlayer camControl = Object.FindFirstObjectByType<CameraFollowPlayer>();
+        //if (camControl != null && projectile != null)
+        //{
+        //    //camControl.SetProjectileTarget(projectile.transform);
+        //}
         StartCoroutine(WaitUntilProjectileDestroyed(projectile));
     }
 
@@ -397,7 +355,7 @@ public class BattleHandlerPvE : BattleManagerCore
         CameraFollowPlayer camControl = Object.FindFirstObjectByType<CameraFollowPlayer>();
         if (camControl != null)
         {
-            //camControl.SetTarget(follow);
+            camControl.SetTarget(follow);
             // Nếu dùng Cinemachine, hãy đảm bảo Priority của Camera Player > Camera Intro lúc này
         }
     }

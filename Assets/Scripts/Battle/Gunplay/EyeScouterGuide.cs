@@ -16,8 +16,8 @@ public class EyeScouterGuide : MonoBehaviour
     {
         lr = GetComponent<LineRenderer>();
         // Thiết lập tia laser màu đỏ, mảnh
-        lr.startWidth = 0.015f;
-        lr.endWidth = 0.015f;
+        lr.startWidth = 0.06f;
+        lr.endWidth = 0.02f;
         lr.material = new Material(Shader.Find("Unlit/Color"));
         lr.material.color = Color.red;
         lr.useWorldSpace = true;

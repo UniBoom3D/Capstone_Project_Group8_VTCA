@@ -69,9 +69,7 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
     private bool isCharging = false;
     private bool isReloading = false;
     private float chargeTimer = 0f;
-    private float _camKeyHoldTime = 0f;
-    private bool _isHoldingCam = false;
-    private KeyCode _currentCamKey = KeyCode.None;
+    
 
     private CharacterController controller;
     private Animator animator;
@@ -81,7 +79,8 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
 
     private void Awake()
     {
-        playerCam = GetComponent<CameraFollowPlayer>();
+        
+        playerCam = GetComponent<CameraFollowPlayer>();     
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
         eyeScouter = GetComponentInChildren<EyeScouterGuide>();
@@ -91,12 +90,14 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
         if (myStats == null) myStats = GetComponent<CombatStats>();
     }
 
+   
     private void Update()
     {
         // 1. Luôn xử lý trọng lực để nhân vật không bay lơ lửng
         if (controller != null && controller.enabled)
             controller.Move(Physics.gravity * Time.deltaTime);
 
+        HandleAiming();
         // 2. KHÓA CHẶT TẠI ĐÂY
         if (!isControllable)
         {
@@ -108,7 +109,7 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
         }
 
         HandleMovement();
-        HandleAiming();
+        
         HandleShooting();
     }
 
@@ -157,57 +158,17 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
 
     private void HandleAiming()
     {
-        if (playerCam == null || firePoint == null) return;
+        // Tìm script camera (Có thể tối ưu bằng cách cache lại trong Awake nếu cần)
+        
+        CameraFollowPlayer camControl = UnityEngine.Object.FindFirstObjectByType<CameraFollowPlayer>();
 
-        // 1. TEST CỰC MẠNH: Nếu nhấn I mà không hiện log này, 
-        // chắc chắn phím I đang bị một script khác hoặc Editor chiếm quyền.
-        if (Input.GetKeyDown(KeyCode.I)) Debug.Log("<color=red>TEST: Key I Pressed!</color>");
-        if (Input.GetKeyDown(KeyCode.K)) Debug.Log("<color=red>TEST: Key K Pressed!</color>");
 
-        float direction = 0;
-        bool isKeyPressed = false;
-
-        if (Input.GetKey(KeyCode.I))
+        if (camControl != null && firePoint != null)
         {
-            direction = 1f;
-            isKeyPressed = true;
+            float currentCamAngle = camControl.GetCurrentCameraAngle();
+        
+            firePoint.localRotation = Quaternion.Euler( -currentCamAngle,0f, 0f);
         }
-        else if (Input.GetKey(KeyCode.K))
-        {
-            direction = -1f;
-            isKeyPressed = true;
-        }
-
-        if (isKeyPressed)
-        {
-            if (!_isHoldingCam || _currentCamKey != (direction > 0 ? KeyCode.I : KeyCode.K))
-            {
-                // SNAP
-                playerCam.ManualUpdateCameraAngle(direction, true);
-                _isHoldingCam = true;
-                _currentCamKey = direction > 0 ? KeyCode.I : KeyCode.K;
-                _camKeyHoldTime = 0f;
-            }
-            else
-            {
-                // HOLD
-                _camKeyHoldTime += Time.deltaTime;
-                if (_camKeyHoldTime >= 0.2f) // Giảm xuống 0.2s để thấy kết quả nhanh hơn
-                {
-                    playerCam.ManualUpdateCameraAngle(direction, false);
-                }
-            }
-        }
-        else
-        {
-            _isHoldingCam = false;
-            _currentCamKey = KeyCode.None;
-        }
-
-        // 2. FORCE Cập nhật FirePoint (Hãy thử dùng firePoint.forward thay vì rotation)
-        float currentCamAngle = playerCam.GetCurrentCameraAngle();
-        // Thử dùng góc cộng dồn để dễ quan sát
-        firePoint.localRotation = Quaternion.Euler(currentCamAngle, 0f, 0f);
     }
 
     private void HandleShooting()
@@ -243,11 +204,11 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
 
             //🟢 PREDICTION LOGIC
             //Must match the math in Projectile.Launch exactly(forward* power *0.5)
-            if (trajectory != null && firePoint != null)
-            {
-                Vector3 predictedVel = firePoint.forward * currentPower * 0.5f;
-                trajectory.ShowTrajectory(firePoint.position, predictedVel);
-            }
+            //if (trajectory != null && firePoint != null)
+            //{
+            //    Vector3 predictedVel = firePoint.forward * currentPower * 0.5f;
+            //    trajectory.ShowTrajectory(firePoint.position, predictedVel);
+            //}
         }
 
         // 3. Fire
@@ -256,7 +217,7 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
             float range = maxChargePower - minChargePower;
             LastFiredPower = minChargePower + Mathf.PingPong(chargeTimer * chargeSpeed, range);
 
-            if (playerCam != null) playerCam.SetCameraPriority(10);
+            if (playerCam != null) playerCam.SetCameraPriority(default);
             // Hide the line immediately
             //if (trajectory != null) trajectory.Hide();
 

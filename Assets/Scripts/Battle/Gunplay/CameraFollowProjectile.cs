@@ -10,7 +10,7 @@ public class CameraFollowProjectile : MonoBehaviour
     {
         _vcam = GetComponent<CinemachineCamera>();
         // Khởi tạo ở mức thấp, chỉ cao lên khi được bắn
-        _vcam.Priority = 0;
+        _vcam.Priority = 50;
     }
 
     public void ActivateCamera(Transform projectileTransform)
@@ -19,7 +19,8 @@ public class CameraFollowProjectile : MonoBehaviour
 
         _vcam.Follow = projectileTransform;
         _vcam.LookAt = projectileTransform;
-        _vcam.Priority = 200; // Cao hơn hẳn PlayerCam (100) và IntroCam
+        _vcam.Priority = 10; // Cao hơn hẳn PlayerCam (100) và IntroCam
+        _vcam.Priority = 10; // Cao hơn hẳn PlayerCam (100) và IntroCam
         _isExploded = false;
     }
 
