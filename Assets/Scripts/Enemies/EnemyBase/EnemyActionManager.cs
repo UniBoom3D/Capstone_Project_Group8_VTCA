@@ -81,7 +81,7 @@ public class EnemyActionManager : MonoBehaviour
             // Sau khi con này xong, Reset Camera trước khi sang con tiếp theo
             if (camAction != null) camAction.MarkActionDone();
 
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(3f);
         }
 
         Debug.Log("🛡️ All Enemy Actions Completed.");
