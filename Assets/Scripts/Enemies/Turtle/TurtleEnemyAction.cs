@@ -119,7 +119,7 @@ public class TurtleEnemyAction : MonoBehaviour, ITurnParticipant
             yield return new WaitForSeconds(1.5f);
         }
 
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2f);
         isEnemyActionDone = true;
     }
 
@@ -159,7 +159,7 @@ public class TurtleEnemyAction : MonoBehaviour, ITurnParticipant
         animator.SetBool("FireAttack", true);
 
         // 3. Tắt animation sau 1 khoảng thời gian (Invoke hoặc Coroutine phụ)
-        StartCoroutine(ResetFireAnimation(1.5f));
+        StartCoroutine(ResetFireAnimation(1f));
     }
 
     private IEnumerator ResetFireAnimation(float delay)
