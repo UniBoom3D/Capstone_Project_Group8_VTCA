@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2910222014153732223}
   - component: {fileID: 8364037346566464787}
   - component: {fileID: 2691943137013481390}
+  - component: {fileID: 6338886514749057440}
   m_Layer: 0
   m_Name: CameraFollowProjectile
   m_TagString: Untagged
@@ -29,8 +30,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 292166647967400658}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.3689434, y: -0.24534188, z: 0.10162394, w: 0.890708}
-  m_LocalPosition: {x: 3.6206894, y: 7.071068, z: -6.073763}
+  m_LocalRotation: {x: 0.37627545, y: -0.16836368, z: 0.06973854, w: 0.9084091}
+  m_LocalPosition: {x: 2.5340438, y: 7.0710683, z: -6.60141}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -50,17 +51,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineCamera
   Priority:
     Enabled: 0
-    m_Value: 0
+    m_Value: 100
   OutputChannel: 1
   StandbyUpdate: 2
   m_StreamingVersion: 20241001
   m_LegacyPriority: 0
   Target:
-    TrackingTarget: {fileID: 323248439922596483}
-    LookAtTarget: {fileID: 0}
-    CustomLookAtTarget: 0
+    TrackingTarget: {fileID: 9220342262738620521}
+    LookAtTarget: {fileID: 9220342262738620521}
+    CustomLookAtTarget: 1
   Lens:
-    FieldOfView: 40
+    FieldOfView: 35
     OrthographicSize: 10
     NearClipPlane: 0.01
     FarClipPlane: 948.4
@@ -113,7 +114,7 @@ MonoBehaviour:
     SplineCurvature: 0.5
   RecenteringTarget: 2
   HorizontalAxis:
-    Value: -30.8
+    Value: -21
     Center: 0
     Range: {x: -180, y: 180}
     Wrap: 0
@@ -227,7 +228,7 @@ MonoBehaviour:
         LegacyInput: 
         LegacyGain: 1
         CancelDeltaTime: 0
-      InputValue: 0
+      InputValue: -0
       Driver:
         AccelTime: 0.2
         DecelTime: 0.2
@@ -240,12 +241,24 @@ MonoBehaviour:
         LegacyInput: 
         LegacyGain: 1
         CancelDeltaTime: 0
-      InputValue: 0
+      InputValue: -0
       Driver:
         AccelTime: 0
         DecelTime: 0
   PlayerIndex: -1
   AutoEnableInputs: 0
+--- !u!114 &6338886514749057440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 292166647967400658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf18b5da522ecf94f899f6e63e65b911, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraFollowProjectile
 --- !u!1 &1558915690740613495
 GameObject:
   m_ObjectHideFlags: 0
@@ -480,7 +493,7 @@ GameObject:
   - component: {fileID: 3947435648171464896}
   m_Layer: 9
   m_Name: Rocket Projectile
-  m_TagString: Untagged
+  m_TagString: ProjectilePlayer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -79,35 +79,7 @@ public class BattleHandlerPvE : BattleManagerCore
         base.StartBattle(blue, red, BattleState3D.BlueTeamTurn);
     }
    
-
-    private IEnumerator ScaleCanvasRoutine(Transform uiTf)
-    {
-        uiTf.localScale = Vector3.one * 2f;
-        float t = 0;
-        while (t < 0.5f)
-        {
-            t += Time.deltaTime;
-            uiTf.localScale = Vector3.Lerp(Vector3.one * 2f, Vector3.one, t / 0.5f);
-            yield return null;
-        }
-        uiTf.localScale = Vector3.one;
-    }
-    //private IEnumerator PerformSpawnEffect(GameObject playerObj)
-    //{
-    //    // Giả sử vòng tròn ánh sáng là một con của Player hoặc bạn Instantiate nó ra
-    //    // Ở đây ta làm hiệu ứng Scale đơn giản cho Player:
-    //    playerObj.transform.localScale = Vector3.zero;
-
-    //    float timer = 0;
-    //    float duration = 0.5f;
-    //    while (timer < duration)
-    //    {
-    //        timer += Time.deltaTime;
-    //        playerObj.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, timer / duration);
-    //        yield return null;
-    //    }
-    //    playerObj.transform.localScale = Vector3.one;
-    //}
+  
 
     protected override IEnumerator OnBattleStartIntro()
     {
@@ -127,8 +99,7 @@ public class BattleHandlerPvE : BattleManagerCore
 
             if (phaseRoutine == null)
                 phaseRoutine = StartCoroutine(MasterBattleLoop());
-        }
-        //if (state == BattleState3D.Endbattle) Cleanup();
+        }       
     }
 
     protected override void OnTick(BattleState3D state) { }
@@ -295,68 +266,26 @@ public class BattleHandlerPvE : BattleManagerCore
   
     private IEnumerator HandleAITurn(ITurnParticipant aiActor)
     {
-        // Kiểm tra nếu đây là nhân vật sống sót đầu tiên của Team
-        if (aiActor == CurrentTeamLead())
+        // Xác định Lead của Team địch hiện tại
+        var lead = CurrentTeamLead();
+
+        if (aiActor == lead)
         {
-            // Thực hiện lượt cho toàn bộ quái trong Container
-            yield return StartCoroutine(ExecuteAllEnemyTurns(enemyContainer));
+            // Gọi Manager điều khiển toàn bộ quái
+            yield return StartCoroutine(EnemyActionManager.Instance.ExecuteAllAITurns());
         }
         else
-        {
-            // Các con quái sau trong cùng team sẽ được Skip vì Lead đã điều khiển rồi
-            yield return null;
+        {          
+            yield break;
         }
     }
-    public IEnumerator ExecuteAllEnemyTurns(Transform container)
-    {
-        if (container == null) yield break;
-        var allEnemies = container.GetComponentsInChildren<TurtleEnemyAction>();
-
-        // 1. Ưu tiên rùa cận chiến (Warrior)
-        foreach (var enemy in allEnemies.Where(e => !e.IsTurtleCanon && e.IsAlive))
-        {
-            if (cameraAction != null) cameraAction.SetEnemyTarget(enemy);
-            yield return StartCoroutine(RunEnemyTurn(enemy));
-        }
-
-        // 2. Sau đó đến rùa pháo thủ (Canon)
-        foreach (var enemy in allEnemies.Where(e => e.IsTurtleCanon && e.IsAlive))
-        {
-            if (cameraAction != null) cameraAction.SetEnemyTarget(enemy);
-            yield return StartCoroutine(RunEnemyTurn(enemy));
-        }
-    }
+    
 
     private ITurnParticipant CurrentTeamLead()
     {
         return battleTeams[currentTeamIndex].Members.FirstOrDefault(m => m.IsAlive);
     }
-    private IEnumerator RunEnemyTurn(TurtleEnemyAction enemy)
-    {
-        // 1. Kích hoạt AI
-        enemy.TakeTurn();
-
-        // 2. Chờ hành động hoàn tất
-        // Nếu là rùa bắn (Canon), ta cần đợi đến khi đạn nổ
-        if (enemy.IsTurtleCanon)
-        {
-            // Ta cần đợi một chút để đạn được Instantiate
-            yield return new WaitForSeconds(0.5f);
-
-            // Tìm viên đạn vừa bắn ra (đạn của Enemy)
-            GameObject lastProjectile = GameObject.FindObjectOfType<ProjectileEnemy>()?.gameObject;
-            while (lastProjectile != null)
-            {
-                yield return null;
-            }
-        }
-        else // Nếu là rùa cận chiến
-        {
-            yield return new WaitForSeconds(1.5f); // Đợi animation cắn xong
-        }
-
-        yield return new WaitForSeconds(0.5f); // Nghỉ ngắn giữa các con rùa
-    }
+   
 
     private bool CheckBattleEndCondition()
     {
@@ -391,11 +320,11 @@ public class BattleHandlerPvE : BattleManagerCore
 
         awaitingPlayerAction = false;
 
-        CameraFollowPlayer camControl = Object.FindFirstObjectByType<CameraFollowPlayer>();
-        if (camControl != null && projectile != null)
-        {
-            camControl.SetProjectileTarget(projectile.transform);
-        }
+        //CameraFollowPlayer camControl = Object.FindFirstObjectByType<CameraFollowPlayer>();
+        //if (camControl != null && projectile != null)
+        //{
+        //    //camControl.SetProjectileTarget(projectile.transform);
+        //}
         StartCoroutine(WaitUntilProjectileDestroyed(projectile));
     }
 

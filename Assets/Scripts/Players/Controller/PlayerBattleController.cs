@@ -69,39 +69,47 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
     private bool isCharging = false;
     private bool isReloading = false;
     private float chargeTimer = 0f;
+    
+
     private CharacterController controller;
-
     private Animator animator;
-
     public event Action<Projectile> OnShoot;
+    private EyeScouterGuide eyeScouter;
+    private CameraFollowPlayer playerCam;
 
     private void Awake()
     {
+        
+        playerCam = GetComponent<CameraFollowPlayer>();     
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+        eyeScouter = GetComponentInChildren<EyeScouterGuide>();
         if (animator == null) Debug.LogError($"❌ Không tìm thấy component Animator trên {gameObject.name}!"); 
         if (audioSource == null) audioSource = GetComponent<AudioSource>();
         if (powerSlider != null) powerSlider.gameObject.SetActive(false);
         if (myStats == null) myStats = GetComponent<CombatStats>();
     }
 
+   
     private void Update()
     {
         // 1. Luôn xử lý trọng lực để nhân vật không bay lơ lửng
         if (controller != null && controller.enabled)
             controller.Move(Physics.gravity * Time.deltaTime);
 
+        HandleAiming();
         // 2. KHÓA CHẶT TẠI ĐÂY
         if (!isControllable)
         {
             // Đảm bảo các trạng thái liên quan cũng phải reset
             isCharging = false;
-            if (trajectory != null) trajectory.Hide();
+            if (eyeScouter != null) eyeScouter.SetVisible(false);
+            //if (trajectory != null) trajectory.Hide();
             return;
         }
 
         HandleMovement();
-        HandleAiming();
+        
         HandleShooting();
     }
 
@@ -150,14 +158,16 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
 
     private void HandleAiming()
     {
-        // Tìm script quản lý camera đang chạy trong Scene
+        // Tìm script camera (Có thể tối ưu bằng cách cache lại trong Awake nếu cần)
+        
         CameraFollowPlayer camControl = UnityEngine.Object.FindFirstObjectByType<CameraFollowPlayer>();
+
 
         if (camControl != null && firePoint != null)
         {
             float currentCamAngle = camControl.GetCurrentCameraAngle();
-   
-            firePoint.localRotation = Quaternion.Euler(0f, currentCamAngle, 90f);
+        
+            firePoint.localRotation = Quaternion.Euler( -currentCamAngle,0f, 0f);
         }
     }
 
@@ -171,6 +181,7 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
             isCharging = true;
             chargeTimer = 0f;
 
+            
             // Đóng băng Timer khi đang căn lực ---
             if (turnTimer != null) turnTimer.FreezeTimer();
 
@@ -191,13 +202,13 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
 
             if (powerSlider != null) powerSlider.value = currentPower;
 
-            // 🟢 PREDICTION LOGIC
-            // Must match the math in Projectile.Launch exactly (forward * power * 0.5)
-            if (trajectory != null && firePoint != null)
-            {
-                Vector3 predictedVel = firePoint.forward * currentPower * 0.5f;
-                trajectory.ShowTrajectory(firePoint.position, predictedVel);
-            }
+            //🟢 PREDICTION LOGIC
+            //Must match the math in Projectile.Launch exactly(forward* power *0.5)
+            //if (trajectory != null && firePoint != null)
+            //{
+            //    Vector3 predictedVel = firePoint.forward * currentPower * 0.5f;
+            //    trajectory.ShowTrajectory(firePoint.position, predictedVel);
+            //}
         }
 
         // 3. Fire
@@ -206,11 +217,15 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
             float range = maxChargePower - minChargePower;
             LastFiredPower = minChargePower + Mathf.PingPong(chargeTimer * chargeSpeed, range);
 
+            if (playerCam != null) playerCam.SetCameraPriority(default);
             // Hide the line immediately
-            if (trajectory != null) trajectory.Hide();
+            //if (trajectory != null) trajectory.Hide();
 
             // ---Tắt và ẩn Timer ngay trước khi bắn ---
             if (turnTimer != null) turnTimer.ResetAndHide();
+
+            // Tắt kính ngắm ngay trước khi bắn
+            if (eyeScouter != null) eyeScouter.SetVisible(false);
             // --- Bật Animation Bắn ---
             if (animator != null)
             {
@@ -286,7 +301,7 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
         {
             isControllable = false;
             isCharging = false;
-            if (trajectory != null) trajectory.Hide();
+            //if (trajectory != null) trajectory.Hide();
             if (powerSlider != null) powerSlider.gameObject.SetActive(false);
             if (turnTimer != null) turnTimer.gameObject.SetActive(false);
             if (turnNotifyText != null) turnNotifyText.SetActive(false);
@@ -302,11 +317,15 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
         if (turnNotifyText != null)
         {
             turnNotifyText.SetActive(true);
+            
             yield return new WaitForSeconds(1.0f); // Hiện trong 1 giây
             turnNotifyText.SetActive(false);
         }
+        if (playerCam != null) playerCam.SetCameraPriority(100);
+        // 2. BẬT KÍNH KHI BẮT ĐẦU LƯỢT MỚI
+        if (eyeScouter != null) eyeScouter.SetVisible(true);
 
-        // 2. Hiện và chạy đồng hồ
+        // 3. Hiện và chạy đồng hồ
         if (turnTimer != null)
         {
             turnTimer.gameObject.SetActive(true);
@@ -314,7 +333,7 @@ public class PlayerBattleController : MonoBehaviour, ITurnParticipant
             turnTimer.ResumeTimer();
         }
 
-        // 3. Chính thức cho phép người chơi bấm phím
+        // 4. Chính thức cho phép người chơi bấm phím
         isControllable = true;
         if (myStats != null) myStats.ResetTurnStats();
 

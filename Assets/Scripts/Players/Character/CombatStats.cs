@@ -40,7 +40,7 @@ public class CombatStats : MonoBehaviour
 
         // 🟢 ADDED LOG HERE
         // ":F1" formats the number to 1 decimal place (e.g., "85.4") to avoid messy numbers
-        Debug.Log($"⚡ Stamina: {currentStamina:F1} / {maxStamina}");
+        //Debug.Log($"⚡ Stamina: {currentStamina:F1} / {maxStamina}");
     }
 
     public void TakeDamage(int dmg)

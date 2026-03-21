@@ -11,13 +11,15 @@ public class IntroBattlePVE : MonoBehaviour
 
     public void PlayIntro()
     {
+        Debug.Log("🎬 Intro: Director mode active.");
+        if (introVcam != null) introVcam.Priority = 100;
         StartCoroutine(IntroSequence());
+        Destroy(gameObject, 5f); // Tự hủy sau 5 giây để dọn dẹp nếu có lỗi gì đó xảy ra
     }
 
     private IEnumerator IntroSequence()
     {
-        Debug.Log("🎬 Intro: Director mode active.");
-        if (introVcam != null) introVcam.Priority = 50;
+        
 
         // Tìm tất cả Mesh có gắn script hiệu ứng
         SpawnEffects[] allEffects = FindObjectsByType<SpawnEffects>(FindObjectsSortMode.None);
